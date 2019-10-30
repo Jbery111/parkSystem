@@ -1,0 +1,1464 @@
+
+<template>
+  <div id="house-details">
+  <div v-if="houseDetailShow">
+    <!-- <router-view /> -->
+    <!--搜索栏-->
+    <div slot="header" class="clearfix">
+      <div v-if="isMainBox" class="box-header">
+        <span v-show="!isShowExcel" class="load-btn" @click="clickDownLoad">下载房屋模板</span>
+        <!-- <a class="load-btn" target="_black" :href="dUrl">下载</a> -->
+        <span v-show="!isShowExcel" class="add-btn" @click="clickAddHouse">添加房屋</span>
+
+        <span v-if="!isError" v-show="isShowExcel" class="add-btn" @click="backToLastPage">返回上一级</span>
+        <span v-if="!isError" v-show="isShowExcel" class="add-btn1" @click="excelImport">确认导入</span>
+        <span v-if="isError" style="background:#F8AC59" v-show="isShowExcel" class="add-btn" @click="isError=false">确认</span>
+        <span v-if="isError" style="position:absolute;left:100px;top:20px;color:#f44;">提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
+        <el-upload
+          v-show="!isShowExcel"
+          action="#"
+          multiple
+          :before-upload="beforeUpload"
+          :limit="1"
+        >
+          <el-button size="small" type="primary" class="add-btn1" @click="uploadFile">点击上传</el-button>
+        </el-upload>
+
+        <span class="search-btn" @click="handleSearch">搜索</span>
+        <el-input
+          v-model="searchData"
+          class="sreach-box"
+          clearable
+          placeholder="快速搜索"
+        />
+      </div>
+
+      <div v-if="!isMainBox" class="box-header">
+        <span class="add-btn" @click="backToLastPage">返回上一页</span>
+      </div>
+    </div>
+    <!-- 房屋列表  -->
+    <div v-if="!isShowExcel" class="table-box">
+      <el-table
+        empty-text="暂无数据"
+        :data="tableData"
+        row-class-name="myRow"
+        cell-class-name="myCell"
+        style="width: 100%; height:100%;"
+        >
+        <el-table-column prop="userHouseBuilding" label="楼栋" min-width="50" />
+        <el-table-column prop="userHouseUnit" label="单元" min-width="50" />
+        <el-table-column prop="userHouseNumber" label="门牌号" min-width="50" />
+        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="80" />
+        <el-table-column prop="typeName" label="房屋类型" min-width="80" />
+        <el-table-column prop="userHouseUnit" label="物业费单价(元)" min-width="90" />
+        <el-table-column prop="state" label="房屋状态" min-width="50" />
+        <el-table-column prop="checktime" label="交房时间" min-width="130" />
+        <el-table-column prop="wuye_price" label="物业费到期时间" min-width="130" />
+        <el-table-column prop="centn" label="房屋备注" min-width="120" />
+        <el-table-column
+          label="操作"
+          fixed="right"
+          min-width="300"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              @click="handleModifyClick(scope.row)"
+            >修改</el-button>
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              @click="handleUserInfoClick(scope.row)"
+            >住户信息</el-button>
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              @click="handleCarInfoClick(scope.row)"
+            >车位信息</el-button>
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-record"
+              @click="handleRecordClick(scope.row)"
+            >操作记录</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      
+    </div>
+    <div v-if='isShowExcel' class="table-box">
+      <!-- 展示Excel -->
+      <el-table
+        v-if="isShowExcel"
+        empty-text="正在解析..."
+        :data="excelData"
+        row-class-name="myRow"
+        cell-class-name="myCell"
+        style="width: 100%; height:100%;"
+        >
+      
+        <el-table-column :prop="prop[0]" label="楼栋" min-width="100" />
+        <el-table-column :prop="prop[1]" label="单元" min-width="100" />
+        <el-table-column :prop="prop[2]" label="门牌号" min-width="100" />
+        <el-table-column :prop="prop[3]" label="房屋面积(m²)" min-width="100" />
+        <el-table-column :prop="prop[4]" label="房屋类型" min-width="100" />
+        <el-table-column :prop="prop[5]" label="交房时间" min-width="100" />
+        <el-table-column :prop="prop[6]" label="物业费到期时间" min-width="100" />
+
+      </el-table>
+    </div>
+    <!-- 分页 -->
+    <div v-show="!isShowExcel" class="block">
+      <p
+        class="record-data"
+      >共{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页,{{ pageInfo.total }}条</p>
+      <el-pagination
+        background
+        :page-size="pageInfo.listRows"
+        layout="prev, pager, next, jumper"
+        :total="pageInfo.total"
+        :current-page="pageInfo.page"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        @next-click="nextClickHandler"
+      />
+    </div>
+    <!-- 操作记录 -->
+    <el-dialog
+      title="操作记录"
+      :modal="true"
+      :append-to-body="true"
+      :visible.sync="RecordialogFormVisible"
+      :close-on-click-modal="false"
+      custom-class="myRecordForm"
+    >
+      <el-form :model="recordData">
+        <el-form-item label="上次操作员:" :label-width="formLabelWidth">
+          <el-input v-model="recordData.uname" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="上次操作时间" :label-width="formLabelWidth">
+          <el-input v-model="recordData.time" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="上次操作ip地址" :label-width="formLabelWidth">
+          <el-input v-model="recordData.ip" :disabled="true" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <div class="btn-confirm-record" @click="RecordialogFormVisible=false">确认</div>
+    </el-dialog>
+
+    <!-- 添加表格 -->
+    <el-dialog
+      title="添加房屋"
+      custom-class="myAddForm"
+      class="position:absolute;top:10px;"
+      :append-to-body="true"
+      :visible.sync="AdddialogVisible"
+      :before-close="handleAddClose"
+      :close-on-click-modal="false"
+    >
+      <el-form ref="form" :model="addData" label-width="80px">
+        <el-form-item label="房屋类型:">
+          <el-select v-model="addData.oid" filterable placeholder="请选择">
+            <el-option
+              v-for="item in houseTypeList"
+              :key="item.oid"
+              :label="item.typeName"
+              :value="item.oid"
+            />
+          </el-select>
+          <span v-if="isShowTip" v-show="n1" class="tips">请选择房屋类型</span>
+        </el-form-item>
+        <el-form-item label="楼栋:">
+          <el-input v-model.number="addData.userHouseBuilding" />
+          <span v-if="isShowTip" v-show="!n1&&n2" class="tips">请填写楼栋</span>
+          <span v-if="isShowTip" v-show="!n1&&n2&&e" class="tips" style="background:#fff;">此房屋已存在,请检查楼栋</span>
+        </el-form-item>
+        <el-form-item label="单元:">
+          <el-input v-model.number="addData.userHouseUnit" />
+          <span v-if="isShowTip" v-show="!n1&&!n2&&n3" class="tips">请填写单元</span>
+          <span v-if="isShowTip" v-show="!n1&&!n2&&n3&&e" class="tips" style="background:#fff;">此房屋已存在,请检查单元</span>
+        </el-form-item>
+        <el-form-item label="门牌号:">
+          <el-input v-model.number="addData.userHouseNumber" />
+          <span v-if="isShowTip" v-show="!n1&&!n2&&!n3&&n4" class="tips">请填写门牌号</span>
+          <span v-if="isShowTip" v-show="!n1&&!n2&&!n3&&n4&&e" class="tips" style="background:#fff;">此房屋已存在,请检查门牌号</span>
+        </el-form-item>
+        <el-form-item label="房屋面积:">
+          <el-input v-model.trim="addData.Housingarea" class="m" />
+          <span v-if="isShowTip" v-show="!n1&&!n2&&!n3&&!n4&&n5" class="tips">请填写房屋面积</span>
+        </el-form-item>
+        <el-form-item label="交房时间:">
+          <!-- <el-input v-model.number="addData.checktime" /> -->
+          <div class="block">
+            <el-date-picker
+              v-model="addData.checktime"
+              style="padding-left:20px"
+              type="date"
+              placeholder=""
+            />
+          </div>
+        </el-form-item>
+        <el-form-item v-show="addData.checktime" label="到期时间:">
+          <el-date-picker
+            v-model="addData.wuye_price"
+            style="padding-left:20px"
+            type="date"
+            placeholder=""
+          />
+        </el-form-item>
+        <div class="row" style="position:relative; height:90px;">
+          <span style="position:absolute;left:0;padding-right:12px;">房屋备注:</span>
+          <textarea
+            v-model.trim="addData.centn"
+            rows="1"
+            cols="40"
+            style="line-height: 18px;outline:none;min-width:220px;
+            color: #bfbfbf;border:1px solid #D2D2D2;position:absolute;left:80px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+            onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
+            onblur="clearInterval(this.clock);"
+          />
+        </div>
+        <div class="addNow" style="cursor:pointer" @click="clickConfirmAdd">确认添加</div>
+      </el-form>
+    </el-dialog>
+
+    <!-- 修改表格 -->
+    <el-dialog
+      title="修改"
+      custom-class="myAddForm"
+      class="position:fixed;top:10px;"
+      :append-to-body="true"
+      :visible.sync="ModifydialogVisible"
+      :before-close="handleAddClose1"
+      :close-on-click-modal="false"
+    >
+      <p style="position:absolute;right:20px;top:50px;cursor:pointer;color:#999999" @click="detailFormVisible=true;ModifydialogVisible=false">申请修改详情</p>
+      <el-form ref="form1" :model="modifyData" label-width="80px">
+        <el-form-item v-if="isShowHouseTime" label="交房时间:">
+          <!-- <el-input v-model.number="addData.checktime" /> -->
+          <div class="block">
+            <el-date-picker
+              v-model="modifyData.checktime"
+              type="date"
+              placeholder="选择日期"
+            />
+            {{ modifyData.checktime }}
+          </div>
+        </el-form-item>
+        <div class="row" style="position:relative; height:100px;">
+          <span style="position:absolute;left:0">房屋备注:</span>
+          <textarea
+            v-model="originData.centn"
+            rows="1"
+            cols="40"
+            style="position:absolute;left:80px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+            onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
+            onblur="clearInterval(this.clock);"
+          />
+        </div>
+
+        <div class="addNow" style="cursor:pointer" @click="clickConfirmModify">确认修改</div>
+      </el-form>
+    </el-dialog>
+
+    <!-- 修改详情 -->
+    <el-dialog
+      title="申请修改详情"
+      custom-class="myAddForm"
+      class="position:fixed;top:10px;"
+      :append-to-body="true"
+      :visible.sync="detailFormVisible"
+      :close-on-click-modal="false"
+      :before-close="handleAddClose2"
+    >
+
+      <el-checkbox v-model="isDeleteHouse">申请删除房屋</el-checkbox>
+
+      <el-form ref="form2" :model="modifyData" label-width="380px">
+
+        <div v-show="!isDeleteHouse">
+          <div class="row">
+            <span>房屋类型:</span>
+            <span>{{ originData.typeName }}</span>
+            <span>修改为:</span>
+            <el-select v-model="modifyData.cid" filterable placeholder="请选择">
+              <el-option
+                v-for="item in houseTypeList"
+                :key="item.oid"
+                :label="item.typeName"
+                :value="item.oid"
+              />
+            </el-select>
+          </div>
+          <div class="row">
+            <span>楼栋:</span>
+            <span>{{ originData.userHouseBuilding }}</span>
+            <span>修改为:</span>
+            <input v-model="modifyData.userHouseBuilding" type="text">
+          </div>
+          <div class="row">
+            <span>单元:</span>
+            <span>{{ originData.userHouseUnit }}</span>
+            <span>修改为:</span>
+            <input v-model="modifyData.userHouseUnit" type="text">
+          </div>
+          <div class="row">
+            <span>门牌号:</span>
+            <span>{{ originData.userHouseNumber }}</span>
+            <span>修改为:</span>
+            <input v-model="modifyData.userHouseNumber" type="text">
+          </div>
+          <div class="row">
+            <span>房屋面积:</span>
+            <span>{{ originData.Housingarea }}</span>
+            <span>修改为:</span>
+            <input v-model="modifyData.Housingarea" type="text">
+          </div>
+          <div class="row">
+            <span>物业费单价:</span>
+            <span>{{ originData.Price }}</span>
+            <span>修改为:</span>
+            <input v-model="modifyData.Price" type="text">
+          </div>
+        </div>
+
+        <div class="row" style="position:relative; height:100px;">
+          <span style="position:absolute;left:0">*申请理由:</span>
+          <textarea
+            v-model="modifyData.centns"
+            rows="1"
+            cols="40"
+            style="position:absolute;left:85px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+            onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
+            onblur="clearInterval(this.clock);"
+          />
+        </div>
+
+        <div class="addNow" style="cursor:pointer" @click="clickConfirmModify1">确认修改</div>
+      </el-form>
+    </el-dialog>
+
+    <!-- 搜索结果 -->
+    <!-- <div class="table-box"> -->
+    <!-- 房屋列表  -->
+    <!-- <el-table
+        v-show="!isMainBox"
+        empty-text="暂无数据"
+        :data="tableData1"
+        row-class-name="myRow"
+        cell-class-name="myCell"
+        style="width: 100%; height:100%;"
+        >
+        <el-table-column prop="userHouseBuilding" label="楼栋" min-width="50" />
+        <el-table-column prop="userHouseUnit" label="单元" min-width="50" />
+        <el-table-column prop="userHouseNumber" label="门牌号" min-width="50" />
+        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="80" />
+        <el-table-column prop="typeName" label="房屋类型" min-width="80" />
+        <el-table-column prop="userHouseUnit" label="物业费单价(元)" min-width="90" />
+        <el-table-column prop="state" label="房屋状态" min-width="50" />
+        <el-table-column prop="checktime" label="交房时间" min-width="130" />
+        <el-table-column prop="wuye_price" label="物业费到期时间" min-width="130" />
+        <el-table-column prop="centn" label="房屋备注" min-width="120" />
+        <el-table-column
+          label="操作"
+          fixed="right"
+          min-width="300"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              @click="handleModifyClick(scope.row)"
+            >修改</el-button>
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              @click="handleUserInfoClick(scope.row)"
+            >住户信息</el-button>
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              @click="handleCarInfoClick(scope.row)"
+            >车位信息</el-button>
+            <el-button
+              type="text"
+              size="small"
+              class="operateBtn btn-record"
+              @click="handleRecordClick(scope.row)"
+            >操作记录</el-button>
+          </template>
+        </el-table-column>
+      </el-table> -->
+    <!-- </div> -->
+  </div>
+    <resident-info
+      v-else
+      :houseid="houseid"
+      :housenumber="housenumber"
+      @isShowHouse="isShowHouse1"
+    />
+  </div>
+</template>
+
+<script>
+// require('@assets/styles/myChargeStyle')
+import axios from 'axios'
+import ResidentInfo from './ResidentInfo'
+export default {
+  name: 'HouseDetails',
+  components: {
+    ResidentInfo
+  },
+  data() {
+    return {
+      housenumber: '',
+      houseid: null,
+      houseDetailShow: true,
+
+      isShowTip: false,
+      isError: false,
+      dr_nameId: '', // 点击确认导入传给后台
+      excelData: [],
+      isShowExcel: false,
+      fileList: [],
+      originData: '',
+      isShowHouseTime: true,
+      isDeleteHouse: false, // 申请删除房屋
+      isMainBox: true,
+      token: '',
+      searchData: '', // 搜索的内容
+      // 分页信息
+      pageInfo: {
+        page: 1, // 当前页
+        total: 1, // 总条数
+        listRows: 10, // 每页多少条
+        pageNum: 1, // 总页数
+        render: ''
+      },
+      pt: '',
+      pn: '',
+      // 操作记录
+      formLabelWidth: '120px', // 记录表格宽度
+      RecordialogFormVisible: false,
+      recordData: {},
+      houseTypeList: [{
+        oid: 55,
+        typeName: '商业'
+      }], // 房屋类型列表
+      existedType: [], // 已近存在的房屋类型
+      tableData: [
+        // {
+        //   'userHouseId': 1, // 房屋主键id
+        //   'userHouseBuilding': 0, // 楼栋
+        //   'userHouseUnit': 0, // 单元
+        //   'userHouseNumber': 0, // 门牌
+        //   'Housingarea': null, // 房屋面积
+        //   'typeName': null, // 房屋类型名称
+        //   'Price': null, // 物业费单价
+        //   'state': '未交房', // 是否交房
+        //   'zx_tapy': '装修未办理', // 装修是否办理
+        //   'checktime': null, // 交房时间
+        //   'wuye_price': null, // 房屋物业到期时间
+        //   'centn': null, // 房屋备注
+        //   'time': null, // 操作时间
+        //   'uname': null, // 添加修改操作人
+        //   'ip': null, // 上次操作ip
+        //   'usname': null, // 审核人
+        //   'times': null, // 审核时间
+        //   'Result': ''// 审核结果
+        // }
+      ],
+      tableData1: [], // 存储搜索或添加后的结果
+      n1: false, // 不为空
+      n2: false,
+      n3: false,
+      n4: false,
+      n5: false,
+      e: false,
+      AdddialogVisible: false, // 添加框
+      ModifydialogVisible: false, // 修改框
+      addData: {
+        'Communityid': '', // 小区id
+        'oid': '', // 房屋类型id
+        'userHouseBuilding': '', // 楼栋
+        'userHouseUnit': '', // 单元
+        'userHouseNumber': '', // 门牌号
+        'Housingarea': '', // 房屋面积
+        'checktime': '', // 交房时间
+        'wuye_price': '', // 到期时间
+        'centn': '', // 房屋备注
+        'uname': ''// 操作人
+      },
+      modifyData: {
+        'uname': '', // 操作人
+        'userHouseId': '', // 房屋主键id (已交房 只修改备注)
+
+        'centn': '', // 修改的备 (未交房 修改备注和时间)
+        'checktime': '', // 交房时间
+
+        'Communityid': '', // 小区id (已交房和未交房)
+        'cid': '', // 房屋类型主键id
+        'Housingarea': '', // 房屋面积
+        'Price': '', // 物业单价
+        'userHouseBuilding': '', // 楼栋
+        'userHouseUnit': '', // 单元
+        'userHouseNumber': '', // 门牌
+        'centns': ''// 申请理由
+      },
+      modifyType: {
+        centOnly: false,
+        centAndTime: false
+      },
+      detailFormVisible: false,
+
+      userInfo: { // 登录用户相关信息
+        token: '',
+        uname: '',
+        Communityid: ''
+      }
+    }
+  },
+  computed: {
+    dUrl() {
+      return `http://test.txsqtech.com/index/House/downloadFile?token=${this.userInfo.token}`
+    }
+  },
+  watch: {
+    'addData.Housingarea': {
+      handler(n, o) {
+        n = String(n)
+        if (Number(n) == n) {
+          if (n.includes('.')) {
+            this.addData.Housingarea = n.slice(0, n.indexOf('.') + 3)
+          }
+        } else {
+          this.addData.Housingarea = o
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
+  created() {
+    this.userInfo = this.getUserInfo()
+    this.userInfo.token = JSON.parse(localStorage.getItem('userInfo')).token
+    this.getHouseType()
+    this.getHouseList()
+  },
+  methods: {
+    isShowHouse1() {
+      this.houseDetailShow = true
+    },
+    beforeUpload(file) {
+      const { token, Communityid } = this.userInfo
+      var fd = new window.FormData()
+      fd.append('excel', file)
+      fd.append('Communityid', Communityid)
+      axios.post('http://test.txsqtech.com/index/House/excel', fd,
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          console.log(res.data.msg.data, '本地的excel')
+          this.excelData = res.data.msg.data
+          this.dr_nameId = res.data.msg.dr_nameId
+          this.prop = ['1','2','3','4','5','6','7']
+          this.isShowExcel = true
+        }
+        console.log(this.dr_nameId,'aaaaaaa')
+      })
+      return false // 返回false不会自动上传
+    },
+
+    // Excel导入数据库
+    excelImport() {
+      const { uname, Communityid, token } = this.userInfo
+      const  dr_nameId = this.dr_nameId
+      console.log(dr_nameId,'idididid')
+      axios.post('http://test.txsqtech.com/index/House/excelImport',
+        {
+          uname, Communityid, dr_nameId
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+          if(res.data.code === 200){
+            if(res.data.data.length > 0){
+              // 提示导入数据失败
+              this.isError = true
+            }
+            console.log(res.data.data, '回来的excel')
+            this.prop = ['userHouseBuilding','userHouseUnit','userHouseNumber','Housingarea','cid','checktime','wuye_price']
+            this.excelData = res.data.data
+          }
+      })
+    },
+    uploadFile() {
+      // this.isShowExcel = true
+    },
+    backToLastPage() {
+      this.isMainBox = true
+      this.isShowExcel = false
+      // this.pageInfo.total = this.pt
+      // this.pageInfo.pageNum = this.pn
+      this.getHouseList()
+    },
+    // downLoadXls(data, filename) {
+    //   console.log(data)
+    //   var blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' }) // 接收的是blob，若接收的是文件流，需要转化一下
+    //   if (typeof window.chrome !== 'undefined') {
+    //     // Chrome version
+    //     var link = document.createElement('a')
+    //     link.href = URL.createObjectURL(blob)
+    //     // link.href = URL.createObjectURL(data)
+    //     link.download = filename
+    //     link.click()
+    //   } else if (typeof window.navigator.msSaveBlob !== 'undefined') {
+    //     // IE version
+    //     var blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+    //     window.navigator.msSaveBlob(blob, filename)
+    //   } else {
+    //     // Firefox version
+    //     var file = new File([data], filename, { type: 'application/vnd.ms-excel;charset=utf-8' })
+    //     window.open(URL.createObjectURL(file))
+    //   }
+    // },
+    // clickDownLoad() {
+    //   const { token } = this.userInfo
+    //   axios.post('http://test.txsqtech.com/index/House/downloadFile',
+    //     {},
+    //     {
+    //       headers: {
+    //         token
+    //       }
+    //     }).then(res => {
+    //     console.log(res)
+    //     this.downLoadXls(res.data, '房屋模板')
+    //   })
+    // },
+    clickDownLoad () {
+        const { token } = this.userInfo
+        let url = 'http://test.txsqtech.com/index/House/downloadFile'
+        axios.get(url, {
+            headers:{
+                token
+            },
+            responseType: 'blob', //二进制流
+        }).then(function (res) {
+            if(!res) return
+            let blob = new Blob([res.data], {type: 'application/vnd.ms-excel;charset=utf-8'})
+            let url = window.URL.createObjectURL(blob);
+            let aLink = document.createElement("a");
+            aLink.style.display = "none";
+            aLink.href = url;
+            aLink.setAttribute("download", "excel.xls");
+            document.body.appendChild(aLink);
+            aLink.click();
+            document.body.removeChild(aLink); 
+            window.URL.revokeObjectURL(url); 
+        }).catch(function (error) {
+            console.log(error)
+        });
+    },
+    getHouseType() {
+      const { Communityid, token } = this.userInfo
+      axios.post('http://test.txsqtech.com/index/House/typeSelect',
+        { Communityid },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        this.houseTypeList = res.data.msg // 房屋类型列表
+        // console.log(this.houseTypeList, '房屋类型列表')
+      })
+    },
+    getUserInfo() {
+      return JSON.parse(localStorage.getItem('userInfo')).data
+    },
+    // 格式化时间
+    formatDate(now) {
+      var year = now.getFullYear()
+      var month = now.getMonth() + 1
+      var date = now.getDate()
+      var hour = now.getHours()
+      var minute = now.getMinutes()
+      var second = now.getSeconds()
+      return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
+    },
+    handleUserInfoClick(v) {
+      console.log(v, '639')
+      this.houseid = v.userHouseId
+      this.housenumber = v.housenumber
+      this.houseDetailShow = false
+    },
+    handleCarInfoClick(v) {
+      alert('车位信息')
+    },
+    handleRecordClick(v) {
+      // console.log(v)
+      // var d = new Date(v.time * 1000) // 创建一个指定的日期对象
+      this.RecordialogFormVisible = true
+      this.recordData.ip = v.ip // ip
+      this.recordData.time = v.time // 操作时间
+      this.recordData.uname = v.uname // 操作人员
+      // console.log(this.recordData, 'record数据')
+      // alert('记录')
+    },
+    // 点击添加房屋
+    clickAddHouse() {
+      this.AdddialogVisible = true
+    },
+    // 点击导入房屋
+    clickImportHouse() {
+      alert('导入')
+    },
+    sendExcel() {
+      const { Communityid } = this.userInfo
+      axios.post('http://test.txsqtech.com/index/House/excel',
+        {
+          Communityid
+        })
+    },
+    // 点击修改
+    handleModifyClick(v) {
+      console.log(v)
+      if (v.state === '已交房') {
+        alert('已交房')
+        this.modifyType.centOnly = true
+        // 隐藏交房时间
+        this.isShowHouseTime = false
+      }
+      if (v.state === '未交房') {
+        alert('未交房')
+        this.modifyType.centOnly = false
+        this.isShowHouseTime = true
+      }
+      this.originData = v
+      this.ModifydialogVisible = true
+    },
+    // 确认修改
+    clickConfirmModify() {
+      // this.modifyData.checktime = this.originData.checktime
+      this.modifyData.centn = this.originData.centn
+      const { uname, userHouseId } = this.originData
+
+      const { centn, checktime, Communityid,
+        Housingarea, Price, userHouseBuilding,
+        userHouseUnit, userHouseNumber, centns } = this.modifyData
+      console.log(this.modifyData, '提交修改的数据')
+      if (this.modifyType.centOnly) { // 已交房 只修改备注
+        alert('已交房 只修改备注')
+        this.sendModifyRequest(uname, userHouseId, centn)
+      } else { // 未交房 修改时间和备注
+        alert('未交房 修改时间和备注')
+        this.sendModifyRequest1(uname, userHouseId, centn, checktime)
+      }
+
+      // else { //修改房屋详情
+      //   this.sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid)
+      // }
+    },
+    // 确认修改详情
+    clickConfirmModify1() {
+      this.modifyData.checktime = this.originData.checktime
+      this.modifyData.centn = this.originData.centn
+      console.log(this.userInfo)
+      const { Communityid, uname } = this.userInfo
+      // const { cid } = this.houseTypeList.oid
+      console.log(this.houseTypeList)
+      const { userHouseId } = this.originData
+      const { cid,
+        centn, checktime,
+        Housingarea, Price, userHouseBuilding,
+        userHouseUnit, userHouseNumber, centns } = this.modifyData
+      console.log(this.modifyData, '提交修改的数据')
+      // 修改房屋详情
+      this.sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid)
+    },
+    useData() {},
+    /* 添加表单相关事件 */
+    // 确认添加
+    clickConfirmAdd() {
+      console.log(this.addData, '添加的数据')
+      this.varifyData(this.addData) // 验证数据
+      if (!this.n1 && !this.n2 && !this.n3 && !this.n4 && !this.n5) {
+        this.sendAddRequest()
+      } else {
+        // alert('no')
+      }
+    },
+    varifyData(d) {
+      this.isShowTip = true
+      setTimeout(() => {
+        this.isShowTip = false
+      }, 4000);
+      if (d.oid === '') this.n1 = true
+      else this.n1 = false
+      if (d.userHouseBuilding === '') this.n2 = true
+      else this.n2 = false
+      if (d.userHouseUnit === '') this.n3 = true
+      else this.n3 = false
+      if (d.userHouseNumber === '') this.n4 = true
+      else this.n4 = false
+      if (d.Housingarea === '') this.n5 = true
+      else this.n5 = false
+    },
+    // clickConfirmModify() {
+    //   console.log(this.modifyData, '修改的数据')
+    //   this.sendModifyRequest()
+    // },
+    sendAddRequest() {
+      const { Communityid, uname, token } = this.userInfo
+      this.addData.Communityid = Communityid
+      this.addData.uname = uname
+      axios.post('http://test.txsqtech.com/index/House/houseInsert',
+        {
+          ...this.addData
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.clearAddData()
+          this.e = false
+          this.AdddialogVisible = false
+          const userHouseId = res.data.msg
+          // 跳转
+          this.isMainBox = false // 显示返回上一页
+          // console.log(res)
+          this.sendSingleSelectRequest(userHouseId)
+
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
+        } else if (res.data.code === 300) { // 房屋已存在
+          this.e = true
+        } else if (res.data.code === 406) {
+          this.e = false
+          this.$message({
+            message: '添加失败了',
+            type: 'error'
+          })
+        }
+        console.log(res)
+      })
+    },
+    // 添加成功后查询单个房屋
+    sendSingleSelectRequest(userHouseId) {
+      const { token } = this.userInfo
+      axios.post('http://test.txsqtech.com/index/House/singleSelect',
+        {
+          userHouseId, // 房屋主键id
+          'page': '1', // 当前页码(选填：默认为1)
+          'count': '10' // 每页多少条(选填：默认为10)
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.tableData = res.data.msg.data
+          this.pageInfo.pageNum = res.data.msg.pageNum
+          this.pageInfo.total = res.data.msg.total
+        }
+      })
+    },
+    handleAddClose() {
+      this.AdddialogVisible = false
+      this.n1 = false
+      this.n2 = false
+      this.n3 = false
+      this.n4 = false
+      this.n5 = false
+      this.e = false
+      this.clearAddData()
+    },
+    /* 修改表单相关事件 */
+    // 确认修改
+
+    handleAddClose1() {
+      this.ModifydialogVisible = false
+      setTimeout(() => {
+        this.clearModifyData()
+      }, 1000)
+    },
+    handleAddClose2() {
+      this.detailFormVisible = false
+      setTimeout(() => {
+        this.clearModifyData()
+      }, 1000)
+    },
+    clearAddData() {
+      this.addData = {
+        'Communityid': '', // 小区id
+        'oid': '', // 房屋类型id
+        'userHouseBuilding': '', // 楼栋
+        'userHouseUnit': '', // 单元
+        'userHouseNumber': '', // 门牌号
+        'Housingarea': '', // 房屋面积
+        'checktime': '', // 交房时间
+        'wuye_price': '', // 到期时间
+        'centn': '', // 房屋备注
+        'uname': ''// 操作人
+      }
+    },
+    clearModifyData() {
+      this.modifyData = {
+        'uname': '', // 操作人
+        'userHouseId': '', // 房屋主键id (已交房 只修改备注)
+
+        'centn': '', // 修改的备 (未交房 修改备注和时间)
+        'checktime': '', // 交房时间
+
+        'Communityid': '', // 小区id (已交房和未交房)
+        'cid': '', // 房屋类型主键id
+        'Housingarea': '', // 房屋面积
+        'Price': '', // 物业单价
+        'userHouseBuilding': '', // 楼栋
+        'userHouseUnit': '', // 单元
+        'userHouseNumber': '', // 门牌
+        'centns': ''// 申请理由
+      }
+    },
+    // 点击搜索
+    handleSearch() {
+      if (this.searchData === '') {
+        this.$message({
+          message: '搜索内容不能为空',
+          type: 'warning'
+        })
+      } else {
+        this.sendSearchRequest()
+      }
+    },
+    sendSearchRequest() {
+      const { Communityid, token } = this.userInfo
+      axios.post(`http://test.txsqtech.com/index/House/searchSelect`,
+        {
+          Communityid,
+          name: this.searchData,
+          page: this.pageInfo.page,
+          count: '10'
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          this.isMainBox = false
+          this.tableData = res.data.msg.data
+          this.pt = this.pageInfo.total // 总条数
+          this.pageInfo.total = res.data.msg.total
+          this.pn = this.pageInfo.pageNum // 总页数
+          this.pageInfo.pageNum = res.data.msg.pageNum
+        }
+        if (res.data.code === 10000) {
+          alert('token过期 跳转登录')
+          this.$router.push('/')
+        } else if (res.data.code === 401) {
+          this.$message({
+            message: '查询无结果',
+            type: 'warning'
+          })
+        }
+        console.log(res)
+      })
+    },
+    // 页码相关事件
+    handleSizeChange() {
+      console.log(11)
+    },
+    handleCurrentChange(val) {
+      if (this.isMainBox) {
+        this.pageInfo.page = val
+        this.getHouseList()
+      } else {
+        this.pageInfo.page = val
+        this.sendSearchRequest()
+      }
+      console.log(val)
+    },
+    nextClickHandler(val) {
+      console.log(val, '354')
+    },
+    // 请求列表
+    getHouseList() {
+      // console.log(this.userInfo)
+      axios.post(`http://test.txsqtech.com/index/House/houseSelect?page=${this.pageInfo.page}`, { Communityid: this.userInfo.Communityid },
+        {
+          headers: {
+            token: this.token
+          }
+        })
+        .then(res => {
+          // console.log(res)
+          if (res.data.code === 200) {
+            this.pageInfo.total = res.data.msg.total
+            // this.pageInfo.page = this.pageInfo.pageNum
+            this.pageInfo.pageNum = res.data.msg.pageNum
+            // console.log(res.data.msg)
+            this.tableData = res.data.msg.data
+          } else if (res.data.code === 10000) {
+            alert('token过期,即将跳转登录页面')
+          }
+        })
+    },
+    // 添加请求
+
+    // 修改请求
+    sendModifyRequest(uname, userHouseId, centn) {
+      // console.log('修改的请求数据', this.modifyData)
+      // const { oid, typename, money } = this.modifyData
+      // const uname = this.userInfo.uname
+      axios.post('http://test.txsqtech.com/index/House/houseUpdete',
+        {
+          uname, userHouseId, centn
+        },
+        {
+          headers: {
+            token: this.token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          this.getHouseList()
+          this.ModifydialogVisible = false // 关闭添加
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: '修改失败',
+            type: 'error'
+          })
+        }
+      })
+    },
+    sendModifyRequest1(uname, userHouseId, centn, checktime) {
+      // console.log('修改的请求数据', this.modifyData)
+      // const { oid, typename, money } = this.modifyData
+      // const uname = this.userInfo.uname
+      axios.post('http://test.txsqtech.com/index/House/houseUpde',
+        {
+          uname, userHouseId, centn, checktime
+        },
+        {
+          headers: {
+            token: this.token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          this.getHouseList()
+          this.ModifydialogVisible = false // 关闭添加
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: '修改失败',
+            type: 'error'
+          })
+        }
+      })
+    },
+    sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid) {
+      // console.log('修改的请求数据', this.modifyData)
+      // const { oid, typename, money } = this.modifyData
+      // const uname = this.userInfo.uname
+
+      axios.post('http://test.txsqtech.com/index/House/houseUpdet',
+        {
+          uname, userHouseId, centns,
+          userHouseNumber, userHouseUnit, userHouseBuilding,
+          Price, Housingarea, cid, Communityid
+        },
+        {
+          headers: {
+            token: this.token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          this.getHouseList()
+          this.ModifydialogVisible = false // 关闭添加
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: '修改失败',
+            type: 'error'
+          })
+        }
+      })
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+  /deep/.btn-modify{
+    background: #25bad9;
+  }
+  /deep/.btn-record{
+    background-color: #bfbfbf;
+  }
+  /deep/.operateBtn{
+    color: #fff;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 14px;
+  }
+  //添加表单样式
+  /deep/ .myAddForm{
+    .el-input__inner{
+      width: 96%;
+      margin-left: 2px;
+      padding-left: 12px;
+    }
+    margin-top: 0 !important;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    left: 50%;
+    max-width: 600px;
+    min-width: 380px;
+    padding-bottom: 30px;
+    .el-dialog__header{ //header
+      border-bottom: 1px solid #dfdfdf;
+      .el-dialog__title{
+        color: #333333;
+      }
+    }
+    .el-dialog__body{
+        padding: 30px 60px !important;
+      }
+    .addNow{
+      height: 30px;
+      padding: 0 8px;
+      position: absolute;
+      background-color: #F8AC59;
+      line-height: 30px;
+      color: #FFFEFE;
+      border-radius: 4px;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .el-form-item{
+      height: 40px !important;
+      margin-bottom: 25px;
+      .el-form-item__label{ //lable
+        color: #666666;
+        text-align: left;
+      }
+      .el-form-item__content{ //content
+        border: 1px solid #D2D2D2;
+        margin-left: 85px !important;
+        border-radius: 4px;
+        height: 100%;
+        .m::after{
+          content:'m²';
+          position: absolute;
+          right:-25px;
+        }
+        .el-select{
+          width: 100%;
+        }
+        .tips{ //tips
+          color: red;
+          height: 20px;
+          line-height: 20px;
+          font-size: 12px;
+          position: absolute;
+          bottom: -22px;
+          left: 0;
+        }
+      }
+    }
+  }
+  //操作记录表格样式
+  /deep/.myRecordForm{
+    min-width: 500px;
+    .el-form-item__label{
+      text-align: left;
+    }
+    .btn-confirm-record{
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #F8AC59;
+      min-width: 36px;
+      text-align: center;
+      padding: 5px 8px;
+      color: #FFFEFE;
+      border-radius: 4px;
+      bottom: 10px;
+      cursor: pointer;
+    }
+  }
+
+  #house-details{
+    position: relative;
+    height: 90%;
+    background-color: #fff;
+    .table-box{ //table
+      position: absolute;
+      width: 100%;
+      top: 60px;
+      bottom: 32px;
+      /deep/.el-table__header{
+        width: 100% !important;
+      }
+      /deep/.el-table__body{
+
+      }
+      /deep/.myRow {
+        height: 30px;
+        padding: 0;
+      }
+      /deep/.myRow > td {
+        padding: 0;
+      }
+      /deep/.myCell {
+        border-collapse: collapse;
+      }
+    }
+    .page-box{
+      position: absolute;
+      bottom: 0;
+    }
+    .my-pagination-box{
+      display: inline-block;
+    }
+    .top-button-box{
+      position: relative;
+      background-color: #999;
+      height: 60px;
+      .btn1{
+        position: absolute;
+        top: 50%;
+        bottom: 50%;
+        margin-top: -13px;
+        left: 20px;
+        width:52px;
+        height: 26px;
+        cursor: pointer;
+        text-align: center;
+        line-height: 28px;
+        border-radius: 4px;
+        background-color: #25BAD9;
+        display: inline-block;
+        color: #fff;
+        padding: 0 12px;
+        font-size: 14px;
+      }
+      .search-box{
+        height: 26px;
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        bottom: 50%;
+        margin-top: -13px;
+        input{
+          outline: none;
+          border: none;
+
+        }
+      }
+    }
+
+    .box-header{
+      height: 60px;
+      position: relative;
+      .add-btn{
+        cursor: pointer;
+        background-color: #25BAD9;
+        color: #fff;
+        height: 30px;
+        line-height: 30px;
+        position: absolute;
+        top: 50%;
+        bottom: 50%;
+        left: 20px;
+        margin-top: -13px;
+        padding: 0 12px;
+        border-radius: 4px;
+    }
+    .load-btn{
+      cursor: pointer;
+      color: #25BAD9;
+      position: absolute;
+      font-size: 12px;
+      right: 20px;
+      top: -25px;
+    }
+    .add-btn1{
+        cursor: pointer;
+        background-color: #25BAD9;
+        color: #fff;
+        height: 30px;
+        line-height: 30px;
+        position: absolute;
+        top: 50%;
+        bottom: 50%;
+        left: 130px;
+        margin-top: -13px;
+        padding: 0 12px;
+        border-radius: 4px;
+    }
+    .search-btn{
+        position: absolute;
+        height: 26px;
+        background-color: #25BAD9;
+        top: 50%;
+        bottom: 50%;
+        right: 20px;
+        margin-top: -13px;
+        z-index: 9;
+        color: #fff;
+        font-size: 14px;
+        line-height: 26px;
+        padding: 0 5px;
+        cursor: pointer;
+      }
+    .sreach-box{
+      width: 200px;
+      height: 26px;
+      position: absolute;
+      top: 50%;
+      bottom: 50%;
+      right: 20px;
+      margin-top: -13px;
+      background-color: #ddd;
+      border: 1px solid #ddd;
+      /deep/.el-input__inner{
+        height: 100% !important;
+        padding-left: 0 !important;
+      }
+    }
+  }
+  //分页器的样式
+  .block {
+    .record-data {
+      cursor: pointer;
+      display: inline-block;
+      height: 20px;
+      width: 1000px;
+      // background-color: green;
+      // float: right;
+      padding-left: 4.5vw;
+      margin-top: 15px;
+      position: absolute;
+      font-size: 0.8vw;
+      font-family: Microsoft YaHei;
+      font-weight: 400;
+      color: rgba(51, 51, 51, 1);
+    }
+    position: absolute;
+    margin-right: 1.4vw;
+    bottom: 0;
+    right: 2vw;
+    height: 40px;
+    width: 100%;
+    // padding-left: 90px;
+    .el-pagination {
+      // background-color: green;
+      position: absolute;
+      bottom: 0px;
+      right: 50px;
+      height: 2.8vh !important;
+      margin-right: -1.9vw !important;
+      /deep/button {
+        // background-color: #f00 !important;
+        min-width: 1.6vw !important;
+        height: 2.8vh;
+        cursor: default;
+      }
+      /deep/.el-pagination__jump {
+        // background-color: #f00;
+        position: relative;
+        margin-left: 0px;
+        color: #fff;
+        font-size: 0px;
+        //input和ul是否居中
+        margin-top: 0px;
+        // &::before {
+        //   content: "前往";
+        //   color: #000;
+        // }
+        .el-input {
+          // border: 1px solid;
+          font-size: 10px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: rgba(102, 102, 102, 1);
+          outline: none;
+          /deep/.el-input__inner {
+            font-size: 10px;
+            font-family: Microsoft YaHei;
+            font-weight: 400;
+            color: rgba(102, 102, 102, 1);
+            display: inline-block;
+            // background-color: #f00 !important;
+            // border: 1px solid !important;
+            width: 44px;
+            height: 2.8vh !important;
+            border: 1px solid rgba(239, 242, 245, 1) !important;
+            border-radius: 2px;
+            margin-left: 12px;
+            outline: none;
+          }
+          &::before {
+            content: "前往";
+            color: rgba(102, 102, 102, 1);
+            font-size: 0.8vw;
+          }
+          &:after {
+            content: "页";
+            padding-left: 0.5vw !important;
+            font-size: 0.8vw;
+          }
+        }
+      }
+      /deep/.el-pager li {
+        min-width: 1.6vw;
+        height: 2.8vh;
+        border-radius: 2px;
+        font-size: 10px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: rgba(102, 102, 102, 1);
+        line-height: 2.8vh;
+      }
+    }
+    /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
+      background: #5fafe4;
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+  }
+</style>

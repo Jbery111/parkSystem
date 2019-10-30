@@ -1,0 +1,143 @@
+import request from '@/utils/request'
+
+export function postLogin(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/logins/login',
+    method: 'post',
+    data
+  })
+}
+
+export function postLogout(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/index/Signout',
+    method: 'post',
+    data
+  })
+}
+// 获取验证码
+export function postGetCode(data) {
+  console.log(data, '获取找回密码的验证码1111')
+  return request({
+    url: 'http://test.txsqtech.com/index/logins/Code',
+    method: 'post',
+    data
+  })
+}
+// 重置获取验证码
+export function postGetCodes(data) {
+  // console.log('重置获取验证码的参数111')
+  return request({
+    url: 'http://test.txsqtech.com/index/logins/codes',
+    method: 'get',
+    params: data
+  })
+}
+// 找回密码
+export function postRetrieve(data) {
+  console.log(data, '11111112222222222333333333333')
+  return request({
+    url: 'http://test.txsqtech.com/index/logins/Retrieve',
+    method: 'post',
+    data
+  })
+}
+
+// 重置密码
+export function postResetPwd(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/logins/Retrievea',
+    method: 'post',
+    data
+  })
+}
+// 输入新密码
+export function postnewPwd(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/logins/Retrieves',
+    method: 'post',
+    data
+  })
+}
+// 选择小区
+export function postHighest(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/index/Highest',
+    method: 'post',
+    // headers: {  },
+    // headers: {
+    //   'token': 'eyJ1aWQiOjEsImlwIjoiMjIwLjE2Ni4yMzguMjI5In0',
+    //   'Content-Type': 'application/json;charset=UTF-8'
+    // },
+    // credientials: false,
+    // emulateJSON: true,
+    // headers: {
+    //   'token': 'eyJ1aWQiOjEsImlwIjoiMjIwLjE2Ni4yMzguMjI5In0',
+    //   'Content-Type': 'application/json'
+    // },
+    // data: qs.stringify(data),
+    // withCredentials: true,
+    // // credentials: 'same-origin',
+    // headers: {
+    //   'Access-Control-Allow-Origin': '*',
+    //   'Content-Type': 'application/json'
+    // },
+    // withCredentials: false,
+    data
+  })
+}
+// 按小区首字母搜索小区
+export function postHighests(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/index/Highests',
+    method: 'post',
+    data
+  })
+}
+// 查询小区
+export function postHighes(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/index/Highes',
+    method: 'post',
+    data
+  })
+}
+// 查询小区分页
+export function postget(data) {
+  // console.log(data)
+  const { page, Communityid, propertyId } = data
+  return request.get(`http://test.txsqtech.com/index/index/Highes?page=${page}&Communityid=${Communityid}&propertyId=${propertyId}`)
+}
+// 按小区首字母搜索小区
+export function getLetter(data) {
+  const { page, name, Communityid, propertyId } = data
+  return request.get(`http://test.txsqtech.com/index/index/Highests?page=${page}&Communityid=${Communityid}&propertyId=${propertyId}&name=${name}`)
+}
+// 查询开票
+// export function postInvoices(data) {
+//   const { propertyId } = data
+//   return request.get(`http://test.txsqtech.com/index/index/Invoices?propertyId=${propertyId}`)
+// }
+export function postInvoices(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/index/Invoices',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data
+  })
+}
+// 开票
+
+export function postInvoicesSuccess(data) {
+  // console.log(data)
+  return request({
+    url: 'http://test.txsqtech.com/index/index/Invoice',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data
+  })
+}
