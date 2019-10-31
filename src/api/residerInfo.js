@@ -14,4 +14,28 @@ export function postHouseholdSelect(data) {
     data
   })
 }
+// 添加
+export function postHouseholdInsert(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/Household/HouseholdInsert',
+    method: 'post',
+    data
+  })
+}
+// 查询Excel类容
+export function postHouseExcel(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/Household/excel',
+    method: 'post',
+    data
+  })
+}
+// 确认导入
 
+export function postExcelImport(data) {
+  return request({
+    url: 'http://test.txsqtech.com/index/Household/excelImport',
+    method: 'post',
+    data
+  })
+}

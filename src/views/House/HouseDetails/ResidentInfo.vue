@@ -1,19 +1,40 @@
 <template>
   <div id="enterprise-info" class="infor-warp">
+    <span class="load-class" @click="clickDownLoad">下载住户模板</span>
     <div slot="header" class="clearfix">
-      <div class="box-header-right">
+      <div v-if="!isShowExcel" class="box-header-right">
         <span class="add-btn" @click="exitBefore">返回上一级</span>
         <span class="add-btn add-btn2" @click="addUser">添加住户</span>
-        <span class="add-btn">导入住户</span>
+        <!-- <span class="add-btn">导入住户</span> -->
+        <span
+          v-if="isError"
+          v-show="isShowExcel"
+          style="background:#F8AC59"
+          class="add-btn"
+          @click="isError=false"
+        >确认</span>
+        <span
+          v-if="isError"
+          style="position:absolute;left:100px;top:20px;color:#f44;"
+        >提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
+        <el-upload v-if="!isShowExcel" action="#" multiple :before-upload="beforeUpload" :limit="1">
+          <el-button size="small" type="primary" class="add-btn">导入住户</el-button>
+        </el-upload>
       </div>
-      <div class="box-header-left">历史住户</div>
+      <div v-if="!isShowExcel" class="box-header-left">历史住户</div>
+      <!-- 点击到入住户 -->
+      <div v-if="isShowExcel" class="box-header-right" style="width:200px;">
+        <span class="add-btn" @click="exitHandler">返回上一级</span>
+        <span class="add-btn add-btn2" @click="querenUpload">确认导入</span>
+      </div>
     </div>
     <!-- <div class="noInfo" v-if="!isShowCard">
       目前还没有相关数据!!
     </div>-->
     <el-card class="list-card" shadow="never">
-      <!-- 企业列表 -->
+      <!-- 住户信息列表 -->
       <el-table
+        v-if="!isShowExcel"
         empty-text="暂无数据"
         :data="tableData"
         row-class-name="myRow"
@@ -23,34 +44,43 @@
         <el-table-column prop="housenumber" label="房屋编号" min-width="120" />
         <el-table-column prop="username" label="住户姓名" min-width="120" />
         <el-table-column prop="phone" label="联系电话" min-width="200" />
-        <el-table-column prop="type" label="住户身份" min-width="100" />
+        <el-table-column prop="type" label="住户身份" min-width="100">
+          <template slot-scope="scope">
+            <p v-html="scope.row.type === 1 ? '户主':scope.row.type === 2?'家属':'租户'" />
+          </template>
+        </el-table-column>
         <el-table-column prop="conet" label="备注" min-width="250" class="note" />
-        <el-table-column label="操作" min-width="400" fixed="right">
+        <el-table-column v-if="!isShowExcel" label="操作" min-width="400" fixed="right">
           <template slot-scope="scope">
             <el-button
+              v-if="!isShowExcel"
               type="text"
               size="small"
               class="operateBtn btn-modify"
               @click="handleModifyClick(scope.row)"
             >修改</el-button>
             <el-button
+              v-if="!isShowExcel"
               size="small"
               class="operateBtn btn-licence"
               @click="handleDetailClick(scope.row)"
             >查看详情</el-button>
             <el-button
+              v-if="!isShowExcel"
               type="text"
               size="small"
               class="operateBtn btn-modify"
               @click="handleFaceClick(scope.row)"
             >人脸录入</el-button>
             <el-button
+              v-if="!isShowExcel"
               type="text"
               size="small"
               class="operateBtn btn-record"
               @click="handleExchangeClick(scope.row)"
             >变更</el-button>
             <el-button
+              v-if="!isShowExcel"
               type="text"
               size="small"
               class="operateBtn btn-record"
@@ -59,87 +89,316 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
-    <!-- 添加住户 -->
-    <el-dialog
-      title="添加住户"
-      custom-class="myAddForm"
-      class="position:fixed;top:10px;"
-      :append-to-body="true"
-      :visible.sync="dialogFormVisible"
-    >
-      <el-form ref="form" :model="addData" label-width="100px">
-        <el-form-item label="房屋编号:">
-          <el-input v-model="addData.housenumber" disabled />
-        </el-form-item>
-        <span class="tips" />
-        <el-form-item label="住户姓名:">
-          <el-input v-model="addData.name" />
-        </el-form-item>
-        <span class="tips" />
-        <!-- 不会变动的联系方式 -->
-        <!-- <el-form-item label="联系方式:">
-          <el-input />
-        </el-form-item>-->
-        <!-- <span class="tips">请输入公司名称</span> -->
-        <!-- 联系方式box -->
-        <section v-for="(value, index) in contactData" :key="index">
-          <!-- 联系方式加 -->
-          <section v-if="index === 0">
-            <el-form-item label="联系方式:" class="connect-class">
-              <el-input v-model="contactData[index]" />
-              <i class="el-icon-plus" @click="addlastitems(index)" />
-            </el-form-item>
-            <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
-          </section>
-          <!-- 联系方式减(添加的子项目) -->
-          <section v-if="index > 0">
-            <el-form-item label="联系方式:" class="connect-class">
-              <el-input v-model="contactData[index]" />
-              <i class="el-icon-close" @click="rmlastitems(index)" />
-            </el-form-item>
-            <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
-          </section>
-        </section>
-        <!-- 身份证号 -->
-        <el-form-item label="身份证号:">
-          <el-input v-model="addData.identity" />
-        </el-form-item>
-        <span ref="phoneNum" class="tips">请输入联系电话</span>
-        <el-form-item label="工作单位:">
-          <el-input v-model="addData.Workunit" />
-        </el-form-item>
-        <span ref="phoneNum" class="tips">请输入联系电话</span>
-        <el-form-item label="选择类别:">
-          <el-radio-group v-model="radio" @change="radioHandler">
-            <el-radio :label="1">房主</el-radio>
-            <el-radio :label="2">家属</el-radio>
-            <el-radio :label="3">租户</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <span ref="phoneNum" class="tips">请输入联系电话</span>
-        <el-form-item label="是否是党员:">
-          <el-radio-group v-model="radio1" @change="radioHandler1">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="2">否</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <span ref="phoneNum" class="tips">请输入联系电话</span>
-        <!-- 备注 -->
-        <el-form-item label="备注:" style="height:125px !important;margin-top:20px;">
-          <el-input v-model="addData.conet" style="resize:none;" type="textarea" />
-        </el-form-item>
 
-        <div class="addNow" @click="submitHandler">确认添加</div>
-      </el-form>
-    </el-dialog>
+      <!-- 展示Excel -->
+      <el-table
+        v-if="isShowExcel"
+        empty-text="正在解析..."
+        :data="excelData"
+        row-class-name="myRow"
+        cell-class-name="myCell"
+        style="overflow-x:hidden;"
+        class="excel-class"
+      >
+        <el-table-column :prop="prop[0]" label="姓名1" min-width="100" />
+        <el-table-column :prop="prop[1]" label="电话" min-width="100" />
+        <el-table-column :prop="prop[2]" label="房屋编号" min-width="100" />
+        <el-table-column :prop="prop[3]" label="房屋身份" min-width="100" />
+        <el-table-column :prop="prop[4]" label="工作单位（选填)" min-width="100" />
+        <el-table-column :prop="prop[5]" label="身份证号（选填)" min-width="100" />
+        <el-table-column :prop="prop[6]" label="是否是党员（选填)" min-width="100" />
+      </el-table>
+    </el-card>
+    <!-- 分页 -->
+    <div v-if="!isShowExcel" class="block">
+      <p class="record-data">共{{ pageNums }}页 共{{ totalPage }}条</p>
+      <el-pagination
+        background
+        :page-size="listNum"
+        layout="prev, pager, next, jumper"
+        :total="totalPage"
+        :current-page.sync="currentPage"
+        @current-change="handleCurrentChange"
+      />
+      <!-- 添加住户弹框 -->
+      <el-dialog
+        title="添加住户"
+        custom-class="myAddForm"
+        class="position:fixed;top:10px;"
+        :append-to-body="true"
+        :visible.sync="dialogFormVisible"
+      >
+        <el-form ref="form" :model="addData" label-width="100px">
+          <el-form-item label="房屋编号:">
+            <el-input v-model="addData.housenumber" disabled />
+          </el-form-item>
+          <span class="tips" />
+          <el-form-item label="住户姓名:">
+            <el-input v-model="addData.name" />
+          </el-form-item>
+          <span ref="userToast" class="tips">请输入住户姓名</span>
+          <!-- 不会变动的联系方式 -->
+          <!-- <el-form-item label="联系方式:">
+          <el-input />
+          </el-form-item>-->
+          <!-- <span class="tips">请输入公司名称</span> -->
+          <!-- 联系方式box -->
+          <section v-for="(value, index) in contactData" :key="index">
+            <!-- 联系方式加 -->
+            <section v-if="index === 0">
+              <el-form-item label="联系方式:" class="connect-class">
+                <el-input v-model="contactData[index]" />
+                <i class="el-icon-plus" @click="addlastitems(index)" />
+              </el-form-item>
+              <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
+            </section>
+            <!-- 联系方式减(添加的子项目) -->
+            <section v-if="index > 0">
+              <el-form-item label="联系方式:" class="connect-class">
+                <el-input v-model="contactData[index]" />
+                <i class="el-icon-close" @click="rmlastitems(index)" />
+              </el-form-item>
+              <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
+            </section>
+          </section>
+          <!-- 身份证号 -->
+          <el-form-item label="身份证号:">
+            <el-input v-model="addData.identity" />
+          </el-form-item>
+          <span ref="phoneNum" class="tips">请输入联系电话</span>
+          <el-form-item label="工作单位:">
+            <el-input v-model="addData.Workunit" />
+          </el-form-item>
+          <span ref="phoneNum" class="tips">请输入联系电话</span>
+          <el-form-item label="选择类别:">
+            <el-radio-group v-model="radio" @change="radioHandler">
+              <el-radio :label="1">房主</el-radio>
+              <el-radio :label="2">家属</el-radio>
+              <el-radio :label="3">租户</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <span ref="phoneNum" class="tips">请输入联系电话</span>
+          <el-form-item label="是否是党员:">
+            <el-radio-group v-model="radio1" @change="radioHandler1">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="2">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <span ref="phoneNum" class="tips">请输入联系电话</span>
+          <!-- 备注 -->
+          <el-form-item label="备注:" style="height:125px !important;margin-top:20px;">
+            <el-input v-model="addData.conet" style="resize:none;" type="textarea" />
+          </el-form-item>
+
+          <div class="addNow" @click="submitHandler">确认添加</div>
+        </el-form>
+      </el-dialog>
+      <!-- 人脸录入 -->
+      <el-dialog
+        title="人脸录入"
+        custom-class="myAddForm"
+        :append-to-body="true"
+        class="face-class"
+        :visible.sync="fcDialogFormVisible"
+      >
+        <!-- 上传身份证正面 -->
+        <div class="upimg-class upimg-top">
+          <span>上传身份证（正面）:</span>
+          <div class="up-img">
+            <el-upload
+              :limit="2"
+              action="#"
+              :on-remove="handleRemove"
+              :on-preview="handlePictureCardPreview"
+              :on-change="handleChange"
+              list-type="picture-card"
+              :auto-upload="false"
+            >
+              <i slot="default" class="el-icon-plus" />
+              <div slot="file" slot-scope="{file}">
+                <img class="el-upload-list__item-thumbnail" :src="file.url" alt >
+                <span class="el-upload-list__item-actions">
+                  <span
+                    class="el-upload-list__item-preview"
+                    @click="handlePictureCardPreview(file)"
+                  >
+                    <i class="el-icon-zoom-in" />
+                  </span>
+                  <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+                    <i class="el-icon-delete" />
+                  </span>
+                </span>
+              </div>
+            </el-upload>
+            <!-- 图片预览box上半部分 -->
+
+            <el-dialog
+              style="width:100%;background:#999;padding-top:90px;height:100px;"
+              :visible.sync="ImgDiaLog.add"
+              title="pic1"
+              :modal="mod"
+              :append-to-body="true"
+              :fullscreen="true"
+            >
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt >
+            </el-dialog>
+          </div>
+        </div>
+        <!-- 上传人脸照 -->
+        <div class="upimg-class upimg-bottom">
+          <span>上传人脸照:</span>
+          <div class="up-img" style="left:80px;">
+            <el-upload
+              :limit="3"
+              action="#"
+              :on-remove="handleRemove1"
+              :on-preview="handlePictureCardPreview"
+              :on-change="handleChange1"
+              list-type="picture-card"
+              :auto-upload="false"
+            >
+              <i slot="default" class="el-icon-plus" />
+              <div slot="file" slot-scope="{file}">
+                <img class="el-upload-list__item-thumbnail" :src="file.url" alt >
+                <span class="el-upload-list__item-actions">
+                  <span
+                    class="el-upload-list__item-preview"
+                    @click="handlePictureCardPreview(file)"
+                  >
+                    <i class="el-icon-zoom-in" />
+                  </span>
+                  <span class="el-upload-list__item-delete" @click="handleDownload(file)">
+                    <i class="el-icon-download" />
+                  </span>
+                  <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+                    <i class="el-icon-delete" />
+                  </span>
+                </span>
+              </div>
+            </el-upload>
+            <!-- 图片预览box下半部分 -->
+
+            <el-dialog
+              style="width:100%;background:#999;padding-top:90px;"
+              :visible.sync="ImgDiaLog.add"
+              title="pic1"
+              :modal="mod"
+              :append-to-body="true"
+              :fullscreen="true"
+            >
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt >
+            </el-dialog>
+          </div>
+        </div>
+        <div class="addNow" style="top:80%;" @click="uploadFaceHandler">确认上传</div>
+      </el-dialog>
+      <!-- 查看人脸 -->
+      <el-dialog
+        title="人脸录入"
+        custom-class="myAddForm"
+        :append-to-body="true"
+        class="face-class"
+        :visible.sync="fcDialogFormVisible1"
+      >
+        <!-- 上传身份证正面 -->
+        <div class="upimg-class upimg-top">
+          <span>身份证（正面）:</span>
+          <div class="up-img">
+            <el-upload
+              :limit="2"
+              action="#"
+              :on-remove="handleRemove"
+              :on-preview="handlePictureCardPreview"
+              :on-change="handleChange"
+              list-type="picture-card"
+              :auto-upload="false"
+            >
+              <i slot="default" class="el-icon-plus" />
+              <div slot="file" slot-scope="{file}">
+                <img class="el-upload-list__item-thumbnail" :src="file.url" alt >
+                <span class="el-upload-list__item-actions">
+                  <span
+                    class="el-upload-list__item-preview"
+                    @click="handlePictureCardPreview(file)"
+                  >
+                    <i class="el-icon-zoom-in" />
+                  </span>
+                  <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+                    <i class="el-icon-delete" />
+                  </span>
+                </span>
+              </div>
+            </el-upload>
+            <!-- 图片预览box上半部分 -->
+
+            <el-dialog
+              style="width:100%;background:#999;padding-top:90px;height:100px;"
+              :visible.sync="ImgDiaLog.add"
+              title="pic1"
+              :modal="mod"
+              :append-to-body="true"
+              :fullscreen="true"
+            >
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt >
+            </el-dialog>
+          </div>
+        </div>
+        <!-- 上传人脸照 -->
+        <div class="upimg-class upimg-bottom">
+          <span>人脸照:</span>
+          <div class="up-img" style="left:80px;">
+            <el-upload
+              :limit="3"
+              action="#"
+              :on-remove="handleRemove1"
+              :on-preview="handlePictureCardPreview"
+              :on-change="handleChange1"
+              list-type="picture-card"
+              :auto-upload="false"
+            >
+              <i slot="default" class="el-icon-plus" />
+              <div slot="file" slot-scope="{file}">
+                <img class="el-upload-list__item-thumbnail" :src="file.url" alt >
+                <span class="el-upload-list__item-actions">
+                  <span
+                    class="el-upload-list__item-preview"
+                    @click="handlePictureCardPreview(file)"
+                  >
+                    <i class="el-icon-zoom-in" />
+                  </span>
+                  <span class="el-upload-list__item-delete" @click="handleDownload(file)">
+                    <i class="el-icon-download" />
+                  </span>
+                  <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+                    <i class="el-icon-delete" />
+                  </span>
+                </span>
+              </div>
+            </el-upload>
+            <!-- 图片预览box下半部分 -->
+
+            <el-dialog
+              style="width:100%;background:#999;padding-top:90px;"
+              :visible.sync="ImgDiaLog.add"
+              title="pic1"
+              :modal="mod"
+              :append-to-body="true"
+              :fullscreen="true"
+            >
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt >
+            </el-dialog>
+          </div>
+        </div>
+        <div class="addNow" style="top:80%;" @click="uploadFaceHandler">确认上传</div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-// import axios from 'axios'
-// import { Message } from 'element-ui'
-import { postHouseholdSelect } from '@/api/residerInfo'
+import axios from 'axios'
+import { Message } from 'element-ui'
+import { postHouseholdSelect, postHouseholdInsert, postHouseExcel, postExcelImport } from '@/api/residerInfo'
 import { getInfo } from '@/utils/auth'
 export default {
   name: 'ResidentInfo',
@@ -147,34 +406,56 @@ export default {
   // data数据
   data() {
     return {
+      isError: false,
+      isShowExcel: false,
+      excelData: [],
+      dr_nameId: '', // 点击确认导入传给后台
+      // prop:
+      mod: false, // 不需要遮罩层
+      fileLists: [], // 添加身份证
+      fileLists1: [], // 添加人脸
+      ImgDiaLog: { // 图片弹窗显示与否
+        origin: false,
+        originSrc: '',
+        add: false,
+        addSrc: '',
+        modify: false,
+        modifySrc: ''
+      },
+      totalPage: null, // 总条数
+      listNum: 10,
+      currentPage: 1, // 当前页数
+      pageNums: null, // 总页数
       radio: null,
       radio1: null,
       contactData: [''],
       rightConct: [],
       dialogFormVisible: false, // 添加住户dialog
+      fcDialogFormVisible: false,
+      fcDialogFormVisible1: false,
       // 查询企业信息
       tableData: [
-        {
-          id: 4, // 住户主键id
-          username: '李梦莹', // 住户名字
-          phone: '18981275447, 15183994119', // 住户电话
-          Houseid: 1, // 房屋主键id
-          Communityid: 15, // 小区id
-          type: 1, // 1为户主2为家属3为租客
-          time: '2019-04-15 10:55:58', // 添加修改时间
-          state: 1, // 1为未对比2为已对比(app用户对比用)
-          userid: null, // app用户id
-          Workunit: null, // 工作单位
-          identity: null, // 身份证号
-          zt: 1, // 1为正常2为注销
-          conet: null, // 备注
-          dang: 2, // 1是党员2不是党员
-          uname: null, // 操作人
-          ip: null, // ip地址
-          img: null, // 人脸图片
-          picture: '', // 身份证图片
-          housenumber: '1111' // 房屋编号
-        }
+        // {
+        //   id: 4, // 住户主键id
+        //   username: '李梦莹', // 住户名字
+        //   phone: '18981275447, 15183994119', // 住户电话
+        //   Houseid: 1, // 房屋主键id
+        //   Communityid: 15, // 小区id
+        //   type: 1, // 1为户主2为家属3为租客
+        //   time: '2019-04-15 10:55:58', // 添加修改时间
+        //   state: 1, // 1为未对比2为已对比(app用户对比用)
+        //   userid: null, // app用户id
+        //   Workunit: null, // 工作单位
+        //   identity: null, // 身份证号
+        //   zt: 1, // 1为正常2为注销
+        //   conet: null, // 备注
+        //   dang: 2, // 1是党员2不是党员
+        //   uname: null, // 操作人
+        //   ip: null, // ip地址
+        //   img: null, // 人脸图片
+        //   picture: '', // 身份证图片
+        //   housenumber: '1111' // 房屋编号
+        // }
       ],
 
       addData: {
@@ -200,7 +481,7 @@ export default {
     }
   },
   // watch: {
-  //   // 如果 `question` 发生改变，这个函数就会运行
+  //   // 如果 `question` 发生改变，这个函数就会运行token
   //   question: function (newQuestion, oldQuestion) {
   //     this.answer = 'Waiting for you to stop typing...'
   //     this.debouncedGetAnswer()
@@ -217,49 +498,114 @@ export default {
     const Houseid = this.houseid
     postHouseholdSelect({ Communityid, Houseid }).then(resp => {
       console.log(resp, '191')
+      this.tableData = resp.msg.data
+      this.listNum = resp.msg.listRows
+      this.totalPage = resp.msg.total
+      this.pageNums = resp.msg.pageNum
+      // this.tableData = resp.msg.data
+      this.currentPage = Number(resp.msg.page)
     })
   },
   methods: {
+    // 事件EXCEL下载住户模板
+    clickDownLoad() {
+      const { token } = this.userInfoData
+      const url = 'http://test.txsqtech.com/index/Household/downloadFile'
+      axios.get(url, {
+        headers: {
+          token
+        },
+        responseType: 'blob' // 二进制流
+      }).then(function(res) {
+        if (!res) return
+        const blob = new Blob([res.data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+        const url = window.URL.createObjectURL(blob)
+        const aLink = document.createElement('a')
+        aLink.style.display = 'none'
+        aLink.href = url
+        aLink.setAttribute('download', '住户模板.xlsx')
+        document.body.appendChild(aLink)
+        aLink.click()
+        document.body.removeChild(aLink)
+        window.URL.revokeObjectURL(url)
+      }).catch(function(error) {
+        console.log(error)
+      })
+    },
+    // 导入住户
+    beforeUpload(file) {
+      const { Communityid } = this.userInfoData
+      var fd = new window.FormData()
+      fd.append('excel', file)
+      fd.append('Communityid', Communityid)
+      console.log('导入住户,点击打开文件', fd)
+
+      postHouseExcel(fd).then(resp => {
+        console.log(resp, '本地excel')
+        this.excelData = resp.msg.data
+        this.dr_nameId = resp.msg.dr_nameId
+        this.prop = ['1', '2', '3', '4', '5', '6', '7']
+        this.isShowExcel = true
+      })
+    },
+    // 导入住户返回上一级
+    exitHandler() {
+      this.isShowExcel = false
+    },
+    // 确认导入
+    querenUpload() {
+      // postExcelImport
+      this.isError = true
+    },
+    // 图片事件
+    handleRemove(file, fileList) {
+      this.fileLists = fileList
+    },
+    handleRemove1(file, fileList) {
+      this.fileLists1 = fileList
+    },
+    handlePictureCardPreview(file) {
+      this.ImgDiaLog.addSrc = file.url
+      this.ImgDiaLog.add = true // 添加预览
+      console.log(123)
+    },
+    // 本地选中的图片变化
+    handleChange(file, fileList) {
+      console.log(file, fileList, '图片事件')
+      if (fileList.length < 2) { // 允许最多上传三张图片
+        this.fileLists = fileList
+      }
+      // if (fileList.length === 2) {
+      //   Message('上传的图片已达上线')
+      // }
+    },
+    handleChange1(file, fileList) {
+      console.log(file, fileList, '图片事件')
+      if (fileList.length < 2) { // 允许最多上传三张图片
+        this.fileLists1 = fileList
+      }
+      // if (fileList.length === 2) {
+      //   Message('上传的图片已达上线')
+      // }
+    },
+    // 确认上传
+    uploadFaceHandler() {
+      console.log(this.fileLists, this.fileLists1, 'file')
+    },
+    // 分页设置
+    handleCurrentChange(val) {
+      this.currentPage = val
+      const page = val
+      const { Communityid } = this.userInfoData
+      const Houseid = this.houseid
+      postHouseholdSelect({ Communityid, Houseid, page }).then(resp => {
+        console.log(resp, '191')
+        this.tableData = resp.msg.data
+      })
+    },
     // 添加房屋里的添加联系方式
     addlastitems(index) {
-      // // 验证手机号码
-      // if (this.contactData.length) {
-      //   this.contactData.forEach((item, index) => {
-      //     // console.log(item, 'hahah')
-      //     // 循环验证
-      //     if ((/^1[3456789]\d{9}$/.test(item))) {
-      //       console.log('手机号码正确')
-      //       this.contactData.push('')
-      //       this.phoneToast.push('')
-      //       this.inputData.phone = true
-      //       this.phoneToast[index] = ''
-      //       // this.$refs.phoneNum.innerHTML="手机号码正确"
-      //       // this.inputData.phone = true
-      //     } else {
-      //       this.inputData.phone = false
-      //       this.phoneToast[index] = '请输入正确的手机号码'
-      //       // setTimeout(() => {
-      //       //   this.centerDialogVisible1 = false
-      //       // }, 2000)
-      //       console.log('手机号码cuowu', this.phoneToast)
-      //       // this.$refs.phoneNum.innerHTML = '请输入正确的手机号码'
-      //     }
-      //   })
-      // }
-
-      //   // console.log(this.$refs.phoneNum)
-      // } else {
-      //   this.inputData.phone = false
-      // }
-      // if (type === '1') {
-      //   // const lastItem = this.contactData[this.contactData.length - 1]
-      //   // if (lastItem.trim() === '') {
-      //   //   Message('请您填写完一项后继续追加')
-      //   // } else {
       this.contactData.push('')
-      this.phoneToast.push('')
-      //   // }
-      // }
     },
     // 添加房屋里的删除联系方式
     rmlastitems(index) {
@@ -275,6 +621,7 @@ export default {
       this.addData.housenumber = this.housenumber
       this.radio1 = null
       this.radio = null
+      this.rightConct = []
       this.dialogFormVisible = !this.dialogFormVisible
     },
     // 点击选择类别：
@@ -297,8 +644,7 @@ export default {
     },
     // 点击人脸录入
     handleFaceClick(row) {
-      alert('人脸录入')
-      console.log(row)
+      this.fcDialogFormVisible = true
     },
     // 点击变更
     handleExchangeClick(row) {
@@ -310,41 +656,88 @@ export default {
       alert('操作记录')
       console.log(row)
     },
+    // 数组去重
+    distinct(arr) {
+      return Array.from(new Set(arr))
+    },
     // 点击添加房屋遮罩层的确认添加
     submitHandler() {
-      if (this.contactData.length) {
-        // 循环验证
-        this.contactData.forEach((item, index) => {
-          if (index) {
-            // 如果为添加的项目，则为空时不提示，有内容且填错才提示
-            if (item === '') {
-              this.$refs[`contactData${index}`][0].style.color = ''
+      if (this.addData.name === '') {
+        this.$refs.userToast.style.color = 'red'
+        setTimeout(() => {
+          this.$refs.userToast.style.color = ''
+        }, 2000)
+      } else {
+        if (this.contactData.length) {
+          // 循环验证
+          this.contactData.forEach((item, index) => {
+            if (index) {
+              // 如果为添加的项目，则为空时不提示，有内容且填错才提示
+              if (item === '') {
+                this.$refs[`contactData${index}`][0].style.color = ''
+              } else {
+                if ((/^1[3456789]\d{9}$/.test(item))) {
+                  this.$refs[`contactData${index}`][0].style.color = ''
+                  this.rightConct.push(item)
+                } else {
+                  this.rightConct = []
+                  this.$refs[`contactData${index}`][0].style.color = 'red'
+                  console.log(this.$refs[`contactData${index}`][0])
+                  setTimeout(() => {
+                    this.$refs[`contactData${index}`][0].style.color = ''
+                  }, 2000)
+                }
+              }
             } else {
+              // 如果为第一项
               if ((/^1[3456789]\d{9}$/.test(item))) {
                 this.$refs[`contactData${index}`][0].style.color = ''
                 this.rightConct.push(item)
               } else {
                 this.$refs[`contactData${index}`][0].style.color = 'red'
-                console.log(this.$refs[`contactData${index}`][0])
+                // console.log(this.$refs[`contactData${index}`][0])
+                this.rightConct = []
                 setTimeout(() => {
                   this.$refs[`contactData${index}`][0].style.color = ''
                 }, 2000)
               }
             }
-          } else {
-            // 如果为第一项
-            if ((/^1[3456789]\d{9}$/.test(item))) {
-              this.$refs[`contactData${index}`][0].style.color = ''
-            } else {
-              this.$refs[`contactData${index}`][0].style.color = 'red'
-              console.log(this.$refs[`contactData${index}`][0])
-              setTimeout(() => {
-                this.$refs[`contactData${index}`][0].style.color = ''
-              }, 2000)
-            }
-          }
-        })
+          })
+        }
       }
+      const cc = this.distinct(this.rightConct)
+      const phone = cc.join(',')
+      const type = this.radio
+      const dang = this.radio1
+      const { Communityid, uname } = this.userInfoData
+      const Houseid = this.houseid
+      const { name, identity, Workunit, conet } = this.addData
+      console.log(phone, '55')
+      postHouseholdInsert({ Communityid, Houseid, uname, name, identity, Workunit, conet, dang, type, phone }).then(resp => {
+        console.log(resp, 'tianjia')
+        if (resp.code === 200) {
+          Message(resp.msg)
+          this.dialogFormVisible = false
+          const nume = Number(this.totalPage) / Number(10)
+          var shu = ''
+          if (Math.round(nume) === nume) {
+            // num是整数
+            shu = Number(nume) + Number(1)
+          } else {
+            shu = Math.ceil(nume)
+          }
+          const page = shu
+          postHouseholdSelect({ Communityid, Houseid, page }).then(resp => {
+            // console.log(resp, '191')
+            this.tableData = resp.msg.data
+            this.listNum = resp.msg.listRows
+            this.totalPage = resp.msg.total
+            this.pageNums = resp.msg.pageNum
+            // this.tableData = resp.msg.data
+            this.currentPage = Number(resp.msg.page)
+          })
+        }
+      })
     }
   }
 }
@@ -400,6 +793,9 @@ export default {
   z-index: 999;
   height: 60px;
   overflow: hidden;
+  position: absolute;
+  top: -16px;
+  left: 130px;
   .el-upload-list .el-upload-list--picture-card {
   }
   .el-icon-plus {
@@ -488,7 +884,7 @@ export default {
 }
 /deep/ .el-dialog__body {
   padding: 20px 0;
-  height: 400px;
+  height: 528px;
   overflow-x: hidden;
   .el-form {
     margin: 0 72px;
@@ -687,6 +1083,7 @@ export default {
 }
 .clearfix {
   width: 100%;
+  // height: 50px;
   padding: 0 30px 0 12px;
   .box-header-right {
     float: left;
@@ -735,6 +1132,173 @@ export default {
     cursor: pointer;
     top: 7px;
     right: -25px;
+  }
+}
+// 分页样式
+//分页器的样式
+//分页器的样式
+.block {
+  .record-data {
+    cursor: default;
+    display: inline-block;
+    height: 20px;
+    width: 1000px;
+    // background-color: green;
+    // float: right;
+    padding-left: 4.5vw;
+    margin-top: 15px;
+    position: absolute;
+    font-size: 0.8vw;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: rgba(51, 51, 51, 1);
+  }
+  position: absolute;
+  margin-right: 1.4vw;
+  // bottom: 100px;
+  top: 75vh;
+  // left: -2vw;
+  right: 2vw;
+  height: 40px;
+  width: 100%;
+  // padding-left: 90px;
+  .el-pagination {
+    // background-color: green;
+    position: absolute;
+    bottom: 0;
+    right: 3.3vw;
+    height: 2.8vh !important;
+    margin-right: -1.9vw !important;
+    /deep/button {
+      // background-color: #f00 !important;
+      min-width: 1.6vw !important;
+      height: 2.8vh;
+    }
+    /deep/.el-pagination__jump {
+      // background-color: #f00;
+      position: relative;
+      margin-left: 0px;
+      color: #fff;
+      font-size: 0px;
+      //input和ul是否居中
+      margin-top: 0px;
+      // &::before {
+      //   content: "前往";
+      //   color: #000;
+      // }
+      .el-input {
+        // border: 1px solid;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        height: 2.8vh;
+        min-width: 2.5vw;
+        color: rgba(102, 102, 102, 1);
+        outline: none;
+        /deep/.el-input__inner {
+          font-size: 10px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: rgba(102, 102, 102, 1);
+          display: inline-block;
+          // background-color: #f00 !important;
+          // border: 1px solid !important;
+          width: 44px;
+          height: 2.8vh !important;
+          border: 1px solid rgba(239, 242, 245, 1) !important;
+          border-radius: 2px;
+          // margin-left: 12px;
+          outline: none;
+        }
+        &::before {
+          content: "前往";
+          color: rgba(102, 102, 102, 1);
+          font-size: 0.8vw;
+          margin-left: 0.35vw;
+          margin-right: 0.95vw;
+          margin-top: 0.1vh !important;
+          text-align: center;
+        }
+        &:after {
+          content: "页";
+          padding-left: 0.5vw !important;
+          font-size: 0.8vw;
+        }
+      }
+    }
+    /deep/.el-pager li {
+      min-width: 1.6vw;
+      height: 2.8vh;
+      border-radius: 2px;
+      font-size: 10px;
+      font-family: Microsoft YaHei;
+      font-weight: 400;
+      color: rgba(102, 102, 102, 1);
+      line-height: 2.8vh;
+    }
+  }
+  /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background: #5fafe4;
+    color: rgba(255, 255, 255, 1);
+  }
+}
+.face-class {
+  // background-color: #f00;
+  /deep/.el-dialog {
+    top: 30% !important;
+    height: 255px !important;
+    width: 356px !important;
+    .el-dialog__body {
+      padding: 20px;
+      box-sizing: border-box;
+    }
+  }
+}
+/deep/.up-img {
+  //width: 60px;
+  z-index: 999;
+  height: 60px;
+  overflow: hidden;
+  .el-upload-list .el-upload-list--picture-card {
+  }
+  .el-icon-plus {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+  }
+  .el-upload--picture-card {
+    position: relative;
+    width: 60px !important;
+    height: 60px !important;
+  }
+  .el-upload-list--picture-card {
+    height: 60px !important;
+    width: 60px !important;
+    .el-upload-list__item {
+      width: 60px !important;
+      height: 60px !important;
+    }
+    .el-upload-list--picture-card .el-upload-list__item {
+      height: 60px !important;
+    }
+  }
+}
+.upimg-class {
+  display: flex;
+  position: relative;
+  height: 80px;
+}
+.load-class {
+  cursor: pointer;
+  color: #25bad9;
+  position: absolute;
+  font-size: 12px;
+  right: 20px;
+  top: -25px;
+}
+.excel-class {
+  /deep/.el-table__body-wrapper {
+    height: 100% !important;
+    overflow-x: hidden;
   }
 }
 </style>
