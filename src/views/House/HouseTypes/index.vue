@@ -49,7 +49,7 @@
       :append-to-body="true"
       :visible.sync="RecordialogFormVisible"
       custom-class="myRecordForm"
-    >
+      >
       <el-form :model="recordData">
         <el-form-item label="上次操作员:" :label-width="formLabelWidth">
           <el-input v-model="recordData.uname" :disabled="true" autocomplete="off" />
@@ -73,7 +73,7 @@
       :visible.sync="AdddialogVisible"
       :before-close="handleAddClose"
       
-      >
+        >
       <el-form ref="form" :model="addData" label-width="80px" >
         <el-form-item label="房屋类型:">
           <el-input v-model.trim="addData.typename" @input="addData.typeTip.isExist=false" />
@@ -97,7 +97,7 @@
       :append-to-body="true"
       :visible.sync="ModifydialogVisible"
       :before-close="handleAddClose1"
-    >
+      >
       <el-form ref="form" :model="modifyData" label-width="80px">
         <el-form-item label="房屋类型:">
           <el-input v-model.trim="modifyData.typename" @input="modifyData.typeTip.isExist=false" />
@@ -112,16 +112,15 @@
         <div class="addNow" style="cursor:pointer" @click="clickConfirmModify">确认修改</div>
       </el-form>
     </el-dialog>
-
+    <!-- 房屋列表 -->
     <div class="table-box">
-      <!-- 退款列表  -->
       <el-table
         empty-text="暂无数据"
         :data="tableData"
         row-class-name="myRow"
         cell-class-name="myCell"
         style="width: 100%; height:100%;"
-      >
+        >
         <el-table-column prop="typea" label="房屋类型" min-width="300" />
         <el-table-column prop="pacic" label="物业费单价(元)" min-width="300" />
         <el-table-column
@@ -374,12 +373,16 @@ export default {
             this.pageInfo.listRows = res.data.data.listRows
             this.pageInfo.pageNum = res.data.data.pageNum
             this.tableData = res.data.data.data
+            console.log(this.tableData)
             // if (res.data.data.data.length > 0) {
             //   res.data.data.data.forEach((item) => {
             //     this.existedType.push(item.typea) // 记录已有的房屋类型
             //   })
             // }
             console.log(this.existedType)
+          }
+          if(res.data.code === 10000){
+            this.$router.push('/')
           }
         })
     },
@@ -400,6 +403,9 @@ export default {
               token: this.token
             }
           }).then(res => {
+          if(res.data.code === 10000){
+            this.$router.push('/')
+          }
           if (res.data.code === 200) {
             this.isShowTip = false
             // this.pageInfo.page = this.pageInfo.pageNum
@@ -498,10 +504,11 @@ export default {
           // })
           this.modifyData.typeTip.isExist = true
         } else if (res.data.code === 10000) {
-          this.$message({
-            message: '请重新登录',
-            type: 'warning'
-          })
+          // this.$message({
+          //   message: '请重新登录',
+          //   type: 'warning'
+          // })
+          this.$router.push('/')
         } else if (res.data.code === 401) {
           this.$message({
             message: '您未修改任何内容或修改失败',
@@ -591,7 +598,22 @@ export default {
   }
   //操作记录表格样式
   /deep/.myRecordForm{
-    min-width: 500px;
+    width: 26.04%;
+    height: 35%;
+    top: 15vh !important;
+    border-radius: 4px !important;
+    .el-dialog__header{
+      padding: 14px 0 10px 20px;
+      border-bottom: 1px solid #eff2f5;
+      
+    }
+     .el-dialog__body{
+        padding: 24px 60px;
+      }
+    .el-form-item{
+      width: 100% !important;
+      height: 40px !important;
+    }
     .el-form-item__content{
       border: 1px solid #d2d2d2;
       border-radius: 4px;
@@ -602,6 +624,8 @@ export default {
     }
     .el-form-item__label{
       text-align: left;
+      font-size: 16px;
+      padding: 0 !important;
     }
     .btn-confirm-record{
       position: absolute;
@@ -611,10 +635,14 @@ export default {
       background-color: #F8AC59;
       min-width: 36px;
       text-align: center;
+      width: 72px;
+      height: 35px;
+      line-height: 24px;
       padding: 5px 8px;
       color: #FFFEFE;
       border-radius: 4px;
-      bottom: 10px;
+      font-size: 16px;
+      bottom: 24px;
       cursor: pointer;
     }
   }

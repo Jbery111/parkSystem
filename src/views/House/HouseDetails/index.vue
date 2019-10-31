@@ -12,7 +12,7 @@
 
         <span v-if="!isError" v-show="isShowExcel" class="add-btn" @click="backToLastPage">返回上一级</span>
         <span v-if="!isError" v-show="isShowExcel" class="add-btn1" @click="excelImport">确认导入</span>
-        <span v-if="isError" style="background:#F8AC59" v-show="isShowExcel" class="add-btn" @click="isError=false">确认</span>
+        <span v-if="isError" style="background:#F8AC59" v-show="isShowExcel" class="add-btn" @click="ok">确认</span>
         <span v-if="isError" style="position:absolute;left:100px;top:20px;color:#f44;">提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
         <el-upload
           v-show="!isShowExcel"
@@ -21,11 +21,12 @@
           :before-upload="beforeUpload"
           :limit="1"
         >
-          <el-button size="small" type="primary" class="add-btn1" @click="uploadFile">点击上传</el-button>
+          <el-button size="small" type="primary" class="add-btn1" @click="uploadFile">导入房屋</el-button>
         </el-upload>
 
-        <span class="search-btn" @click="handleSearch">搜索</span>
+        <span v-show="!isShowExcel" class="search-btn" @click="handleSearch">搜索</span>
         <el-input
+          v-show="!isShowExcel"
           v-model="searchData"
           class="sreach-box"
           clearable
@@ -48,14 +49,14 @@
         >
         <el-table-column prop="userHouseBuilding" label="楼栋" min-width="50" />
         <el-table-column prop="userHouseUnit" label="单元" min-width="50" />
-        <el-table-column prop="userHouseNumber" label="门牌号" min-width="50" />
-        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="80" />
+        <el-table-column prop="userHouseNumber" label="门牌号" min-width="80" />
+        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="120" />
         <el-table-column prop="typeName" label="房屋类型" min-width="80" />
-        <el-table-column prop="userHouseUnit" label="物业费单价(元)" min-width="90" />
-        <el-table-column prop="state" label="房屋状态" min-width="50" />
-        <el-table-column prop="checktime" label="交房时间" min-width="130" />
-        <el-table-column prop="wuye_price" label="物业费到期时间" min-width="130" />
-        <el-table-column prop="centn" label="房屋备注" min-width="120" />
+        <el-table-column prop="userHouseUnit" label="物业费单价(元)" min-width="120" />
+        <el-table-column prop="state" label="房屋状态" min-width="80" />
+        <el-table-column prop="checktime" label="交房时间" min-width="180" />
+        <el-table-column prop="wuye_price" label="物业费到期时间" min-width="180" />
+        <el-table-column prop="centn" class-name="note" label="房屋备注1"  min-width="120" />
         <el-table-column
           label="操作"
           fixed="right"
@@ -95,6 +96,7 @@
     <div v-if='isShowExcel' class="table-box">
       <!-- 展示Excel -->
       <el-table
+        class="rollTable"
         v-if="isShowExcel"
         empty-text="正在解析..."
         :data="excelData"
@@ -110,7 +112,7 @@
         <el-table-column :prop="prop[4]" label="房屋类型" min-width="100" />
         <el-table-column :prop="prop[5]" label="交房时间" min-width="100" />
         <el-table-column :prop="prop[6]" label="物业费到期时间" min-width="100" />
-
+        <el-table-column v-if="prop.length===8" :prop="prop[7]" label="原因" min-width="100" />
       </el-table>
     </div>
     <!-- 分页 -->
@@ -339,66 +341,9 @@
             onblur="clearInterval(this.clock);"
           />
         </div>
-
         <div class="addNow" style="cursor:pointer" @click="clickConfirmModify1">确认修改</div>
       </el-form>
     </el-dialog>
-
-    <!-- 搜索结果 -->
-    <!-- <div class="table-box"> -->
-    <!-- 房屋列表  -->
-    <!-- <el-table
-        v-show="!isMainBox"
-        empty-text="暂无数据"
-        :data="tableData1"
-        row-class-name="myRow"
-        cell-class-name="myCell"
-        style="width: 100%; height:100%;"
-        >
-        <el-table-column prop="userHouseBuilding" label="楼栋" min-width="50" />
-        <el-table-column prop="userHouseUnit" label="单元" min-width="50" />
-        <el-table-column prop="userHouseNumber" label="门牌号" min-width="50" />
-        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="80" />
-        <el-table-column prop="typeName" label="房屋类型" min-width="80" />
-        <el-table-column prop="userHouseUnit" label="物业费单价(元)" min-width="90" />
-        <el-table-column prop="state" label="房屋状态" min-width="50" />
-        <el-table-column prop="checktime" label="交房时间" min-width="130" />
-        <el-table-column prop="wuye_price" label="物业费到期时间" min-width="130" />
-        <el-table-column prop="centn" label="房屋备注" min-width="120" />
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="300"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="small"
-              class="operateBtn btn-modify"
-              @click="handleModifyClick(scope.row)"
-            >修改</el-button>
-            <el-button
-              type="text"
-              size="small"
-              class="operateBtn btn-modify"
-              @click="handleUserInfoClick(scope.row)"
-            >住户信息</el-button>
-            <el-button
-              type="text"
-              size="small"
-              class="operateBtn btn-modify"
-              @click="handleCarInfoClick(scope.row)"
-            >车位信息</el-button>
-            <el-button
-              type="text"
-              size="small"
-              class="operateBtn btn-record"
-              @click="handleRecordClick(scope.row)"
-            >操作记录</el-button>
-          </template>
-        </el-table-column>
-      </el-table> -->
-    <!-- </div> -->
   </div>
     <resident-info
       v-else
@@ -423,7 +368,7 @@ export default {
       housenumber: '',
       houseid: null,
       houseDetailShow: true,
-
+      prop: [],
       isShowTip: false,
       isError: false,
       dr_nameId: '', // 点击确认导入传给后台
@@ -444,8 +389,8 @@ export default {
         pageNum: 1, // 总页数
         render: ''
       },
-      pt: '',
-      pn: '',
+      // pt: '',
+      // pn: '',
       // 操作记录
       formLabelWidth: '120px', // 记录表格宽度
       RecordialogFormVisible: false,
@@ -555,6 +500,10 @@ export default {
     this.getHouseList()
   },
   methods: {
+    ok() {
+      this.isShowExcel = false
+      this.isError = false
+    },
     isShowHouse1() {
       this.houseDetailShow = true
     },
@@ -583,72 +532,66 @@ export default {
 
     // Excel导入数据库
     excelImport() {
-      const { uname, Communityid, token } = this.userInfo
-      const  dr_nameId = this.dr_nameId
-      console.log(dr_nameId,'idididid')
-      axios.post('http://test.txsqtech.com/index/House/excelImport',
-        {
-          uname, Communityid, dr_nameId
-        },
-        {
-          headers: {
-            token
-          }
-        }).then(res => {
-          if(res.data.code === 200){
-            if(res.data.data.length > 0){
-              // 提示导入数据失败
-              this.isError = true
-            }
-            console.log(res.data.data, '回来的excel')
-            this.prop = ['userHouseBuilding','userHouseUnit','userHouseNumber','Housingarea','cid','checktime','wuye_price']
-            this.excelData = res.data.data
-          }
-      })
+      this.$confirm('确认导入以下房屋?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const { uname, Communityid, token } = this.userInfo
+          const  dr_nameId = this.dr_nameId
+          console.log(dr_nameId,'idididid')
+          axios.post('http://test.txsqtech.com/index/House/excelImport',
+            {
+              uname, Communityid, dr_nameId
+            },
+            {
+              headers: {
+                token
+              }
+            }).then(res => {
+              if(res.data.code === 200){
+                if(res.data.data.length > 0){
+                  // 提示导入数据失败
+                  this.isError = true
+                }
+                if(res.data.data.length === 0){
+                  this.$message({
+                    message: '导入成功',
+                    type: 'success'
+                  })
+                  this.isShowExcel = false
+                  this.getHouseList()
+                }
+                console.log(res.data.data, '回来的excel')
+                this.prop = ['userHouseBuilding','userHouseUnit','userHouseNumber','Housingarea','cid','checktime','wuye_price','Reason']
+                this.excelData = res.data.data
+              }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消导入'
+          });          
+        })
+      
     },
     uploadFile() {
       // this.isShowExcel = true
     },
+    //返回上一页
     backToLastPage() {
+      this.searchData = ''
       this.isMainBox = true
       this.isShowExcel = false
       // this.pageInfo.total = this.pt
       // this.pageInfo.pageNum = this.pn
       this.getHouseList()
     },
-    // downLoadXls(data, filename) {
-    //   console.log(data)
-    //   var blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' }) // 接收的是blob，若接收的是文件流，需要转化一下
-    //   if (typeof window.chrome !== 'undefined') {
-    //     // Chrome version
-    //     var link = document.createElement('a')
-    //     link.href = URL.createObjectURL(blob)
-    //     // link.href = URL.createObjectURL(data)
-    //     link.download = filename
-    //     link.click()
-    //   } else if (typeof window.navigator.msSaveBlob !== 'undefined') {
-    //     // IE version
-    //     var blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
-    //     window.navigator.msSaveBlob(blob, filename)
-    //   } else {
-    //     // Firefox version
-    //     var file = new File([data], filename, { type: 'application/vnd.ms-excel;charset=utf-8' })
-    //     window.open(URL.createObjectURL(file))
-    //   }
-    // },
-    // clickDownLoad() {
-    //   const { token } = this.userInfo
-    //   axios.post('http://test.txsqtech.com/index/House/downloadFile',
-    //     {},
-    //     {
-    //       headers: {
-    //         token
-    //       }
-    //     }).then(res => {
-    //     console.log(res)
-    //     this.downLoadXls(res.data, '房屋模板')
-    //   })
-    // },
+    //返回上一级
+    backToLastPage1() {
+      
+    },
+    //下载模板
     clickDownLoad () {
         const { token } = this.userInfo
         let url = 'http://test.txsqtech.com/index/House/downloadFile'
@@ -664,7 +607,7 @@ export default {
             let aLink = document.createElement("a");
             aLink.style.display = "none";
             aLink.href = url;
-            aLink.setAttribute("download", "excel.xls");
+            aLink.setAttribute("download", "房屋模板.xls");
             document.body.appendChild(aLink);
             aLink.click();
             document.body.removeChild(aLink); 
@@ -709,7 +652,7 @@ export default {
       alert('车位信息')
     },
     handleRecordClick(v) {
-      // console.log(v)
+      console.log(v)
       // var d = new Date(v.time * 1000) // 创建一个指定的日期对象
       this.RecordialogFormVisible = true
       this.recordData.ip = v.ip // ip
@@ -851,10 +794,14 @@ export default {
           })
         } else if (res.data.code === 300) { // 房屋已存在
           this.e = true
+          this.$message({
+            type: 'warning',
+            message: '该房屋已存在'
+          })
         } else if (res.data.code === 406) {
           this.e = false
           this.$message({
-            message: '添加失败了',
+            message: '添加失败',
             type: 'error'
           })
         }
@@ -968,13 +915,13 @@ export default {
         if (res.data.code === 200) {
           this.isMainBox = false
           this.tableData = res.data.msg.data
-          this.pt = this.pageInfo.total // 总条数
+          // this.pt = this.pageInfo.total // 总条数
           this.pageInfo.total = res.data.msg.total
-          this.pn = this.pageInfo.pageNum // 总页数
+          // this.pn = this.pageInfo.pageNum // 总页数
           this.pageInfo.pageNum = res.data.msg.pageNum
         }
         if (res.data.code === 10000) {
-          alert('token过期 跳转登录')
+          // alert('token过期 跳转登录')
           this.$router.push('/')
         } else if (res.data.code === 401) {
           this.$message({
@@ -1020,7 +967,8 @@ export default {
             // console.log(res.data.msg)
             this.tableData = res.data.msg.data
           } else if (res.data.code === 10000) {
-            alert('token过期,即将跳转登录页面')
+            // alert('token过期,即将跳转登录页面')
+            this.$router.push('/')
           }
         })
     },
@@ -1118,6 +1066,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  /deep/.rollTable{
+    overflow-y: auto;
+  }
   /deep/.btn-modify{
     background: #25bad9;
   }
@@ -1202,6 +1153,9 @@ export default {
   //操作记录表格样式
   /deep/.myRecordForm{
     min-width: 500px;
+    .el-input__inner{
+      cursor: default !important;
+    }
     .el-form-item__label{
       text-align: left;
     }
@@ -1244,7 +1198,23 @@ export default {
         padding: 0;
       }
       /deep/.myCell {
-        border-collapse: collapse;
+        border-collapse: collapse;  
+        }
+      /deep/.note{
+        position: relative;
+        .cell{
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        // .cell:hover{
+        //     background: #fff;
+            
+        //     white-space: normal;
+        //     overflow: auto;
+        // }
+
+        
       }
     }
     .page-box{
