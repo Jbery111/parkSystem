@@ -373,13 +373,13 @@ export default {
             this.pageInfo.listRows = res.data.data.listRows
             this.pageInfo.pageNum = res.data.data.pageNum
             this.tableData = res.data.data.data
-            console.log(this.tableData)
+            //console.log(this.tableData)
             // if (res.data.data.data.length > 0) {
             //   res.data.data.data.forEach((item) => {
             //     this.existedType.push(item.typea) // 记录已有的房屋类型
             //   })
             // }
-            console.log(this.existedType)
+            //console.log(this.existedType)
           }
           if(res.data.code === 10000){
             this.$router.push('/')

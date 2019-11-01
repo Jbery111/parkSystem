@@ -52,16 +52,16 @@
         <el-table-column prop="userHouseNumber" label="门牌号" min-width="80" />
         <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="120" />
         <el-table-column prop="typeName" label="房屋类型" min-width="80" />
-        <el-table-column prop="userHouseUnit" label="物业费单价(元)" min-width="120" />
+        <el-table-column prop="Price" label="物业费单价(元)" min-width="120" />
         <el-table-column prop="state" label="房屋状态" min-width="80" />
-        <el-table-column prop="checktime" label="交房时间" min-width="180" />
-        <el-table-column prop="wuye_price" label="物业费到期时间" min-width="180" />
-        <el-table-column prop="centn" class-name="note" label="房屋备注1"  min-width="120" />
+        <el-table-column prop="checktime" label="交房时间" min-width="100" />
+        <el-table-column prop="wuye_price" label="物业费到期时间" min-width="120" />
+        <el-table-column prop="centn" class-name="note" label="房屋备注"  min-width="120" />
         <el-table-column
           label="操作"
           fixed="right"
           min-width="300"
-        >
+          >
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -296,7 +296,7 @@
                 :label="item.typeName"
                 :value="item.oid"
               />
-            </el-select>
+            </el-select>{{modifyData.cid}}
           </div>
           <div class="row">
             <span>楼栋:</span>
@@ -476,6 +476,7 @@ export default {
     dUrl() {
       return `http://test.txsqtech.com/index/House/downloadFile?token=${this.userInfo.token}`
     }
+
   },
   watch: {
     'addData.Housingarea': {
@@ -498,6 +499,7 @@ export default {
     this.userInfo.token = JSON.parse(localStorage.getItem('userInfo')).token
     this.getHouseType()
     this.getHouseList()
+    
   },
   methods: {
     ok() {
@@ -633,15 +635,15 @@ export default {
       return JSON.parse(localStorage.getItem('userInfo')).data
     },
     // 格式化时间
-    formatDate(now) {
-      var year = now.getFullYear()
-      var month = now.getMonth() + 1
-      var date = now.getDate()
-      var hour = now.getHours()
-      var minute = now.getMinutes()
-      var second = now.getSeconds()
-      return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
-    },
+  //   formatDate(now) {
+  //     var year = now.getFullYear()
+  //     var month = now.getMonth() + 1
+  //     var date = now.getDate()
+  //     var hour = now.getHours()
+  //     var minute = now.getMinutes()
+  //     var second = now.getSeconds()
+  //     return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
+  //   },
     handleUserInfoClick(v) {
       console.log(v, '639')
       this.houseid = v.userHouseId
@@ -697,7 +699,8 @@ export default {
     clickConfirmModify() {
       // this.modifyData.checktime = this.originData.checktime
       this.modifyData.centn = this.originData.centn
-      const { uname, userHouseId } = this.originData
+      const { userHouseId } = this.originData
+      const { uname } = this.userInfo
 
       const { centn, checktime, Communityid,
         Housingarea, Price, userHouseBuilding,
@@ -724,7 +727,8 @@ export default {
       // const { cid } = this.houseTypeList.oid
       console.log(this.houseTypeList)
       const { userHouseId } = this.originData
-      const { cid,
+      const {
+        cid,
         centn, checktime,
         Housingarea, Price, userHouseBuilding,
         userHouseUnit, userHouseNumber, centns } = this.modifyData
@@ -804,7 +808,10 @@ export default {
             message: '添加失败',
             type: 'error'
           })
-        }
+        } else if (res.data.code === 10000) {
+            this.e = false
+            this.$router.push('/')
+          }
         console.log(res)
       })
     },
@@ -824,12 +831,18 @@ export default {
         }).then(res => {
         console.log(res)
         if (res.data.code === 200) {
+          console.log(res.data.msg.data)
+          res.data.msg.data.forEach((item) => {
+              item.checktime = item.checktime.slice(0,-9)
+              item.wuye_price = item.wuye_price.slice(0,-9)
+            })
           this.tableData = res.data.msg.data
           this.pageInfo.pageNum = res.data.msg.pageNum
           this.pageInfo.total = res.data.msg.total
         }
       })
     },
+
     handleAddClose() {
       this.AdddialogVisible = false
       this.n1 = false
@@ -914,6 +927,10 @@ export default {
         }).then(res => {
         if (res.data.code === 200) {
           this.isMainBox = false
+          res.data.msg.data.forEach((item) => {
+              item.checktime = item.checktime.slice(0,-9)
+              item.wuye_price = item.wuye_price.slice(0,-9)
+            })
           this.tableData = res.data.msg.data
           // this.pt = this.pageInfo.total // 总条数
           this.pageInfo.total = res.data.msg.total
@@ -932,6 +949,7 @@ export default {
         console.log(res)
       })
     },
+    
     // 页码相关事件
     handleSizeChange() {
       console.log(11)
@@ -944,10 +962,10 @@ export default {
         this.pageInfo.page = val
         this.sendSearchRequest()
       }
-      console.log(val)
+      //console.log(val)
     },
     nextClickHandler(val) {
-      console.log(val, '354')
+      //console.log(val, '354')
     },
     // 请求列表
     getHouseList() {
@@ -965,6 +983,11 @@ export default {
             // this.pageInfo.page = this.pageInfo.pageNum
             this.pageInfo.pageNum = res.data.msg.pageNum
             // console.log(res.data.msg)
+            // console.log(res.data.msg.data)
+            res.data.msg.data.forEach((item) => {
+              item.checktime = item.checktime.slice(0,-9)
+              item.wuye_price = item.wuye_price.slice(0,-9)
+            })
             this.tableData = res.data.msg.data
           } else if (res.data.code === 10000) {
             // alert('token过期,即将跳转登录页面')
@@ -972,9 +995,9 @@ export default {
           }
         })
     },
-    // 添加请求
 
-    // 修改请求
+    /* 修改请求 */
+    //修改备注
     sendModifyRequest(uname, userHouseId, centn) {
       // console.log('修改的请求数据', this.modifyData)
       // const { oid, typename, money } = this.modifyData
@@ -995,6 +1018,11 @@ export default {
             message: '修改成功',
             type: 'success'
           })
+        } else if (res.data.code === 401) {
+          this.$message({
+            message: res.data.msg,
+            type: 'warning'
+          })
         } else {
           this.$message({
             message: '修改失败',
@@ -1003,6 +1031,7 @@ export default {
         }
       })
     },
+    //修改交房时间和备注
     sendModifyRequest1(uname, userHouseId, centn, checktime) {
       // console.log('修改的请求数据', this.modifyData)
       // const { oid, typename, money } = this.modifyData
@@ -1031,6 +1060,7 @@ export default {
         }
       })
     },
+    //修改详情
     sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid) {
       // console.log('修改的请求数据', this.modifyData)
       // const { oid, typename, money } = this.modifyData
@@ -1051,7 +1081,7 @@ export default {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
           this.$message({
-            message: '修改成功',
+            message: res.data.msg,
             type: 'success'
           })
         } else {
@@ -1062,7 +1092,17 @@ export default {
         }
       })
     }
-  }
+  },
+  // filters: {
+  //   dateFormat(time){
+  //     console.log(time)
+  //     let arr=[]
+  //     for(let i=0,len=time.length; i<len; i++){
+  //       arr.push[time[i]+'a']
+  //     }
+  //     return arr
+  //   }
+  // }
 }
 </script>
 <style lang="scss" scoped>
