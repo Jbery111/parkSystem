@@ -39,3 +39,13 @@ export function postExcelImport(data) {
     data
   })
 }
+// 上传人脸
+
+export function postFace(data) {
+  console.log(data, '上传人脸参数')
+  return request({
+    url: 'http://test.txsqtech.com/index/Household/Face',
+    method: 'post',
+    data
+  })
+}
