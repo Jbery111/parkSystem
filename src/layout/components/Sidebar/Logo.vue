@@ -44,8 +44,8 @@ export default {
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 6.1vh;
-  line-height: 6.1vh;
+  height: 45px;
+  line-height: 45px;
   background: #ffffff;
   text-align: center;
   overflow: hidden;
@@ -57,7 +57,7 @@ export default {
     cursor: default;
 
     & .sidebar-logo {
-      width: 2vw;
+      width: 35px;
       vertical-align: middle;
       margin-right: 0.3vw;
     }

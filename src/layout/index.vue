@@ -306,7 +306,7 @@ export default {
   position: fixed;
   height: 100%;
   width: 100%;
-  margin-left: 0.5vw;
+  margin-left: 16px;
   box-sizing: border-box;
   // z-index: 100000;
   &.mobile.openSidebar {
@@ -338,10 +338,15 @@ export default {
   width: calc(100% - 54px);
   width: 100%;
 }
-.hideSidebar .fix-appmain {
-  width: calc(100% - 54px);
-  width: 100%;
-  padding-right: 76px;
+// .hideSidebar .fix-appmain {
+//   width: calc(100% - 54px);
+//   width: 90%;
+//   padding-right: 76px;
+// }
+.hideSidebar .app-main{
+  // width: 95.5%;
+  height: 93.5%;
+  margin-right: 86px;
 }
 .mobile .fixed-header {
   width: 100%;

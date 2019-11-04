@@ -135,14 +135,15 @@ export default {
   /*50 = navbar  */
   position: relative;
   min-height: 675px;
-  width: 90.5%;
+  // width: 92%;
+  margin-right: 152px;
   height: 92%;
-  margin: 0 0.3vw;
+  // margin: 0 0.3vw;
   overflow: hidden;
   background-color: #fff;
   .zhanwei {
     width: 100%;
-    height: 2.1vh;
+    height: 20px;
     background-color: #f3f3f3;
   }
   ul {
@@ -162,16 +163,17 @@ export default {
       //   display: block;
       // }
       li {
-        width: 5.4vw;
-        height: 100%;
-        line-height: 3.9vh;
+        // width: 5.4vw;
+        // height: 100%;
+        // line-height: 3.9vh;
         // margin-top: 2.1vh;
+        padding: 6px 13px;
         text-align: center;
         background: rgba(255, 255, 255, 1);
         border: 1px solid rgba(239, 242, 245, 1);
         border-radius: 4px 4px 0 0;
-        border-bottom: none;
-        font-size: 0.85vw;
+        border-bottom: 1px solid #fff;
+        font-size: 14px;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: rgba(102, 102, 102, 1);
@@ -238,10 +240,6 @@ export default {
   }
 }
 
-.hideSidebar .app-main {
-  width: 100%;
-  height: 92%;
-}
 .fixed-header + .app-main {
   padding-top: 50px;
 }

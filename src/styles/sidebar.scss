@@ -7,15 +7,14 @@
     }
     .main-container {
       transition: margin-left .28s;
-      margin-left: $sideBarWidth;
+      margin-left: 120px;
       position: relative;
       min-height: 534px !important;
     }
   
     .sidebar-container {
       transition: width 0.28s;
-      width: $sideBarWidth !important;
-      min-width:20 !important;
+      width: 120px !important;
       background-color: $menuBg;
       height: 100%;
       max-height: 1000px !important;
@@ -57,53 +56,42 @@
         display: inline-block;
         width: 100%;
         overflow: hidden;
-        height: 8.3vh;
+        // height: 8.3vh;
         min-height: 45px !important;
-        // max-height: 50px !important;
         .sidebar-title{
           font-family:Microsoft YaHei;
           font-weight:400;
           color:rgba(0,0,0,1);
-          font-size: 1vw !important;
+          font-size: 16px !important;
         }
         &.router-link-exact-active,
         &.router-link-active {
-          // background-color: red !important;
-          // background-color: #f00 !important;
           z-index: 2019;
         }
         .el-menu-item {
-          // background-color: #fff !important;
           display: flex;
           flex-direction: column;
           align-items: center;
-          font-size: 0.85vw;
           line-height: 20px;
           justify-content: center;
           font-family:Microsoft YaHei;
           font-weight:400;
           color:rgba(102,102,102,1);
-          height: 8.3vh;
-          min-height: 45px !important;
-          // background-color: blue !important;
+          height: 70px;
         }
         .is-active {
           background-color: rgba(95,175,228,1) !important;
         }
-        // li {
-        //   background-color: rgba(95,175,228,1) !important;
-        // }
       }
       
-      // router-link-exact-active router-link-active
       .svg-icon {
         margin-right: 0px;
-        font-size: 1.3vw;
+        font-size: 22px;
       }
       span {
-        // background-color: #fff;
-        margin-top: 0.9vh;
-        height: 20px;
+        margin-top: 8px;
+        height: 16px;
+        font-size: 14px;;
       }
       .el-menu {
         border: none;
@@ -168,7 +156,7 @@
           // justify-content: center;
           .svg-icon {
             width: 100%;
-            margin-top: 2.6vh;
+            margin-top: 24px;
           }
         }
       }
@@ -208,25 +196,7 @@
       min-width: $sideBarWidth !important;
     }
   
-    // mobile responsive
-    // .mobile {
-    //   .main-container {
-    //     margin-left: 0px;
-    //   }
-  
-    //   .sidebar-container {
-    //     transition: transform .28s;
-    //     width: $sideBarWidth !important;
-    //   }
-  
-    //   &.hideSidebar {
-    //     .sidebar-container {
-    //       pointer-events: none;
-    //       transition-duration: 0.3s;
-    //       transform: translate3d(-$sideBarWidth, 0, 0);
-    //     }
-    //   }
-    // }
+    
   
     .withoutAnimation {
   

@@ -53,7 +53,22 @@
         <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="120" />
         <el-table-column prop="typeName" label="房屋类型" min-width="80" />
         <el-table-column prop="Price" label="物业费单价(元)" min-width="120" />
-        <el-table-column prop="state" label="房屋状态" min-width="80" />
+        <el-table-column 
+          label="房屋状态" 
+          min-width="90" 
+          >
+          <template slot-scope="scope1">
+            <p>
+              {{scope1.row.state}}
+            </p>
+            <p
+            :class="scope1.row.zx_tapy==='装修未办理'?'red':''"
+              style="font-size:12px;">
+              ({{ scope1.row.zx_tapy}})
+            </p>
+            
+          </template>
+        </el-table-column>
         <el-table-column prop="checktime" label="交房时间" min-width="100" />
         <el-table-column prop="wuye_price" label="物业费到期时间" min-width="120" />
         <el-table-column prop="centn" class-name="note" label="房屋备注"  min-width="120" />
@@ -90,8 +105,6 @@
           </template>
         </el-table-column>
       </el-table>
-
-      
     </div>
     <div v-if='isShowExcel' class="table-box">
       <!-- 展示Excel -->
@@ -233,13 +246,13 @@
     <!-- 修改表格 -->
     <el-dialog
       title="修改"
-      custom-class="myAddForm"
+      custom-class="myForm"
       class="position:fixed;top:10px;"
       :append-to-body="true"
       :visible.sync="ModifydialogVisible"
       :before-close="handleAddClose1"
       :close-on-click-modal="false"
-    >
+      >
       <p style="position:absolute;right:20px;top:50px;cursor:pointer;color:#999999" @click="detailFormVisible=true;ModifydialogVisible=false">申请修改详情</p>
       <el-form ref="form1" :model="modifyData" label-width="80px">
         <el-form-item v-if="isShowHouseTime" label="交房时间:">
@@ -259,7 +272,7 @@
             v-model="originData.centn"
             rows="1"
             cols="40"
-            style="position:absolute;left:80px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+            style="width:250px;border:1px solod #d2d2d2;border-radius:4px;min-height:30px;outline:none;position:absolute;left:80px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
             onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
             onblur="clearInterval(this.clock);"
           />
@@ -278,17 +291,17 @@
       :visible.sync="detailFormVisible"
       :close-on-click-modal="false"
       :before-close="handleAddClose2"
-    >
+      >
 
-      <el-checkbox v-model="isDeleteHouse">申请删除房屋</el-checkbox>
+      <el-checkbox class="de" v-model="isDeleteHouse">申请删除房屋</el-checkbox>
 
       <el-form ref="form2" :model="modifyData" label-width="380px">
 
         <div v-show="!isDeleteHouse">
           <div class="row">
-            <span>房屋类型:</span>
-            <span>{{ originData.typeName }}</span>
-            <span>修改为:</span>
+            <span class="t1">房屋类型:</span>
+            <span class="t2">{{ originData.typeName }}</span>
+            <span class="t3">修改为:</span>
             <el-select v-model="modifyData.cid" filterable placeholder="请选择">
               <el-option
                 v-for="item in houseTypeList"
@@ -299,44 +312,44 @@
             </el-select>{{modifyData.cid}}
           </div>
           <div class="row">
-            <span>楼栋:</span>
-            <span>{{ originData.userHouseBuilding }}</span>
-            <span>修改为:</span>
-            <input v-model="modifyData.userHouseBuilding" type="text">
+            <span class="t1">楼栋:</span>
+            <span class="t2">{{ originData.userHouseBuilding }}</span>
+            <span class="t3">修改为:</span>
+            <input class="t4" v-model="modifyData.userHouseBuilding" type="text">
           </div>
           <div class="row">
-            <span>单元:</span>
-            <span>{{ originData.userHouseUnit }}</span>
-            <span>修改为:</span>
-            <input v-model="modifyData.userHouseUnit" type="text">
+            <span class="t1">单元:</span>
+            <span class="t2">{{ originData.userHouseUnit }}</span>
+            <span class="t3">修改为:</span>
+            <input class="t4" v-model="modifyData.userHouseUnit" type="text">
           </div>
           <div class="row">
-            <span>门牌号:</span>
-            <span>{{ originData.userHouseNumber }}</span>
-            <span>修改为:</span>
-            <input v-model="modifyData.userHouseNumber" type="text">
+            <span class="t1">门牌号:</span>
+            <span class="t2">{{ originData.userHouseNumber }}</span>
+            <span class="t3">修改为:</span>
+            <input class="t4" v-model="modifyData.userHouseNumber" type="text">
           </div>
           <div class="row">
-            <span>房屋面积:</span>
-            <span>{{ originData.Housingarea }}</span>
-            <span>修改为:</span>
-            <input v-model="modifyData.Housingarea" type="text">
+            <span class="t1">房屋面积:</span>
+            <span class="t2">{{ originData.Housingarea }}</span>
+            <span class="t3">修改为:</span>
+            <input class="t4" v-model="modifyData.Housingarea" type="text">
           </div>
           <div class="row">
-            <span>物业费单价:</span>
-            <span>{{ originData.Price }}</span>
-            <span>修改为:</span>
-            <input v-model="modifyData.Price" type="text">
+            <span class="t1">物业费单价:</span>
+            <span class="t2">{{ originData.Price }}</span>
+            <span class="t3">修改为:</span>
+            <input class="t4" v-model="modifyData.Price" type="text">
           </div>
         </div>
 
         <div class="row" style="position:relative; height:100px;">
-          <span style="position:absolute;left:0">*申请理由:</span>
+          <span  class="t1">*申请理由:</span>
           <textarea
             v-model="modifyData.centns"
             rows="1"
             cols="40"
-            style="position:absolute;left:85px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+            style="border:1px solid #d2d2d2;outline:none;position:absolute;left:85px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
             onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
             onblur="clearInterval(this.clock);"
           />
@@ -1080,13 +1093,14 @@ export default {
         if (res.data.code === 200) {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
+          this.detailFormVisible = false
           this.$message({
             message: res.data.msg,
             type: 'success'
           })
         } else {
           this.$message({
-            message: '修改失败',
+            message: res.data.msg,
             type: 'error'
           })
         }
@@ -1106,6 +1120,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.red{
+  color: red;
+}
   /deep/.rollTable{
     overflow-y: auto;
   }
@@ -1124,6 +1141,7 @@ export default {
   }
   //添加表单样式
   /deep/ .myAddForm{
+    width: 520px !important;
     .el-input__inner{
       width: 96%;
       margin-left: 2px;
@@ -1144,7 +1162,56 @@ export default {
       }
     }
     .el-dialog__body{
-        padding: 30px 60px !important;
+      position: relative;
+        padding: 40px 60px 30px !important;
+        .de{
+          position: absolute;
+          left: 30px;
+          top: 10px;
+          padding-bottom: 10px;
+        }
+        .el-form{
+          .row{
+            padding-bottom: 18px;
+            span{
+              display: inline-block;
+            }
+            .t1{
+              
+              width: 100px;
+            }
+            .t2{
+              width: 80px;
+            }
+            .t3{
+              padding-right: 15px;
+            }
+            .t4{
+              width: 150px;
+              border: 1px solid #d2d2d2;
+              height: 23px;
+              padding-left: 5px;
+              padding-right: 5px;
+              outline: none;
+              border-radius: 4px;
+            }
+            /deep/.el-select{
+              width: 150px;
+              padding-left: 5px;
+              border: 1px solid #d2d2d2;
+              border-radius: 4px;
+              .el-input__inner{
+                  padding-left: 0;
+                }
+              .el-input__suffix-inner{
+                height: 100%;
+                .el-input__icon{
+                  line-height: 1;
+                }
+              }
+            }
+          }
+        }
       }
     .addNow{
       height: 30px;
@@ -1189,6 +1256,66 @@ export default {
         }
       }
     }
+  }
+  /deep/.myForm{
+    margin-top: 0 !important;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    left: 50%;
+    width: 400px;
+    padding-bottom: 30px;
+    .el-dialog__body{
+      padding-top: 40px;
+    }
+    .el-dialog__header{ //header
+      position: relative;
+      height: 40px;
+      border-bottom: 1px solid #dfdfdf;
+      .el-dialog__title{
+        position: absolute;
+        top:0;
+        height: 40px;
+        line-height: 40px;
+        color: #333333;
+      }
+      .el-dialog__headerbtn {
+        top: 12px;
+      }
+      
+    }
+    .el-form-item__label{
+        height: 30px;
+        line-height: 30px;
+        text-align: left !important;
+      }
+      .el-form-item{
+        height: 40px !important;
+        margin-bottom: 15px;
+        .el-form-item__content{
+          border-radius: 4px;
+          height: 30px;
+          line-height: 30px;
+          border: 1px solid #d2d2d2;
+          width: 250px;
+          .el-input__icon{
+            line-height: 30px;
+          }
+        }
+      }
+      .addNow{
+      height: 30px;
+      padding: 0 8px;
+      position: absolute;
+      background-color: #F8AC59;
+      line-height: 30px;
+      color: #FFFEFE;
+      border-radius: 4px;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
   }
   //操作记录表格样式
   /deep/.myRecordForm{

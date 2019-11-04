@@ -3,18 +3,18 @@
     <!--   -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <el-table :data="tableData" style="width: 100%" empty-text="没有数据">
-          <el-table-column prop="uname" label="姓名" min-width="65" />
-          <el-table-column prop="ucphone" label="旧账号" min-width="65" />
-          <el-table-column prop="username" label="新账号" min-width="65" />
+        <el-table :data="tableData" style="width: 100%; min-width:1000px;" empty-text="没有数据">
+          <el-table-column prop="uname" label="姓名" min-width="150" />
+          <el-table-column prop="ucphone" label="旧账号" min-width="150" />
+          <el-table-column prop="username" label="新账号" min-width="150" />
           <!-- 当前状态 -->
-          <el-table-column label="当前状态" min-width="65">
+          <el-table-column label="当前状态" min-width="150">
             <template slot-scope="scope">
               <p>{{ tableData[scope.$index].type }}</p>
             </template>
           </el-table-column>
           <!-- 操作 -->
-          <el-table-column label="操作">
+          <el-table-column label="操作" min-width="150">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleTongyi(scope.$index, scope.row)">同意</el-button>
               <el-button
@@ -281,7 +281,7 @@ export default {
   }
 }
 .box-card {
-  min-height: 550px;
+  min-height: 775px;
   position: relative;
   width: 100%;
   box-shadow: none;
@@ -294,7 +294,7 @@ export default {
       background-color: #eff2f5;
     }
     .el-table td {
-      padding: 8px 12px 8px 0px;
+      padding: 15px 0 !important;
     }
     .el-table th {
       // padding: 14px 55px !important;
@@ -304,27 +304,25 @@ export default {
       color: rgba(144, 147, 153, 1);
     }
     .el-table .cell {
-      // background-color: #f00;
       padding: 0px 0px 0px 65px;
-      height: 3.7vh !important;
-      line-height: 3.7vh;
+      height: 30px !important;
+      line-height: 30px;
       margin: 0px;
-      font-size: 0.75vw;
+      font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
-      color: rgba(96, 98, 102, 1);
       .el-button--mini {
-        width: 2.82vw;
-        height: 3.4vh;
+        width: 52px;
+        height: 30px;
         background: rgba(37, 186, 217, 1);
-        border-radius: 3px;
-        font-size: 0.75vw;
+        border-radius: 4px;
+        font-size: 14px;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: rgba(255, 255, 255, 1);
         border: none;
         padding: 0px;
-        line-height: 3.4vh;
+        line-height: 30px;
         span {
           display: inline-block;
           width: 100%;
@@ -364,38 +362,27 @@ export default {
   .record-data {
     cursor: default;
     display: inline-block;
-    height: 20px;
-    width: 1000px;
-    // background-color: green;
-    // float: right;
-    padding-left: 4.5vw;
+    line-height: 11px;
+    padding-left: 20px;
     margin-top: 15px;
     position: absolute;
-    font-size: 0.8vw;
+    font-size: 14px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
   }
-  position: absolute;
-  margin-right: 1.4vw;
-  // bottom: 100px;
-  top: 85vh;
-  // left: -2vw;
-  right: 2vw;
+  position: relative;
+  top: -30px;
   height: 40px;
   width: 100%;
-  // padding-left: 90px;
   .el-pagination {
-    // background-color: green;
     position: absolute;
     bottom: 0;
-    right: 3.3vw;
-    height: 2.8vh !important;
-    margin-right: -1.9vw !important;
+    right: 87px;
     /deep/button {
-      // background-color: #f00 !important;
-      min-width: 1.6vw !important;
-      height: 2.8vh;
+      min-width: 24px !important;
+      height: 24px;
+      cursor: default;
     }
     /deep/.el-pagination__jump {
       // background-color: #f00;
@@ -405,58 +392,57 @@ export default {
       font-size: 0px;
       //input和ul是否居中
       margin-top: 0px;
-      // &::before {
-      //   content: "前往";
-      //   color: #000;
-      // }
+
       .el-input {
-        // border: 1px solid;
         font-family: Microsoft YaHei;
         font-weight: 400;
-        height: 2.8vh;
-        min-width: 2.5vw;
-        color: rgba(102, 102, 102, 1);
+        height: 24px;
+        width: 40px;
+        margin-left: 5px;
         outline: none;
+        color: rgba(102, 102, 102, 1);
+
         /deep/.el-input__inner {
-          font-size: 10px;
+          font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
           display: inline-block;
-          // background-color: #f00 !important;
-          // border: 1px solid !important;
-          width: 44px;
-          height: 2.8vh !important;
+          width: 40px;
+          margin-left: 48px;
+          height: 24px !important;
           border: 1px solid rgba(239, 242, 245, 1) !important;
-          border-radius: 2px;
-          // margin-left: 12px;
+          border-radius: 3px;
           outline: none;
         }
         &::before {
           content: "前往";
           color: #fff;
-          font-size: 0.8vw;
-          margin-left: 0.35vw;
-          margin-right: 0.95vw;
-          margin-top: 0.1vh !important;
+          font-size: 14px;
+          margin-left: 4px;
+          position: absolute;
+          margin-top: 3px;
           text-align: center;
+          height: 24px;
         }
         &:after {
           content: "页";
-          padding-left: 0.5vw !important;
-          font-size: 0.8vw;
+          padding-left: 10px !important;
+          font-size: 14px;
+          position: absolute;
+          top: 3px;
         }
       }
     }
     /deep/.el-pager li {
-      min-width: 1.6vw;
-      height: 2.8vh;
-      border-radius: 2px;
-      font-size: 10px;
+      min-width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(102, 102, 102, 1);
-      line-height: 2.8vh;
+      line-height: 24px;
     }
   }
   /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
@@ -466,13 +452,13 @@ export default {
 }
 //红点样式
 .hongdian {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background-color: #f00;
   border-radius: 5px;
   position: absolute;
-  top: 2.9vh;
-  left: 15.3vw;
+  top: 26px;
+  left: 240px;
 }
 .chen {
   /deep/.el-dialog {

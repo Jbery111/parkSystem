@@ -6,7 +6,12 @@
       <span v-else class="newAdd" @click="exitBefore">返回上一级</span>
       <!-- 搜索框 -->
       <div v-if="isShowAddto" class="serach-box">
-        <input v-model="serachContent" type="text" placeholder="请输入搜索内容" >
+        <input
+          v-model="serachContent"
+          type="text"
+          placeholder="请输入搜索内容"
+          @keyup.enter="serachHandler"
+        >
         <div class="serach" @click="serachHandler">
           <svg-icon icon-class="search1" />
         </div>
@@ -17,7 +22,7 @@
             <el-form label-position="left" inline class="demo-table-expand">
               <el-row>
                 <!-- 人脸 -->
-                <el-col v-if="props.row.equipmentnameRl" :span="8" >
+                <el-col v-if="props.row.equipmentnameRl" :span="8" style="width:28.4%">
                   <el-form-item v-if="props.row.equipmentnameRl" label="人脸名称:" label-width="115px">
                     <span>{{ props.row.equipmentnameRl }}</span>
                   </el-form-item>
@@ -29,7 +34,7 @@
                   </el-form-item>
                 </el-col>
                 <!-- 蓝牙 -->
-                <el-col v-if="props.row.equipmentnameLy" :span="8">
+                <el-col v-if="props.row.equipmentnameLy" :span="8" style="width:28.8%">
                   <el-form-item v-if="props.row.equipmentnameLy" label="蓝牙名称:" label-width="115px">
                     <span>{{ props.row.equipmentnameLy }}</span>
                   </el-form-item>
@@ -56,24 +61,29 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="大门名称" prop="Gatename" min-width="180"/>
-        <el-table-column label="入/出口" prop="type" min-width="180">
+        <el-table-column label="大门名称" prop="Gatename" min-width="150" />
+        <el-table-column label="入/出口" prop="type" min-width="150">
           <template slot-scope="scope">
             <p v-html="scope.row.type === 1 ? '入口':'出口'" />
           </template>
         </el-table-column>
-        <el-table-column label="入/出口设备编号" prop="equipment" min-width="180" />
+        <el-table-column label="入/出口设备编号" prop="equipment" min-width="150" />
         <!-- 操作 -->
-        <el-table-column label="操作" >
+        <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="background:#25BAD9; color:#fff; font-size:14px;height:32px; width:56px; 
-            border-color:#25BAD9; padding:8px;">修改</el-button>
+            <el-button
+              size="mini"
+              style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
+            border-color:#25BAD9; padding:5px;"
+              @click="handleEdit(scope.$index, scope.row)"
+            >修改</el-button>
             <el-button
               class="el-btn2"
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)" style="background:#BFBFBF; color:#fff; font-size:14px;height:32px; width:56px; 
-            border-color:#BFBFBF; padding:8px;"
+              style="background:#BFBFBF; color:#fff; font-size:14px;height:30px; width:52px;
+            border-color:#BFBFBF; padding:5px;"
+              @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -136,7 +146,7 @@
         </el-col>-->
         <!-- </el-row> -->
         <!-- 第四模块 -->
-        <div class="div-row1" >
+        <div class="div-row1">
           <!-- 入口人脸设备: -->
           <div class="flexBox">
             <ul v-if="isEntryFcShow">
@@ -265,7 +275,7 @@
         label-position="left"
       >
         <!-- 第一行大门名称： -->
-        <div class="div-row" >
+        <div class="div-row">
           <el-form-item label="大门名称:" prop="gateName" label-width="120px">
             <el-input v-model="ruleFrom1.Gatename" @focus="gateFocusHandler" />
           </el-form-item>
@@ -353,7 +363,7 @@
         label-position="left"
       >
         <!-- 第一行大门名称： -->
-        <div class="div-row" >
+        <div class="div-row">
           <el-form-item label="大门名称:" prop="gateName">
             <el-input v-model="ruleFrom1.Gatename" @focus="gateFocusHandler" />
           </el-form-item>
@@ -838,7 +848,7 @@ export default {
 //折叠样式
 /deep/.demo-table-expand {
   font-size: 0;
-  margin:8px 0 8px 100px;
+  margin: 8px 0 8px 58px;
 }
 /deep/.demo-table-expand label {
   width: 90px;
@@ -889,18 +899,16 @@ export default {
   }
 }
 .box-card {
-  min-height: 550px;
+  min-height: 730px;
   position: relative;
   width: 100%;
   box-shadow: none;
   border: none;
-  padding: 10px 0;
   /deep/.el-card__header {
     border: none;
     border-bottom: none;
     .el-table--striped .el-table__body tr.el-table__row--striped td {
       background-color: #eff2f5;
-    
     }
     .el-table th {
       font-size: 10px;
@@ -910,16 +918,12 @@ export default {
     }
     .el-table .cell {
       padding: 0px 0px 0px 65px;
-      height: 3.7vh !important;
-      line-height: 3.7vh;
       margin: 0px;
       font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(96, 98, 102, 1);
       /deep/.el-button {
-        width: 2.82vw;
-        height: 3.4vh;
         background: rgba(37, 186, 217, 1) !important;
         border-radius: 3px;
         font-size: 14px;
@@ -928,13 +932,11 @@ export default {
         color: rgba(255, 255, 255, 1);
         border: none;
         padding: 0px;
-        line-height: 3.4vh;
         span {
           display: inline-block;
           width: 100%;
           height: 100%;
         }
-        
       }
       .dongjie {
         color: #606266;
@@ -948,7 +950,6 @@ export default {
       }
     }
   }
-
 }
 //表格行样式
 .tableRowStyle {
@@ -970,31 +971,27 @@ export default {
   .record-data {
     cursor: default;
     display: inline-block;
-    height: 20px;
-    width: 1000px;
-    padding-left: 4.5vw;
+    line-height: 11px;
+    padding-left: 20px;
     margin-top: 15px;
     position: absolute;
-    font-size: 0.8vw;
+    font-size: 14px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
   }
-  position: absolute;
-  margin-right: 1.4vw;
-  top: 85vh;
-  right: 2vw;
+  position: relative;
+  top: 15px;
   height: 40px;
   width: 100%;
   .el-pagination {
     position: absolute;
     bottom: 0px;
-    right: 3.3vw;
-    height: 2.8vh !important;
-    margin-right: -1.9vw !important;
+    right: 87px;
     /deep/button {
-      min-width: 1.6vw !important;
-      height: 2.8vh;
+      min-width: 24px !important;
+      height: 24px;
+      cursor: default;
     }
     /deep/.el-pagination__jump {
       position: relative;
@@ -1007,47 +1004,54 @@ export default {
       .el-input {
         font-family: Microsoft YaHei;
         font-weight: 400;
-        height: 2.8vh;
-        min-width: 2.5vw;
+        height: 24px;
+        width: 40px;
+        margin-left: 5px;
+        border-radius: 3px;
         color: rgba(102, 102, 102, 1);
         outline: none;
         /deep/.el-input__inner {
-          font-size: 10px;
+          font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
           display: inline-block;
-          width: 44px;
-          height: 30px !important;
+          margin-left: 48px;
+          width: 40px;
+          height: 24px !important;
           border: 1px solid rgba(239, 242, 245, 1) !important;
-          border-radius: 2px;
+          border-radius: 3px;
           outline: none;
         }
         &::before {
           content: "前往";
           color: #fff;
-          font-size: 0.8vw;
-          margin-left: 0.35vw;
-          margin-right: 0.95vw;
-          margin-top: 0.1vh !important;
+          font-size: 14px;
+          display: inline-block;
+          position: absolute;
+          margin-left: 4px;
           text-align: center;
+          margin-top: 3px;
+          height: 24px;
         }
         &:after {
           content: "页";
-          padding-left: 0.5vw !important;
-          font-size: 0.8vw;
+          padding-left: 10px !important;
+          font-size: 14px;
+          position: absolute;
+          top: 3px;
         }
       }
     }
     /deep/.el-pager li {
-      min-width: 1.6vw;
-      height: 2.8vh;
-      border-radius: 2px;
-      font-size: 10px;
+      min-width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(102, 102, 102, 1);
-      line-height: 2.8vh;
+      line-height: 24px;
     }
   }
   /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
@@ -1064,7 +1068,6 @@ export default {
   height: 20px;
   width: 30px;
   color: white;
-  margin-left: 0.25vw;
   cursor: pointer;
 }
 /deep/ .demo-table-expand .el-form-item {
@@ -1076,9 +1079,9 @@ export default {
   align-items: center;
   justify-content: center;
   color: #fff;
-  width: 93px;
-  min-height: 32px;
-  line-height: 32px;
+  width: 86px;
+  min-height: 30px;
+  line-height: 30px;
   background: rgba(37, 186, 217, 1);
   border-radius: 4px;
   font-size: 14px;
@@ -1094,17 +1097,16 @@ export default {
   justify-content: center;
   background-color: #f00;
   color: #fff;
-  width: 120px;
-  height: 3.4vh;
-  line-height: 3.4vh;
+  width: 93px;
+  height: 30px;
+  line-height: 30px;
   background: rgba(37, 186, 217, 1);
-  border-radius: 0.2vw;
-  font-size: 0.75vw;
+  border-radius: 4px;
+  font-size: 14px;
   font-family: Microsoft YaHei;
   font-weight: 400;
   color: rgba(255, 255, 255, 1);
   cursor: pointer;
-  padding: 0.65vw 0.78vh;
 }
 /deep/.el-dialog--center .el-dialog__body {
   padding: 0px 35px 0px 54px !important;
@@ -1115,8 +1117,10 @@ export default {
     margin-bottom: 0;
     &:last-child {
       margin-bottom: 0;
+      .el-col-8 {
+        width: 28.8% !important;
+      }
     }
-    
   }
   .el-col {
     border-radius: 4px;
@@ -1191,9 +1195,9 @@ export default {
         font-weight: 400;
         color: rgba(51, 51, 51, 1);
       }
-       /deep/.el-dialog__headerbtn {
-         top: 17px !important;
-       }
+      /deep/.el-dialog__headerbtn {
+        top: 17px !important;
+      }
       button {
         position: absolute;
         top: 1.4vh;
@@ -1212,7 +1216,6 @@ export default {
       div {
         width: 100%;
         height: 110px;
-        font-size:16px;
         text-align: center;
       }
     }
@@ -1250,20 +1253,20 @@ export default {
     .elbutton {
       color: #999999 !important;
     }
-   /deep/ .el-button--primary {
+    /deep/ .el-button--primary {
       color: #ffffff;
-      background-color: #25BAD9 !important;
-      border-color: #25BAD9 !important;
+      background-color: #25bad9 !important;
+      border-color: #25bad9 !important;
     }
   }
 }
 //搜索框样式
 .serach-box {
   position: absolute;
-  top: 30px;
+  top: 20px;
   right: 20px;
-  width: 13vw;
-  height: 32px;
+  width: 180px;
+  height: 30px;
   background: rgba(255, 255, 255, 1);
   border: 1px solid rgba(191, 191, 191, 1);
   border-radius: 3px;
@@ -1277,12 +1280,12 @@ export default {
     flex: 7;
     padding-left: 7px;
     border: none;
-    font-size: 0.75vw;
+    font-size: 14px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(153, 153, 153, 1);
     &::-webkit-input-placeholder {
-      font-size: 0.75vw;
+      font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(153, 153, 153, 1);
@@ -1301,8 +1304,8 @@ export default {
     border-left: none;
     background: rgba(191, 191, 191, 1);
     text-align: center;
-    line-height: 30px;
-    padding: 0 0.1vw;
+    line-height: 28px;
+    padding: 0 3px;
     cursor: pointer;
   }
 }
@@ -1314,9 +1317,10 @@ export default {
   overflow-x: hidden !important;
   border-bottom: none !important;
   top: 12px;
+  min-width: 940px;
 }
 /deep/.entry-table-class td {
-  padding: 12px 0px !important;
+  padding: 15px 0px !important;
 }
 .gatename-mistacktoast {
   color: red;
@@ -1354,12 +1358,12 @@ export default {
   }
 }
 /deep/.el-dialog__header {
-    padding: 1.2vh 0px 0.8vh 20px;
-    text-align: left;
-    border-bottom: 1px solid #eff2f5;
-    font-family: Microsoft YaHei;
-    font-weight: 400;
-    color: #333;
+  padding: 1.2vh 0px 0.8vh 20px;
+  text-align: left;
+  border-bottom: 1px solid #eff2f5;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #333;
 }
 /deep/.el-dialog__body {
   display: inline-block;
@@ -1393,8 +1397,8 @@ export default {
   border-radius: 3px;
   top: 30px;
   left: 50%;
-  background: #F8AC59;
-  border-color: #F8AC59;
+  background: #f8ac59;
+  border-color: #f8ac59;
   min-width: 72px;
   font-size: 16px;
   height: 35px;

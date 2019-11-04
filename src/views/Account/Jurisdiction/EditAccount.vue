@@ -8,26 +8,7 @@
           <el-table-column prop="poname" label="职位" min-width="220" />
           <!-- <el-table-column prop="po_notes" label="职位描述" min-width="400" @mouseleave="mouseHandler" /> -->
           <el-table-column prop="po_notes" label="职位描述" min-width="400" class="des-class">
-            <!-- <template slot-scope="scope">
-              <div class="total-class">
-                <div class="cehn-class">{{ scope.row.po_notes }}</div>
-                <p class="div-class" style="z-inex:23456789;">{{ scope.row.po_notes }}</p>
-              </div>
-            </template>-->
-            <template slot-scope="scope">
-              <!-- <el-popover
-                id="popover-id"
-                :append-to-body="false"
-                popper-class="popover-class"
-                placement="top"
-                width="200"
-                trigger="hover"
-              >
-                <div>{{ scope.row.po_notes }}</div>
-                <p slot="reference" style="color:#606266;width:100%;">{{ scope.row.po_notes }}</p>
-              </el-popover>-->
-              {{ scope.row.po_notes }}
-            </template>
+            <template slot-scope="scope">{{ scope.row.po_notes }}</template>
           </el-table-column>
           <el-table-column label="操作" min-width="185">
             <template slot-scope="scope">
@@ -80,7 +61,7 @@
 border-radius:4px;"
               @focus="cc"
               @keyup.enter="getCheckedKeys"
-            >
+            />
           </el-form-item>
           <p
             v-if="isShowMis"
@@ -111,7 +92,7 @@ border-radius:4px;"
 border-radius:4px;"
               @focus="cc"
               @keyup.enter="getCheckedKeys"
-            >
+            />
           </el-form-item>
           <!-- <p class="mistack-message">提示错误信息2</p> -->
         </div>
@@ -216,7 +197,7 @@ const schema = Joi.object().keys({
 })
 export default {
   components: {},
-  data() {
+  data () {
     return {
       centerDialogVisible2: false,
       hongShow: false,
@@ -272,11 +253,11 @@ export default {
   computed: {
   },
   watch: {
-    '$route'(to, from) {
+    '$route' (to, from) {
       console.log(to, '账号分配的watch')
     }
   },
-  created() {
+  created () {
     // 获取权限按钮时需要传递的参数
     // console.log(this.$route.meta.auth_id, '账号分配')
     this.buttonId = this.$route.meta.auth_id
@@ -374,13 +355,13 @@ export default {
     //   // return 'background-color:#f00;color: green;'
     //   return 'margin: 65px !important;background-color:#f00;'
     // }
-    mouseHandler() {
+    mouseHandler () {
       console.log('mouseHandler')
     },
-    cc() {
+    cc () {
       this.isShowMis = false
     },
-    handleEdit(index, row) {
+    handleEdit (index, row) {
       // console.log(row, 'row111111111111111111111111111111111111111')
       this.title1 = '修改'
       this.mistakeToast = ''
@@ -401,7 +382,7 @@ export default {
       this.updataQuerys.Communityid = Communityid
       // console.log(this.updataQuerys, '191')
     },
-    delteHandler() {
+    delteHandler () {
       // this.handleDelete()
       const poid = this.delePoid
       postDelete({ poid }).then(resp => {
@@ -433,12 +414,12 @@ export default {
         }
       })
     },
-    handleDelete(index, row) {
+    handleDelete (index, row) {
       this.centerDialogVisible3 = true
       this.delePoid = row.poid
     },
     // 分页设置
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.currentPage = val
       const page = val
       const { Communityid, sition } = this.userInfoData
@@ -450,11 +431,11 @@ export default {
         this.tableData = resp.msg.data
       })
     },
-    nextClickHandler(val) {
+    nextClickHandler (val) {
       // console.log(val, '354')
     },
     // 遮罩层一的显示(点击新增权限)
-    isShow1() {
+    isShow1 () {
       this.centerDialogVisible = !this.centerDialogVisible
       // this.$refs.nameInput.focus()
       this.formLabelAlign.name = ''
@@ -463,7 +444,7 @@ export default {
       this.title1 = '创建'
     },
     // （点击下一步）
-    getCheckedKeys() {
+    getCheckedKeys () {
       if (this.formLabelAlign.name) {
         this.isShowMis = false
       }
@@ -545,7 +526,7 @@ export default {
       })
     },
     // 点击完成
-    successAddTo() {
+    successAddTo () {
       console.log('点击完成1')
       // // console.log(rids)
       // var rids = this.$refs.tree1.getHalfCheckedKeys().concat(this.$refs.tree1.getCheckedKeys())
@@ -654,398 +635,6 @@ export default {
 }
 </script>
 // <style lang='scss' scoped>
-// //卡片的样式
-// .text {
-//   font-size: 14px;
-// }
-
-// .item {
-//   margin-bottom: 18px;
-// }
-
-// .clearfix:before,
-// .clearfix:after {
-//   display: table;
-//   content: "";
-// }
-// .clearfix:after {
-//   clear: both;
-// }
-// .clearfix {
-//   span {
-//     display: inline-block;
-//     width: 50px;
-//     height: 50px;
-//     // line-height: 50px;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     background-color: #f00;
-//     color: #fff;
-//     width: 57px;
-//     height: 23px;
-//     background: rgba(37, 186, 217, 1);
-//     border-radius: 4px;
-//     font-size: 10px;
-//     font-family: Microsoft YaHei;
-//     font-weight: 400;
-//     color: rgba(255, 255, 255, 1);
-//     cursor: pointer;
-//   }
-// }
-// .box-card {
-//   width: 100%;
-//   box-shadow: none;
-//   border: none;
-//   /deep/.el-card__header {
-//     border: none;
-//     border-bottom: none;
-//     padding: 21px !important;
-//     .el-table--striped .el-table__body tr.el-table__row--striped td {
-//       background-color: #eff2f5;
-//     }
-//     .el-table td {
-//       padding: 8px 12px 8px 0px;
-//     }
-//     .el-table th {
-//       // padding: 14px 55px !important;
-//       font-size: 10px;
-//       font-family: Microsoft YaHei;
-//       font-weight: 400;
-//       color: rgba(144, 147, 153, 1);
-//     }
-//     .el-table .cell {
-//       // background-color: #f00;
-//       padding: 0px 0px 0px 65px;
-//       margin: 0px;
-//       font-size: 10px;
-//       font-family: Microsoft YaHei;
-//       font-weight: 400;
-//       color: rgba(96, 98, 102, 1);
-//       .el-button--mini {
-//         width: 40px;
-//         height: 23px;
-//         background: rgba(37, 186, 217, 1);
-//         border-radius: 3px;
-//         font-size: 10px;
-//         font-family: Microsoft YaHei;
-//         font-weight: 400;
-//         color: rgba(255, 255, 255, 1);
-//         border: none;
-//         padding: 0px;
-//         line-height: 23px;
-//         span {
-//           display: inline-block;
-//           width: 100%;
-//           height: 100%;
-//         }
-//       }
-//       .el-btn2 {
-//         background-color: #bfbfbf;
-//       }
-//     }
-//   }
-// }
-// //表格行样式
-// .tableRowStyle {
-//   color: #f00 !important;
-//   background: #f00 !important;
-// }
-// .page {
-//   position: absolute;
-//   bottom: 70px;
-//   right: 4px;
-//   font-size: 10px;
-//   font-family: Microsoft YaHei;
-//   font-weight: 400;
-//   color: rgba(102, 102, 102, 1);
-// }
-// //分页器的样式
-// .block {
-//   // position: absolute;
-//   // bottom: 60px;
-//   // right: 100px;
-//   // background-color: #f00;
-//   // height: 20px;
-//   .el-pagination {
-//     // background-color: green;
-//     position: absolute;
-//     bottom: 60px;
-//     right: 50px;
-//     /deep/.el-pagination__jump {
-//       // background-color: #f00;
-//       position: relative;
-//       margin-left: 0px;
-//       color: #fff;
-//       font-size: 0px;
-//       //input和ul是否居中
-//       margin-top: 0px;
-//       // &::before {
-//       //   content: "前往";
-//       //   color: #000;
-//       // }
-//       .el-input {
-//         // border: 1px solid;
-//         font-size: 10px;
-//         font-family: Microsoft YaHei;
-//         font-weight: 400;
-//         color: rgba(102, 102, 102, 1);
-//         /deep/.el-input__inner {
-//           font-size: 10px;
-//           font-family: Microsoft YaHei;
-//           font-weight: 400;
-//           color: rgba(102, 102, 102, 1);
-//           display: inline-block;
-//           // background-color: #f00 !important;
-//           // border: 1px solid !important;
-//           width: 44px;
-//           height: 21px;
-//           border: 1px solid rgba(239, 242, 245, 1) !important;
-//           border-radius: 2px;
-//           margin-left: 12px;
-//         }
-//         &::before {
-//           content: "前往";
-//           color: rgba(102, 102, 102, 1);
-//         }
-//         &:after {
-//           content: "页";
-//         }
-//       }
-//     }
-//     /deep/.el-pager li {
-//       // background-color: #f00 !important;
-//       width: 21px;
-//       height: 21px;
-//       // background: rgba(95, 175, 228, 1);
-//       border-radius: 2px;
-//       font-size: 10px;
-//       font-family: Microsoft YaHei;
-//       font-weight: 400;
-//       color: rgba(102, 102, 102, 1);
-//       line-height: 21px;
-//     }
-//   }
-//   .el-pagination.is-background .el-pager li:not(.disabled).active {
-//     background: rgba(95, 175, 228, 1);
-//     color: rgba(255, 255, 255, 1);
-//   }
-// }
-// /deep/.el-dialog {
-//   background-color: #fff;
-//   margin-top: 35vh !important;
-//   .el-dialog__header {
-//     padding: 17px 0px 9px 0px;
-//     margin: 0px 14px;
-//     text-align: left;
-//     border-bottom: 1px solid #eff2f5;
-//     font-size: 12px;
-//     font-family: Microsoft YaHei;
-//     font-weight: 400;
-//     color: rgba(51, 51, 51, 1);
-//     .el-dialog__title {
-//       text-align: left;
-//       border-bottom: 1px solid #eff2f5;
-//       font-size: 12px;
-//       font-family: Microsoft YaHei;
-//       font-weight: 400;
-//       color: rgba(51, 51, 51, 1);
-//     }
-//   }
-//   /deep/.el-dialog__body {
-//     overflow: hidden;
-//     padding: 14px 29px 21px 52px !important;
-//     .form-item {
-//       height: 40px;
-//       .zhiwei {
-//         margin-bottom: 0px;
-//         height: 4.5vh !important;
-//         .el-form-item__label {
-//           width: 64px !important;
-//           height: 11px;
-//           display: inline-block;
-//           font-size: 11px;
-//           font-family: Microsoft YaHei;
-//           font-weight: 400;
-//           color: rgba(102, 102, 102, 1);
-//           // letter-spacing: 8px;
-//         }
-//         .el-form-item__content {
-//           margin-left: 64px !important;
-//           input {
-//             width: 100%;
-//             // width: 189px;
-//             height: 23px;
-//             border: 1px solid rgba(210, 210, 210, 1);
-//             border-radius: 3px;
-//           }
-//         }
-//       }
-//       .el-form-item {
-//         margin-bottom: 0px;
-//         height: 4.5vh !important;
-//         &__label {
-//           width: 64px !important;
-//           height: 11px;
-//           display: inline-block;
-//           font-size: 11px;
-//           font-family: Microsoft YaHei;
-//           font-weight: 400;
-//           color: rgba(102, 102, 102, 1);
-//           // letter-spacing: 2px;
-//         }
-//         &__content {
-//           margin-left: 64px !important;
-//           input {
-//             width: 100%;
-//             border: 1px solid rgba(210, 210, 210, 1);
-//             // color: red;
-//           }
-//         }
-//       }
-//       .mistack-message {
-//         color: red;
-//         margin-left: 52px;
-//         margin-top: 2px;
-//         box-sizing: border-box;
-//         font-size: 9px;
-//         transform: scale(0.9);
-//         font-family: Microsoft YaHei;
-//         font-weight: 400;
-//         color: rgba(255, 0, 0, 1);
-//       }
-//     }
-//   }
-//   .el-dialog__footer {
-//     padding-top: 0px;
-//     button {
-//       width: 62px;
-//       height: 25px;
-//       line-height: 0px;
-//       outline: none;
-//       border: none;
-//       // text-align: left;
-//       display: flex;
-//       justify-content: center;
-//       align-items: center;
-//       margin: 0 auto;
-//       background: rgba(248, 172, 89, 1);
-//       border-radius: 3px;
-//       font-size: 11px;
-//       font-family: Microsoft YaHei;
-//       font-weight: 400;
-//       color: rgba(255, 254, 254, 1);
-//     }
-//   }
-// }
-// .tree-content1 {
-//   /deep/.el-dialog__body {
-//     color: red;
-//     padding: 0px !important;
-//     padding-left: 12px !important;
-//   }
-//   .el-dialog__header {
-//     .el-dialog__title {
-//       border-bottom: none;
-//     }
-//   }
-//   /deep/.el-dialog__footer {
-//     margin-top: 23px;
-//     .toast {
-//       // width: 50px;
-//       height: 20px;
-//       font-size: 9px;
-//       font-family: Microsoft YaHei;
-//       font-weight: 400;
-//       color: rgba(255, 0, 0, 1);
-//     }
-//   }
-// }
-// .chen {
-//   /deep/.el-dialog {
-//     background-color: #fff !important;
-//     width: 18.2vw;
-//     height: 20vh;
-//     // background-color: #fff;
-//     // z-index: 888888888888888888888888888;
-//     .el-dialog__header {
-//       button {
-//         z-index: 19999;
-//       }
-//     }
-//     .el-dialog--center {
-//       text-align: left;
-//     }
-//     .el-dialog__body {
-//       background-color: #fff;
-//       height: 110px !important;
-//       width: 100%;
-//       padding: 14px 29px 21px 29px !important;
-//       position: relative;
-//       // p {
-//       //   width: 100%;
-//       //   border-bottom: 1px solid #eff2f5;
-//       //   position: absolute;
-//       //   top: 1.8vh;
-//       //   right: 0px;
-//       //   // padding-left: 14px !important;
-//       //   padding-bottom: 0.92vh;
-//       //   color: #333333;
-//       //   font-size: 0.95vw;
-//       //   // float: left;
-//       //   text-align: left;
-//       // }
-//       div {
-//         width: 100%;
-//         height: 110px;
-//         line-height: 40px;
-//         font-size: 0.85vw;
-//         text-align: center;
-//       }
-//     }
-//     .el-dialog__footer {
-//       position: absolute;
-//       top: 18vh;
-//       width: 100%;
-//       display: flex;
-//       justify-content: center;
-//       font-size: 11px;
-//       font-family: Microsoft YaHei;
-//       font-weight: 400;
-//       color: rgba(153, 153, 153, 1);
-//       span {
-//         width: 100%;
-//         display: flex;
-//         justify-content: space-around;
-//         button {
-//           width: 4vw;
-//           height: 3.5vh;
-//           line-height: 5px;
-//           font-size: 0.8vw;
-//           border-radius: 3px !important;
-//           font-size: 11px;
-//           font-family: Microsoft YaHei;
-//           font-weight: 400;
-//           color: rgba(255, 254, 254, 1);
-//         }
-//       }
-//       .quxiao1 {
-//         color: rgba(153, 153, 153, 1);
-//         background-color: #fff;
-//         border: 1px solid rgba(204, 204, 204, 1);
-//         border-radius: 2px;
-//       }
-//     }
-//     .el button {
-//       color: #999999 !important;
-//     }
-//     .el-button--primary {
-//       color: #ffffff;
-//       background-color: #25bad9;
-//     }
-//   }
-// }
-//
 </style>
 <style lang='scss' scoped>
 //卡片的样式
@@ -1086,7 +675,7 @@ export default {
   }
 }
 .box-card {
-  min-height: 510px;
+  min-height: 775px;
   position: relative;
   width: 100%;
   box-shadow: none;
@@ -1094,16 +683,15 @@ export default {
   /deep/.el-card__header {
     border: none;
     border-bottom: none;
-    padding: 3.2vh 1.1vw !important;
+    padding: 20px !important;
     .el-table--striped .el-table__body tr.el-table__row--striped td {
       background-color: #eff2f5 !important;
     }
-    .el-table {
-      // margin-top: 1.6vh !important;
+    .el-table thead {
+      color: #909399 !important;
     }
     .el-table td {
-      padding: 0.58vw 2.08vh 0.58vw 0;
-      // background-color: #f00;
+      padding: 15px 0 !important;
       z-index: 222;
     }
     .el-table th {
@@ -1119,15 +707,12 @@ export default {
       white-space: nowrap;
       cursor: default;
       width: 400px;
-      // background-color: #f00;
-      height: 3.7vh !important;
-      line-height: 3.7vh;
+      height: 30px !important;
+      line-height: 30px;
+      font-size: 14px;
       padding: 0 0 0 65px;
-      margin: 0;
-      font-size: 0.75vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
-      color: rgba(96, 98, 102, 1);
       span {
         width: 100%;
         p {
@@ -1137,17 +722,17 @@ export default {
         }
       }
       .el-button--mini {
-        width: 2.82vw;
-        height: 3.4vh;
+        width: 52px;
+        height: 30px;
         background: rgba(37, 186, 217, 1);
-        border-radius: 3px;
-        font-size: 0.75vw;
+        border-radius: 4px;
+        font-size: 14px;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: rgba(255, 255, 255, 1);
         border: none;
         padding: 0px;
-        line-height: 3.4vh;
+        line-height: 30px;
         span {
           display: inline-block;
           width: 100%;
@@ -1179,35 +764,26 @@ export default {
   .record-data {
     cursor: default;
     display: inline-block;
-    height: 20px;
-    width: 1000px;
-    // background-color: green;
-    // float: right;
-    padding-left: 4.5vw;
+    line-height: 11px;
+    padding-left: 20px;
     margin-top: 15px;
     position: absolute;
-    font-size: 0.8vw;
+    font-size: 14px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
   }
-  position: absolute;
-  margin-right: 1.4vw;
-  // bottom: 100px;
-  top: 85vh;
-  // left: -2vw;
-  right: 2vw;
+  position: relative;
+  top: -30px;
   height: 40px;
   width: 100%;
   .el-pagination {
     position: absolute;
     bottom: 0;
-    right: 3.3vw;
-    height: 2.8vh !important;
-    margin-right: -1.9vw !important;
+    right: 87px;
     /deep/button {
-      min-width: 1.6vw !important;
-      height: 2.8vh;
+      min-width: 24px !important;
+      height: 24px;
     }
     /deep/.el-pagination__jump {
       position: relative;
@@ -1216,55 +792,57 @@ export default {
       font-size: 0px;
       //input和ul是否居中
       margin-top: 0px;
-      // &::before {
-      //   content: "前往";
-      //   color: #000;
-      // }
+
       .el-input {
         font-family: Microsoft YaHei;
         font-weight: 400;
-        height: 2.8vh;
-        min-width: 2.5vw;
+        height: 24px;
+        width: 40px;
+        margin-left: 5px;
+        outline: none;
         color: rgba(102, 102, 102, 1);
+
         /deep/.el-input__inner {
-          font-size: 10px;
+          font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
           display: inline-block;
-          // background-color: #f00 !important;
-          // border: 1px solid !important;
-          width: 44px;
-          height: 2.8vh !important;
+          width: 40px;
+          margin-left: 48px;
+          height: 24px !important;
           border: 1px solid rgba(239, 242, 245, 1) !important;
-          border-radius: 2px;
-          // margin-left: 12px;
+          border-radius: 3px;
+          outline: none;
         }
         &::before {
           content: "前往";
           color: #fff;
-          font-size: 0.8vw;
-          margin-left: 0.35vw;
-          margin-right: 0.95vw;
-          margin-top: 0.1vh !important;
+          font-size: 14px;
+          margin-left: 4px;
+          position: absolute;
+          margin-top: 3px;
           text-align: center;
+          height: 24px;
         }
         &:after {
           content: "页";
-          padding-left: 0.5vw !important;
-          font-size: 0.8vw;
+          padding-left: 10px !important;
+          font-size: 14px;
+          position: absolute;
+          top: 3px;
         }
       }
     }
     /deep/.el-pager li {
-      min-width: 1.6vw;
-      height: 2.8vh;
-      border-radius: 2px;
-      font-size: 10px;
+      min-width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(102, 102, 102, 1);
-      line-height: 2.8vh;
+      line-height: 24px;
     }
   }
   /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
@@ -1516,13 +1094,13 @@ export default {
   }
 }
 .hongdian {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background-color: #f00;
   border-radius: 5px;
   position: absolute;
-  top: 2.9vh;
-  left: 15.3vw;
+  top: 26px;
+  left: 240px;
 }
 /deep/.el-tree-node {
   // color: red !important;
@@ -1600,12 +1178,12 @@ export default {
   align-items: center;
   justify-content: center;
   color: #fff;
-  width: 4.17vw;
-  height: 3.4vh;
-  line-height: 3.4vh;
+  width: 72px;
+  height: 30px;
+  line-height: 30px;
   background: rgba(37, 186, 217, 1);
-  border-radius: 0.2vw;
-  font-size: 0.75vw;
+  border-radius: 4px;
+  font-size: 14px;
   font-family: Microsoft YaHei;
   font-weight: 400;
   color: rgba(255, 255, 255, 1);
