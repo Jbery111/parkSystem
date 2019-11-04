@@ -27,7 +27,7 @@ export default {
         }
     },
     created() {
-        alert(this.pageInfo.total)
+        // alert(this.pageInfo.total)
     },
     methods: {
         handleSizeChange() {

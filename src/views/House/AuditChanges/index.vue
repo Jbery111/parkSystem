@@ -1,8 +1,9 @@
 <template>
   <div id="audit-changes">
-    审核修改1
-    <Table :data="judgeList" @bridge="getMesFromChild" 
-      @fun1="handleDetailClick" @fun2="handleJudgeClick" />
+    审核修改1 <button @click="change">切换</button>
+    <Table :data="judgeList" :isShowDetail="isShowDetail" @bridge="getMesFromChild" 
+      @fun1="handleDetailClick" @fun2="handleJudgeClick" @fun3="handleModifyClick" @fun4="handleUserClick"
+      @fun5="handleCarClick" @fun6="handleRecordClick" />
     <Pages v-if="pageInfo.page" :pageInfo="pageInfo" @handleSizeChange="handleSizeChange" 
       @handleCurrentChange="handleCurrentChange" @nextClickHandler="nextClickHandler"/>
   </div>
@@ -16,6 +17,7 @@ export default {
   name: 'AuditChanges',
   data () {
     return {
+      isShowDetail: false,
       userInfo: { // 用户信息
 
       }, 
@@ -35,6 +37,9 @@ export default {
     this.getJudgeList()
   },
   methods: {
+    change() {
+      this.isShowDetail = !this.isShowDetail
+    },
     // 页码相关事件
     handleSizeChange() {
       console.log(11)
@@ -52,12 +57,30 @@ export default {
     nextClickHandler(val) {
       //console.log(val, '354')
     },
-
-    handleDetailClick(v) { // 点击详情
+    // 点击详情
+    handleDetailClick(v) { 
       console.log(v)
     },
-    handleJudgeClick(v) { // 点击审核
+    // 点击审核
+    handleJudgeClick(v) { 
       console.log(v)
+      //显示审核表格
+    },
+    // 点击修改
+    handleModifyClick(v) {
+      alert("modify")
+    },
+    // 点击住户
+    handleUserClick(v) {
+      alert("user")
+    },
+    // 点击车位
+    handleCarClick(v) {
+      alert("car")
+    },
+    // 点击记录
+    handleRecordClick(v) {
+      alert("record")
     },
     getMesFromChild(v) { //获取子组件传递过来的值
       console.log(v,'22222222222')
