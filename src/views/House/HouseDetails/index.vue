@@ -124,8 +124,10 @@
         <el-table-column :prop="prop[3]" label="房屋面积(m²)" min-width="100" />
         <el-table-column :prop="prop[4]" label="房屋类型" min-width="100" />
         <el-table-column :prop="prop[5]" label="交房时间" min-width="100" />
-        <el-table-column :prop="prop[6]" label="物业费到期时间" min-width="100" />
-        <!-- <el-table-column v-if="prop.length===8" :prop="prop[7]" label="原因" min-width="100" /> -->
+        <el-table-column v-if="amazing" :prop="prop[6]" label="交房时间" min-width="100" />
+        <!-- <el-table-column :prop="prop[6]" label="交房时间" min-width="100" /> -->
+        <!-- <el-table-column :prop="prop[6]" label="物业费到期时间" min-width="100" /> -->
+        <el-table-column v-if="prop.length===8" :prop="prop[7]" label="原因" min-width="100" />
       </el-table>
     </div>
     <!-- 分页 -->
@@ -394,6 +396,7 @@ export default {
   },
   data() {
     return {
+      amazing: true,
       tips: {
         checktime: false, // 交房时间是否为空
         isExist: false, // 要修改的房屋是否已存在
@@ -560,6 +563,11 @@ export default {
           this.dr_nameId = res.data.msg.dr_nameId
           this.prop = ['1','2','3','4','5','6','7']
           this.isShowExcel = true
+          this.amazing = false
+          setTimeout(() => {
+            this.amazing = true
+          }, 1);
+          
         }
         console.log(this.dr_nameId,'aaaaaaa')
       })
