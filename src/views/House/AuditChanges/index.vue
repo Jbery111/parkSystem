@@ -41,11 +41,11 @@
             <span class="t1">单元:</span>
             <span class="t2">{{detailData.data.userHouseUnit}}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.userHouseUnit}}</span>
+            <span class="t4">{{detailData.data.userHouseUnits}}</span>
           </div>
           <div class="row">
             <span class="t1">门牌号:</span>
-            <span class="t2">{{detailData.data.userHouseNumbers}}</span>
+            <span class="t2">{{detailData.data.userHouseNumber}}</span>
             <span class="t3">修改为:</span>
             <span class="t4">{{detailData.data.userHouseNumbers}}</span>
           </div>

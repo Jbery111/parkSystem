@@ -354,7 +354,8 @@
             onblur="clearInterval(this.clock);"
           />
         </div>
-        <div class="addNow" style="cursor:pointer" @click="clickConfirmModify1">确认修改</div>
+        <div v-show="!isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify1">确认修改</div>
+        <div v-show="isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify2">确认修改del</div>
       </el-form>
     </el-dialog>
   </div>
@@ -749,6 +750,43 @@ export default {
       // 修改房屋详情
       this.sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid)
     },
+    // 确认删除
+    clickConfirmModify2() {
+      if(this.modifyData.centns){
+        this.sendDeleteRequest()
+      } else{
+        alert("no")
+      }
+    },
+    sendDeleteRequest() {
+      const { uname, token } = this.userInfo
+      const { userHouseId } = this.originData
+      const centns = this.modifyData.centns
+      axios.post("http://test.txsqtech.com/index/House/houseDetele",
+      {
+        uname, userHouseId, centns
+      },
+      {
+        headers: {
+          token
+        }
+      }).then(res => {
+        console.log(res)
+        if(res.data.code === 200){
+          this.detailFormVisible = false
+          this.clearModifyData()
+          this.$message({
+            message: "申请删除房屋成功",
+            type: "success"
+          })
+        } else {
+          this.$message({
+            message: res.data.msg,
+            type: "error"
+          })
+        }
+      })
+    },
     useData() {},
     /* 添加表单相关事件 */
     // 确认添加
@@ -1024,6 +1062,7 @@ export default {
             token: this.token
           }
         }).then(res => {
+          this.clearModifyData()
         if (res.data.code === 200) {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
@@ -1058,6 +1097,7 @@ export default {
             token: this.token
           }
         }).then(res => {
+          this.clearModifyData()
         if (res.data.code === 200) {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
@@ -1090,6 +1130,7 @@ export default {
             token: this.token
           }
         }).then(res => {
+          this.clearModifyData()
         if (res.data.code === 200) {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
