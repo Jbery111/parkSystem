@@ -8,8 +8,8 @@
             type="text"
             size="small"
             class="operateBtn btn-judge"
-            @click="back" style="width:83px;"
-            >返回</el-button>
+            @click="back" style="width:83px !important;"
+            >返回上一级</el-button>
         <div class="table-box">
             <el-table
                 empty-text="暂无数据"
@@ -61,7 +61,7 @@
                     min-width="290" 
                     >
                     <template slot-scope="scope">
-                        <el-button
+                        <!-- <el-button
                         type="text"
                         size="small"
                         class="operateBtn btn-detail"
@@ -78,7 +78,7 @@
                         size="small"
                         class="operateBtn btn-judge"
                         @click="handleCarClick(scope.row)" style="width:67px !important;"
-                        >车位信息</el-button>
+                        >车位信息</el-button> -->
                         <el-button
                         type="text"
                         size="small"

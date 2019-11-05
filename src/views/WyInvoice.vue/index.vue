@@ -2,7 +2,7 @@
   <!-- eslint-disable -->
   <div class="choice-container">
     <div class="wy-login-nav">
-      <span class="logo" style="cursor: default;">宅-物业操作系统1.0</span>
+      <span class="logo" style="cursor: default;">宅-物业管理系统</span>
       <ul style="cursor: pointer;">
         <li>关于我们</li>
         <div style="height:1.56vh;border:1px solid white;margin-top:3px"></div>
@@ -26,7 +26,11 @@
         <div class="wy-invoice-container_btn" @click="invoiceHandler()">确认</div>
       </div>
     </div>
-    <p class="wy-login-bottom">成都同享社圈智慧科技有限公司版权所有</p>
+    <div class="wy-login-bottom">
+    <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
+    <div style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;" ></div>
+    <a href="http://www.miibeian.gov.cn/" target="_blank" style="margin-left:10px; white-space:nowrap;position:absolute;">蜀ICP备19024682号</a>
+    </div>
   </div>
 </template>
 
@@ -177,66 +181,7 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-// .choice-container {
-//   width: 100vw;
-//   height: 100vh;
-//   background: linear-gradient(
-//     -45deg,
-//     rgba(95, 126, 255, 1) 0%,
-//     rgba(88, 199, 255, 1) 100%
-//   );
-//   position: relative;
-//   .wy-login-nav {
-//     color: rgba(255, 255, 255, 1);
-//     display: flex;
-//     justify-content: space-between;
-//     padding: 16px 39px 0px 39px;
-//     font-family: MicrosoftYaHei;
-//     font-weight: 400;
-//     span {
-//       font-size: 1.3vw;
-//     }
-//     ul {
-//       display: flex;
-//       li {
-//         height: 1vw;
-//         border-right: 1px solid white;
-//         padding: 0px 10px 0 10px;
-//         font-size: 1vw;
-//         font-family: MicrosoftYaHei;
-//         font-weight: 400;
-//       }
-//     }
-//   }
-//   .choice-main {
-//     width: 50vw;
-//     height: 50vh;
-//     position: absolute;
-//     top: 0;
-//     right: 0;
-//     bottom: 0;
-//     left: 0;
-//     margin: auto;
-//     overflow: hidden;
-//     padding: 4.7vh 1.7vw 4vh 1.7vw;
-//     // background-color: #fff;
-//     background: rgba(255, 255, 255, 1);
-//     border-radius: 11px;
-//     .el-col {
-//       margin-top: 30px;
-//       // cursor: pointer;
-//     }
-//   }
-//   .wy-login-bottom {
-//     position: absolute;
-//     bottom: 7px;
-//     right: 43vw;
-//     color: rgba(255, 255, 255, 1);
-//     font-size: 1vw;
-//     font-family: MicrosoftYaHei;
-//     font-weight: 400;
-//   }
-// }
+
 
 .choice-container {
   width: 100vw;
@@ -251,21 +196,20 @@ export default {
     color: rgba(255, 255, 255, 1);
     display: flex;
     justify-content: space-between;
-    padding: 3.1vh 2.9vw 0 4vw;
+    padding: 20px 29px 0 40px;
     font-family: MicrosoftYaHei;
     font-weight: 400;
     span {
-      font-size: 1vw;
+      font-size: 18px;
     }
     ul {
       display: flex;
-      padding-top: 0.3vh;
-
+      padding-top: 3px;
+      float: right;
       li {
-        // height: 0.8vw;
-        // border-right: 1px solid white;
-        padding: 0 1vw 0 0.8vw;
-        font-size: 0.8vw;
+        white-space: nowrap !important;
+        padding: 0 16px;
+        font-size: 14px;
         font-family: MicrosoftYaHei;
         font-weight: 400;
       }
@@ -290,15 +234,27 @@ export default {
       // cursor: pointer;
     }
   }
-  .wy-login-bottom {
-    cursor: default;
-    position: absolute;
-    bottom: 1.3vh;
-    right: 43vw;
-    color: rgba(255, 255, 255, 1);
-    font-size: 0.8vw;
-    font-family: MicrosoftYaHei;
-    font-weight: 400;
-  }
+  
 }
+.wy-login-bottom{
+  position: absolute;
+  bottom: 12px;
+  color: #fff;
+  font-size: 14px;
+  margin: 0 38%;
+  width: 100%;
+  white-space:nowrap !important;
+.zi {
+     position: absolute;
+     text-align: center;
+     color: rgba(255, 255, 255, 1);
+     font-family: MicrosoftYaHei;
+     font-weight: 400;
+     cursor: default;
+     white-space:nowrap;
+     width: 280px;
+     
+     }
+    
+  }
 </style>

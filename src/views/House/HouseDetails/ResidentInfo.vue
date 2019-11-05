@@ -82,7 +82,7 @@
               size="small"
               class="operateBtn btn-modify"
               @click="handleFaceClick(scope.row)"
-            >人脸录入</el-button>
+            >{{ faceName }}</el-button>
             <el-button
               v-if="!isShowExcel"
               v-show="isShowHis"
@@ -231,22 +231,22 @@
           </el-form-item>-->
           <!-- <span class="tips">请输入公司名称</span> -->
           <!-- 联系方式box -->
-          <section v-for="(value, index) in contactData" :key="index">
+          <section v-for="(value, index) in contactData1" :key="index">
             <!-- 联系方式加 -->
             <section v-if="index === 0">
               <el-form-item label="联系方式:" class="connect-class">
-                <el-input v-model="contactData[index]" />
-                <i class="el-icon-plus" @click="addlastitems(index)" />
+                <el-input v-model="contactData1[index]" @change="modifyChange" />
+                <i class="el-icon-plus" @click="addlastitems1(index)" />
               </el-form-item>
-              <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
+              <span :ref="`contactData1${index}`" class="tips">请输入正确的手机号码</span>
             </section>
             <!-- 联系方式减(添加的子项目) -->
             <section v-if="index > 0">
               <el-form-item label="联系方式:" class="connect-class">
-                <el-input v-model="contactData[index]" />
-                <i class="el-icon-close" @click="rmlastitems(index)" />
+                <el-input v-model="contactData1[index]" @change="modifyChange" />
+                <i class="el-icon-close" @click="rmlastitems1(index)" />
               </el-form-item>
-              <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
+              <span :ref="`contactData1${index}`" class="tips">请输入正确的手机号码</span>
             </section>
           </section>
           <!-- 身份证号 -->
@@ -278,7 +278,7 @@
             <el-input v-model="modifyData.conet" style="resize:none;" type="textarea" />
           </el-form-item>
 
-          <div class="addNow" @click="modifyHandler">确认添加</div>
+          <div class="addNow" @click="modifyHandler">确认修改</div>
         </el-form>
       </el-dialog>
       <!-- 人脸录入 -->
@@ -332,7 +332,7 @@
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
           </div>
-          <span class="tips" ref="identiToast">请上传身份证正面</span>
+          <span ref="identiToast" class="tips">请上传身份证正面</span>
         </div>
         <!-- 上传人脸照 -->
         <div class="upimg-class upimg-bottom">
@@ -380,7 +380,7 @@
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
           </div>
-          <span class="tips" ref="faceToast">请上传人脸图片</span>
+          <span ref="faceToast" class="tips">请上传人脸图片</span>
         </div>
         <div class="addNow" style="top:80%;" @click="uploadFaceHandler">确认上传</div>
       </el-dialog>
@@ -576,7 +576,7 @@
 <script>
 import axios from 'axios'
 import { Message } from 'element-ui'
-import { postHouseholdSelect, postHouseholdInsert, postHouseExcel, postExcelImport, postFace, postHistory, postChange, postSelect } from '@/api/residerInfo'
+import { postHouseholdSelect, postHouseholdInsert, postHouseExcel, postExcelImport, postFace, postHistory, postChange, postSelect, postUpdete } from '@/api/residerInfo'
 import { getInfo } from '@/utils/auth'
 export default {
   name: 'ResidentInfo',
@@ -584,6 +584,7 @@ export default {
   // data数据
   data () {
     return {
+      faceName: '人脸录入',
       isError: false,
       isShowExcel: false,
       isShowHis: true,
@@ -609,6 +610,7 @@ export default {
       radio1: null,
       radio2: null,
       contactData: [''],
+      contactData1: [''],
       rightConct: [],
       dialogFormVisible: false, // 添加住户dialog
       dialogFormVisible2: false,
@@ -617,7 +619,7 @@ export default {
       centerDialogVisible3: false,
       centerDialogVisible4: false, // 变更
       dialogFormVisibleDetail: false,
-      dialogFormVisibleRecord: false,//操作记录
+      dialogFormVisibleRecord: false, // 操作记录
       // 查询企业信息
       tableData: [
         // {
@@ -844,8 +846,12 @@ export default {
       formData.append('id', id)
       formData.append('Communityid', Communityid)
       formData.append('uname', uname)
-      formData.append('img', this.fileLists1[0].raw)
-      formData.append('picture', this.fileLists[0].raw)
+      if (this.fileLists1[0]) {
+        formData.append('img', this.fileLists1[0].raw)
+      }
+      if (this.fileLists[0]) {
+        formData.append('picture', this.fileLists[0].raw)
+      }
       this.fileLists = []
       // postSelect(id).then(resp => {
       //   console.log(resp, '832')
@@ -854,8 +860,14 @@ export default {
         console.log(resp, '人脸上传返回的resp')
         if (resp.code === 401) {
           this.$refs.faceToast.style.color = 'red'
+          setTimeout(() => {
+            this.$refs.faceToast.style.color = ''
+          }, 2000)
         } else if (resp.code === 402) {
           this.$refs.identiToast.style.color = 'red'
+          setTimeout(() => {
+            this.$refs.identiToast.style.color = ''
+          }, 2000)
         } else if (resp.code === 403 || resp.code === 404) {
           Message(resp.msg)
         } else {
@@ -865,6 +877,8 @@ export default {
           setTimeout(() => {
             postSelect({ id }).then(resp => {
               console.log(resp, '832')
+              this.fcDialogFormVisible = false
+              Message(resp.msg)
             })
           }, 1000)
         }
@@ -898,9 +912,16 @@ export default {
     addlastitems (index) {
       this.contactData.push('')
     },
+    addlastitems1 (index) {
+      this.contactData1.push('')
+    },
     // 添加房屋里的删除联系方式
     rmlastitems (index) {
       this.contactData.splice(index, 1)
+      this.phoneToast.splice(index, 1)
+    },
+    rmlastitems1 (index) {
+      this.contactData1.splice(index, 1)
       this.phoneToast.splice(index, 1)
     },
     // 返回上一级
@@ -943,14 +964,147 @@ export default {
       this.modifyData.type = row.type
       this.modifyData.dang = row.dang
       // 手机号码的渲染
-      this.contactData = row.phone.split(',')
+      this.contactData1 = row.phone.split(',')
       this.modifyData.housenumber = this.housenumber
       this.radio = row.type
       this.radio1 = row.dang
+      this.userId = row.id
     },
     // 修改修改
     modifyHandler () {
-      console.log(this.modifyData, this.contactData, '修改')
+      if (this.modifyData.name === '') {
+        this.$refs.userToast.style.color = 'red'
+        setTimeout(() => {
+          this.$refs.userToast.style.color = ''
+        }, 2000)
+      } else {
+        console.log(this.modifyData, this.contactData1, '修改')
+        // 循环验证
+        this.contactData1.forEach((item, index) => {
+          if (index) {
+            // 如果为添加的项目，则为空时不提示，有内容且填错才提示
+            if (item === '') {
+              this.$refs[`contactData1${index}`][0].style.color = ''
+            } else {
+              if ((/^1[3456789]\d{9}$/.test(item))) {
+                this.$refs[`contactData1${index}`][0].style.color = ''
+              } else {
+                this.$refs[`contactData${index}`][0].innerHTML = '请输入正确的电话号码'
+                this.$refs[`contactData1${index}`][0].style.color = 'red'
+                setTimeout(() => {
+                  this.$refs[`contactData1${index}`][0].style.color = ''
+                }, 2000)
+              }
+            }
+          } else {
+            // 如果为第一项
+            if ((/^1[3456789]\d{9}$/.test(item))) {
+              this.$refs[`contactData1${index}`][0].style.color = ''
+            } else {
+              this.$refs[`contactData1${index}`][0].style.color = 'red'
+              setTimeout(() => {
+                this.$refs[`contactData1${index}`][0].style.color = ''
+              }, 2000)
+            }
+          }
+        })
+      }
+      console.log(this.isRepeat1(this.contactData1), 'shuzuquc!!!!!!!!!!!!!!!!')
+      // 数组去重
+      const cc = this.distinct(this.contactData1)
+      const cc3 = this.contactData1.filter(this.filterConcat)
+      this.isRepeat2(cc3)
+      console.log(cc3, 'ccccc3')
+      const cc2 = cc3.every(this.checkContact)
+      const cc1 = cc.filter(this.checkContact)
+      console.log(this.contactData1, 'this.contactData1')
+      console.log(cc1, cc2, 'cc1cc1')
+      const phone = cc1.join(',')
+      // console.log(this.contactData1, phone, 'phone992')
+      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData1)) {
+        console.log('请求修改接口')
+        const type = this.radio
+        const dang = this.radio1
+        const { uname } = this.userInfoData
+        const { name, identity, Workunit, conet } = this.modifyData
+        const id = this.userId
+        postUpdete({ id, uname, name, phone, identity, Workunit, conet, type, dang }).then(resp => {
+          console.log(resp, '修改返回的resp')
+          const page = this.currentPage
+          const { Communityid } = this.userInfoData
+          const Houseid = this.houseid
+          if (resp.code === 200) {
+            Message(resp.msg)
+            this.getHouseuserLists(page, Houseid, Communityid)
+            this.dialogFormVisible2 = false
+          } else if (resp.code === 401) {
+            this.$refs.userToast.style.color = 'red'
+          } else if (resp.code === 403) {
+            this.$refs.typeToast.style.color = 'red'
+          } else if (resp.code === 404) {
+            this.$refs.dangToast.style.color = 'red'
+          } else if (resp.code === 405) {
+            Message(resp.msg)
+            this.dialogFormVisible2 = false
+          }
+        })
+      }
+    },
+    modifyChange () {
+      console.log('change')
+    },
+    // 电话号码正则验证
+    checkContact (item) {
+      if ((/^1[3456789]\d{9}$/.test(item))) {
+        return item
+      }
+    },
+    // 空电话号码赛选
+    filterConcat (item) {
+      if (item === '') {
+        return
+      } else {
+        return item
+      }
+    },
+    // 电话号码重复验证并提示
+    isRepeat (arr) {
+      const nArr = arr.slice().sort()
+      for (let i = 0; i < arr.length; i++) {
+        if (nArr[i] === nArr[i + 1]) {
+          // alert("数组重复内容" + nArr[i])
+          this.$refs[`contactData${i + 1}`][0].innerHTML = '该号码与以上号码重复，请重新填写'
+          setTimeout(() => {
+            this.$refs[`contactData${i + 1}`][0].innerHTML = ''
+          }, 2000)
+          this.$refs[`contactData${i + 1}`][0].style.color = 'red'
+        }
+      }
+    },
+    isRepeat1 (arr) {
+      const nArr = arr.slice().sort()
+      for (let i = 0; i < arr.length; i++) {
+        if (nArr[i] === nArr[i + 1]) {
+          // alert("数组重复内容" + nArr[i])
+          return false
+        } else {
+          return true
+        }
+      }
+    },
+    // 修改时的isRepeat
+    isRepeat2 (arr) {
+      const nArr = arr.slice().sort()
+      for (let i = 0; i < arr.length; i++) {
+        if (nArr[i] === nArr[i + 1]) {
+          // alert("数组重复内容" + nArr[i])
+          this.$refs[`contactData1${i + 1}`][0].innerHTML = '该号码与以上号码重复，请重新填写'
+          setTimeout(() => {
+            this.$refs[`contactData1${i + 1}`][0].innerHTML = ''
+          }, 2000)
+          this.$refs[`contactData1${i + 1}`][0].style.color = 'red'
+        }
+      }
     },
     // 点击查看详情
     handleDetailClick (row) {
@@ -1033,88 +1187,93 @@ export default {
           this.$refs.userToast.style.color = ''
         }, 2000)
       } else {
-        if (this.contactData.length) {
-          // 循环验证
-          this.contactData.forEach((item, index) => {
-            if (index) {
-              // 如果为添加的项目，则为空时不提示，有内容且填错才提示
-              if (item === '') {
-                this.$refs[`contactData${index}`][0].style.color = ''
-              } else {
-                if ((/^1[3456789]\d{9}$/.test(item))) {
-                  this.$refs[`contactData${index}`][0].style.color = ''
-                  this.rightConct.push(item)
-                } else {
-                  this.rightConct = []
-                  this.$refs[`contactData${index}`][0].style.color = 'red'
-                  console.log(this.$refs[`contactData${index}`][0])
-                  setTimeout(() => {
-                    this.$refs[`contactData${index}`][0].style.color = ''
-                  }, 2000)
-                }
-              }
+        // 循环验证
+        this.contactData.forEach((item, index) => {
+          if (index) {
+            // 如果为添加的项目，则为空时不提示，有内容且填错才提示
+            if (item === '') {
+              this.$refs[`contactData${index}`][0].style.color = ''
             } else {
-              // 如果为第一项
               if ((/^1[3456789]\d{9}$/.test(item))) {
                 this.$refs[`contactData${index}`][0].style.color = ''
-                this.rightConct.push(item)
               } else {
+                this.$refs[`contactData${index}`][0].innerHTML = '请输入正确的电话号码'
                 this.$refs[`contactData${index}`][0].style.color = 'red'
-                // console.log(this.$refs[`contactData${index}`][0])
-                this.rightConct = []
                 setTimeout(() => {
                   this.$refs[`contactData${index}`][0].style.color = ''
                 }, 2000)
               }
             }
-          })
-        }
+          } else {
+            // 如果为第一项
+            if ((/^1[3456789]\d{9}$/.test(item))) {
+              this.$refs[`contactData${index}`][0].style.color = ''
+            } else {
+              this.$refs[`contactData${index}`][0].style.color = 'red'
+              // console.log(this.$refs[`contactData${index}`][0])
+              setTimeout(() => {
+                this.$refs[`contactData${index}`][0].style.color = ''
+              }, 2000)
+            }
+          }
+        })
       }
-      const cc = this.distinct(this.rightConct)
-      const phone = cc.join(',')
+      const cc = this.distinct(this.contactData)
+      const cc3 = this.contactData.filter(this.filterConcat)
+      this.isRepeat(cc3)
+      // console.log(this.isRepeat1(cc3), 'ccccc3')
+      const cc2 = cc3.every(this.checkContact)
+      const cc1 = cc.filter(this.checkContact)
+      // console.log(this.contactData, 'this.contactData')
+      // console.log(cc1, cc2, 'cc1cc1')
+      const phone = cc1.join(',')
       const type = this.radio
       const dang = this.radio1
       const { Communityid, uname } = this.userInfoData
       const Houseid = this.houseid
       const { name, identity, Workunit, conet } = this.addData
-      console.log(phone, '55')
-      postHouseholdInsert({ Communityid, Houseid, uname, name, identity, Workunit, conet, dang, type, phone }).then(resp => {
-        console.log(resp, 'tianjia')
-        if (resp.code === 200) {
-          Message(resp.msg)
-          this.dialogFormVisible = false
-          const nume = Number(this.totalPage) / Number(10)
-          var shu = ''
-          if (Math.round(nume) === nume) {
-            // num是整数
-            shu = Number(nume) + Number(1)
-          } else {
-            shu = Math.ceil(nume)
+      // console.log(phone, '55')
+      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData)) {
+        postHouseholdInsert({ Communityid, Houseid, uname, name, identity, Workunit, conet, dang, type, phone }).then(resp => {
+          console.log(resp, 'tianjia')
+          if (resp.code === 200) {
+            Message(resp.msg)
+            this.dialogFormVisible = false
+            const nume = Number(this.totalPage) / Number(10)
+            var shu = ''
+            if (Math.round(nume) === nume) {
+              // num是整数
+              shu = Number(nume) + Number(1)
+            } else {
+              shu = Math.ceil(nume)
+            }
+            const page = shu
+            postHouseholdSelect({ Communityid, Houseid, page }).then(resp => {
+              // console.log(resp, '191')
+              this.tableData = resp.msg.data
+              this.listNum = resp.msg.listRows
+              this.totalPage = resp.msg.total
+              this.pageNums = resp.msg.pageNum
+              // this.tableData = resp.msg.data
+              this.currentPage = Number(resp.msg.page)
+            })
+          } else if (resp.code === 403) {
+            this.$refs.typeToast.style.color = 'red'
+            setTimeout(() => {
+              this.$refs.typeToast.style.color = ''
+            }, 2000)
+          } else if (resp.code === 404) {
+            this.$refs.dangToast.style.color = 'red'
+            setTimeout(() => {
+              this.$refs.dangToast.style.color = ''
+            }, 2000)
+          } else if (resp.code === 405 || resp.code === 406) {
+            Message(resp.msg)
+          } else if (resp.code === 401) {
+            this.$refs.userToast.style.color = 'red'
           }
-          const page = shu
-          postHouseholdSelect({ Communityid, Houseid, page }).then(resp => {
-            // console.log(resp, '191')
-            this.tableData = resp.msg.data
-            this.listNum = resp.msg.listRows
-            this.totalPage = resp.msg.total
-            this.pageNums = resp.msg.pageNum
-            // this.tableData = resp.msg.data
-            this.currentPage = Number(resp.msg.page)
-          })
-        } else if (resp.code === 403) {
-          this.$refs.typeToast.style.color = 'red'
-          setTimeout(() => {
-            this.$refs.typeToast.style.color = ''
-          }, 2000)
-        } else if (resp.code === 404) {
-          this.$refs.dangToast.style.color = 'red'
-          setTimeout(() => {
-            this.$refs.dangToast.style.color = ''
-          }, 2000)
-        } else if (resp.code === 405 || resp.code === 406) {
-          Message(resp.msg)
-        }
-      })
+        })
+      }
     }
   }
 }

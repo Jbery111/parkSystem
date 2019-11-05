@@ -16,7 +16,7 @@
           <svg-icon icon-class="search1" />
         </div>
       </div>
-      <el-table :data="tableData" style="width: 100%;top:12px; min-width:1203px" empty-text="没有数据">
+      <el-table :data="tableData" style="width: 100%;top:12px; min-width:1000px" empty-text="没有数据">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand" label-width="115px">

@@ -1,5 +1,6 @@
 <template>
   <div id="audit-changes">
+    <span class="dot"></span>
     <!-- 审核修改1 <button @click="change">切换</button> -->
 
     <!-- 表格 -->
@@ -51,7 +52,7 @@
           </div>
           <div class="row">
             <span class="t1">房屋面积:</span>
-            <span class="t2">{{detailData.data.Housingareas}}</span>
+            <span class="t2">{{detailData.data.Housingarea}}</span>
             <span class="t3">修改为:</span>
             <span class="t4">{{detailData.data.Housingareas}}</span>
           </div>
@@ -81,6 +82,40 @@
       </el-form>
     </el-dialog>
 
+    <!-- 操作记录 -->
+    <!-- 操作记录 -->
+    <el-dialog
+      v-if="showRecord"
+      title="操作记录"
+      :modal="true"
+      :append-to-body="true"
+      :visible.sync="RecordialogFormVisible"
+      :close-on-click-modal="false"
+      custom-class="myRecordForm"
+      >
+      <el-form>
+        <el-form-item v-if="recordData.data.uname" label="上次操作员:" :label-width="formLabelWidth">
+          <el-input v-model="recordData.data.uname" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.data.uname" label="上次操作时间" :label-width="formLabelWidth">
+          <el-input v-model="recordData.time" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.data.uname" label="上次操作ip地址" :label-width="formLabelWidth">
+          <el-input v-model="recordData.data.ip" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.usname" label="上次审核人:" :label-width="formLabelWidth">
+          <el-input v-model="recordData.usname" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.usname" label="上次审核时间" :label-width="formLabelWidth">
+          <el-input v-model="recordData.times" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.usname" label="上次审核结果" :label-width="formLabelWidth">
+          <el-input v-model="recordData.Result" :disabled="true" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <div class="btn-confirm-record" @click="RecordialogFormVisible=false">确认</div>
+    </el-dialog>
+
     <el-dialog
       title="拒绝"
       custom-class="myDetailForm"
@@ -97,10 +132,11 @@
               v-model="refuseReason.centnsa"
               rows="1"
               cols="40"
-              style="position:absolute;width:228px;right:0;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+              style="border-radius:4px;position:absolute;width:228px;right:0;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
               onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
               onblur="clearInterval(this.clock);"
             />
+            <p v-if="tips.reason" class="tips" style="position:absolute;top:27px;left:102px;font-size:12px;color:#f44;">必填</p>
           </div>
           <div class="btn confirm" style="cursor:pointer" @click="didRefuse">确认</div>
       </el-form>
@@ -117,8 +153,14 @@ export default {
   name: 'AuditChanges',
   data () {
     return {
+      showRecord: false,
+      formLabelWidth: '120px', // 记录表格宽度
+      RecordialogFormVisible: false,
+      tips: {
+        reason: false, // 拒绝理由是否填写
+      },
       refuseReason: {
-        centnsa: "no reason"
+        centnsa: ""
       },
       refuseFormVisible: false,
       detailFormVisible: false,
@@ -126,6 +168,8 @@ export default {
       isShowDetail: false,
       userInfo: { // 用户信息
       }, 
+      recordData: {
+      },
       judgeList: [], //审核列表
       judgeListC: [],
       detailData: {},
@@ -195,22 +239,30 @@ export default {
       //显示审核表格
     },
     agreen() {
-      alert("同意")
+      // alert("同意")
       this.sendAgreenRequest() 
     },
     refuse() {
-      alert("拒绝") 
+      // alert("拒绝") 
       this.detailFormVisible = false
       this.refuseFormVisible = true
       
     },
     handleRefuseClose() {
-      this.refuseReason.centnsa = 'no reason'
+      this.refuseReason.centnsa = ''
       this.refuseFormVisible = false
       this.detailFormVisible = true
     },
     didRefuse() {
-      this.sendRefuseRequest() 
+      if(this.refuseReason.centnsa){
+        this.sendRefuseRequest() 
+      } else {
+        this.tips.reason = true
+        setTimeout(() => {
+          this.tips.reason = false
+        }, 3000);
+      }
+      
     },
     sendAgreenRequest() {
       const { userHouseId } = this.detailData
@@ -227,6 +279,7 @@ export default {
       }
       ).then(res => {
         if(res.data.code === 200){
+          this.getJudgeList()
           this.detailFormVisible = false
           this.$message({
             message: "已同意",
@@ -253,6 +306,7 @@ export default {
       }
       ).then(res => {
         if(res.data.code === 200){
+          this.getJudgeList()
           this.refuseFormVisible = false
           this.refuseReason.centnsa = ''
           this.$message({
@@ -265,19 +319,23 @@ export default {
     },
     // 点击修改
     handleModifyClick(v) {
-      alert("modify")
+      // alert("modify")
     },
     // 点击住户
     handleUserClick(v) {
-      alert("user")
+      // alert("user")
     },
     // 点击车位
     handleCarClick(v) {
-      alert("car")
+      // alert("car")
     },
     // 点击记录
     handleRecordClick(v) {
-      alert("record")
+      this.recordData = v
+      this.showRecord = true
+      this.RecordialogFormVisible = true
+      console.log(v)
+      // alert("record")
     },
     getMesFromChild(v) { //获取子组件传递过来的值
       console.log(v,'22222222222')
@@ -319,7 +377,70 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+    // .dot{
+    //   display: inline-block;
+    //   z-index: 10;;
+    //   width: 6px;
+    //   height: 6px;
+    //   border-radius: 50%;
+    //   background-color: #F44;
+    //   position: absolute;
+    //   top: 18px;
+    //   left: 248px;
+    // }
+      //操作记录表格样式
+  /deep/.myRecordForm{
+    min-width: 380px;
+    max-width: 480px;
+    .el-dialog__header{
+      height: 30px;
+      .el-dialog__title{
+        position: absolute;
+        top: 5px;
+        font-size: 16px;
+      }
+      .el-dialog__headerbtn{
+        top: 6px;
+      }
+    }
+    .el-dialog__body{
+      position: relative;
+      padding-left: 30px;
+      padding-bottom: 40px;
+      .el-form-item{
+        min-height: 30px;
+        .el-form-item__content{
+          border: 1px solid #d2d2d2;
+          border-radius: 4px;
+        }
+        .el-input__inner{
+          height: 100% !important;
+        }
+      }
+    }
+    .el-input__inner{
+      cursor: default !important;
+    }
+    .el-form-item__label{
+      text-align: left;
+    }
+    .btn-confirm-record{
+      position: absolute;
+      bottom: 10px !important;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #F8AC59;
+      min-width: 36px;
+      text-align: center;
+      padding: 5px 8px;
+      color: #FFFEFE;
+      border-radius: 4px;
+      bottom: 10px;
+      cursor: pointer;
+    }
+  }
   /deep/.myDetailForm{
+    
     width: 400px;
     .el-dialog__header{
       height: 30px;

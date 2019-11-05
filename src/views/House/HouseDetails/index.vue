@@ -107,6 +107,7 @@
       </el-table>
     </div>
     <div v-if='isShowExcel' class="table-box">
+      <p>{{prop.length}}</p>
       <!-- 展示Excel -->
       <el-table
         class="rollTable"
@@ -117,7 +118,6 @@
         cell-class-name="myCell"
         style="width: 100%; height:100%;"
         >
-      
         <el-table-column :prop="prop[0]" label="楼栋" min-width="100" />
         <el-table-column :prop="prop[1]" label="单元" min-width="100" />
         <el-table-column :prop="prop[2]" label="门牌号" min-width="100" />
@@ -125,14 +125,14 @@
         <el-table-column :prop="prop[4]" label="房屋类型" min-width="100" />
         <el-table-column :prop="prop[5]" label="交房时间" min-width="100" />
         <el-table-column :prop="prop[6]" label="物业费到期时间" min-width="100" />
-        <el-table-column v-if="prop.length===8" :prop="prop[7]" label="原因" min-width="100" />
+        <!-- <el-table-column v-if="prop.length===8" :prop="prop[7]" label="原因" min-width="100" /> -->
       </el-table>
     </div>
     <!-- 分页 -->
     <div v-show="!isShowExcel" class="block">
       <p
         class="record-data"
-      >共{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页,{{ pageInfo.total }}条</p>
+      >共1{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页,{{ pageInfo.total }}条</p>
       <el-pagination
         background
         :page-size="pageInfo.listRows"
@@ -152,7 +152,7 @@
       :visible.sync="RecordialogFormVisible"
       :close-on-click-modal="false"
       custom-class="myRecordForm"
-    >
+      >
       <el-form :model="recordData">
         <el-form-item label="上次操作员:" :label-width="formLabelWidth">
           <el-input v-model="recordData.uname" :disabled="true" autocomplete="off" />
@@ -162,6 +162,15 @@
         </el-form-item>
         <el-form-item label="上次操作ip地址" :label-width="formLabelWidth">
           <el-input v-model="recordData.ip" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.usname" label="上次审核人:" :label-width="formLabelWidth">
+          <el-input v-model="recordData.usname" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.usname" label="上次审核时间" :label-width="formLabelWidth">
+          <el-input v-model="recordData.times" :disabled="true" autocomplete="off" />
+        </el-form-item>
+        <el-form-item v-if="recordData.usname" label="上次审核结果" :label-width="formLabelWidth">
+          <el-input v-model="recordData.Result" :disabled="true" autocomplete="off" />
         </el-form-item>
       </el-form>
       <div class="btn-confirm-record" @click="RecordialogFormVisible=false">确认</div>
@@ -263,13 +272,14 @@
               type="date"
               placeholder="选择日期"
             />
-            {{ modifyData.checktime }}
           </div>
+          <p v-if="tips.checktime" class="tips">请填写时间</p>
         </el-form-item>
         <div class="row" style="position:relative; height:100px;">
           <span style="position:absolute;left:0">房屋备注:</span>
           <textarea
-            v-model="originData.centn"
+            :placeholder="originData.centn"
+            v-model="modifyData.centn"
             rows="1"
             cols="40"
             style="width:250px;border:1px solod #d2d2d2;border-radius:4px;min-height:30px;outline:none;position:absolute;left:80px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
@@ -302,32 +312,36 @@
             <span class="t1">房屋类型:</span>
             <span class="t2">{{ originData.typeName }}</span>
             <span class="t3">修改为:</span>
-            <el-select v-model="modifyData.cid" filterable placeholder="请选择">
+            <el-select v-model="modifyData.cid" filterable placeholder="请选择修改">
               <el-option
                 v-for="item in houseTypeList"
                 :key="item.oid"
                 :label="item.typeName"
                 :value="item.oid"
               />
-            </el-select>{{modifyData.cid}}
+            </el-select>
+            <!-- {{modifyData.cid}} -->
           </div>
           <div class="row">
             <span class="t1">楼栋:</span>
             <span class="t2">{{ originData.userHouseBuilding }}</span>
             <span class="t3">修改为:</span>
             <input class="t4" v-model="modifyData.userHouseBuilding" type="text">
+            <p v-if="tips.isExist" class="tips">此房屋已存在,请检查楼栋</p>
           </div>
           <div class="row">
             <span class="t1">单元:</span>
             <span class="t2">{{ originData.userHouseUnit }}</span>
             <span class="t3">修改为:</span>
             <input class="t4" v-model="modifyData.userHouseUnit" type="text">
+            <p v-if="tips.isExist" class="tips">此房屋已存在,请检查单元</p>
           </div>
           <div class="row">
             <span class="t1">门牌号:</span>
             <span class="t2">{{ originData.userHouseNumber }}</span>
             <span class="t3">修改为:</span>
             <input class="t4" v-model="modifyData.userHouseNumber" type="text">
+            <p v-if="tips.isExist" class="tips">此房屋已存在,请检查门牌号</p>
           </div>
           <div class="row">
             <span class="t1">房屋面积:</span>
@@ -345,17 +359,18 @@
 
         <div class="row" style="position:relative; height:100px;">
           <span  class="t1">*申请理由:</span>
-          <textarea
+            <textarea
             v-model="modifyData.centns"
             rows="1"
             cols="40"
-            style="border:1px solid #d2d2d2;outline:none;position:absolute;left:85px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+            style="height:23px;border-radius:4px;border:1px solid #d2d2d2;outline:none;position:absolute;left:85px;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
             onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
             onblur="clearInterval(this.clock);"
           />
+          <p v-if="tips.reason" class="tips" style="right:290px !important;top:23px">必填</p>
         </div>
         <div v-show="!isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify1">确认修改</div>
-        <div v-show="isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify2">确认修改del</div>
+        <div v-show="isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify2">确认修改</div>
       </el-form>
     </el-dialog>
   </div>
@@ -379,10 +394,15 @@ export default {
   },
   data() {
     return {
+      tips: {
+        checktime: false, // 交房时间是否为空
+        isExist: false, // 要修改的房屋是否已存在
+        reason: false, // 是否填写申请理由
+      },
       housenumber: '',
       houseid: null,
       houseDetailShow: true,
-      prop: [],
+      prop: ['1','2','3','4','5','6','7'],
       isShowTip: false,
       isError: false,
       dr_nameId: '', // 点击确认导入传给后台
@@ -665,15 +685,16 @@ export default {
       this.houseDetailShow = false
     },
     handleCarInfoClick(v) {
-      alert('车位信息')
+      // alert('车位信息')
     },
     handleRecordClick(v) {
-      console.log(v)
+      console.log(v,'r')
       // var d = new Date(v.time * 1000) // 创建一个指定的日期对象
       this.RecordialogFormVisible = true
-      this.recordData.ip = v.ip // ip
-      this.recordData.time = v.time // 操作时间
-      this.recordData.uname = v.uname // 操作人员
+      // this.recordData.ip = v.ip // ip
+      // this.recordData.time = v.time // 操作时间
+      // this.recordData.uname = v.uname // 操作人员
+      this.recordData = v
       // console.log(this.recordData, 'record数据')
       // alert('记录')
     },
@@ -683,7 +704,7 @@ export default {
     },
     // 点击导入房屋
     clickImportHouse() {
-      alert('导入')
+      // alert('导入')
     },
     sendExcel() {
       const { Communityid } = this.userInfo
@@ -696,13 +717,13 @@ export default {
     handleModifyClick(v) {
       console.log(v)
       if (v.state === '已交房') {
-        alert('已交房')
+        // alert('已交房')
         this.modifyType.centOnly = true
         // 隐藏交房时间
         this.isShowHouseTime = false
       }
       if (v.state === '未交房') {
-        alert('未交房')
+        // alert('未交房')
         this.modifyType.centOnly = false
         this.isShowHouseTime = true
       }
@@ -712,20 +733,25 @@ export default {
     // 确认修改
     clickConfirmModify() {
       // this.modifyData.checktime = this.originData.checktime
-      this.modifyData.centn = this.originData.centn
+      //this.modifyData.centn = this.originData.centn
       const { userHouseId } = this.originData
       const { uname } = this.userInfo
-
-      const { centn, checktime, Communityid,
-        Housingarea, Price, userHouseBuilding,
-        userHouseUnit, userHouseNumber, centns } = this.modifyData
+      const { centn, checktime } = this.modifyData
       console.log(this.modifyData, '提交修改的数据')
       if (this.modifyType.centOnly) { // 已交房 只修改备注
-        alert('已交房 只修改备注')
+        // alert('已交房 只修改备注')
         this.sendModifyRequest(uname, userHouseId, centn)
       } else { // 未交房 修改时间和备注
-        alert('未交房 修改时间和备注')
-        this.sendModifyRequest1(uname, userHouseId, centn, checktime)
+        // alert('未交房 修改时间和备注')
+        if(checktime){
+          this.sendModifyRequest1(uname, userHouseId, centn, checktime)
+        } else {
+          this.tips.checktime = true
+          setTimeout(()=>{
+            this.tips.checktime = false
+          },3000)
+        }
+        
       }
 
       // else { //修改房屋详情
@@ -748,14 +774,22 @@ export default {
         userHouseUnit, userHouseNumber, centns } = this.modifyData
       console.log(this.modifyData, '提交修改的数据')
       // 修改房屋详情
-      this.sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid)
+      if(centns){
+        this.sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid)
+      } else {
+        this.tips.reason = true
+        setTimeout(() => {
+          this.tips.reason = false
+        }, 3000);
+      }
+      
     },
     // 确认删除
     clickConfirmModify2() {
       if(this.modifyData.centns){
         this.sendDeleteRequest()
       } else{
-        alert("no")
+        // alert("no")
       }
     },
     sendDeleteRequest() {
@@ -774,6 +808,7 @@ export default {
         console.log(res)
         if(res.data.code === 200){
           this.detailFormVisible = false
+          this.isDeleteHouse = false
           this.clearModifyData()
           this.$message({
             message: "申请删除房屋成功",
@@ -915,6 +950,7 @@ export default {
     },
     handleAddClose2() {
       this.detailFormVisible = false
+      this.isDeleteHouse = false
       setTimeout(() => {
         this.clearModifyData()
       }, 1000)
@@ -959,10 +995,12 @@ export default {
           type: 'warning'
         })
       } else {
+        this.pageInfo.page = 1
         this.sendSearchRequest()
       }
     },
     sendSearchRequest() {
+      
       const { Communityid, token } = this.userInfo
       axios.post(`http://test.txsqtech.com/index/House/searchSelect`,
         {
@@ -1139,12 +1177,19 @@ export default {
             message: res.data.msg,
             type: 'success'
           })
+        } else if(res.data.code === 402) {
+          this.tips.isExist = true
+          setTimeout(() => {
+            this.tips.isExist = false
+          }, 3000);
+
         } else {
           this.$message({
             message: res.data.msg,
-            type: 'error'
+            type: 'warning'
           })
         }
+         
       })
     }
   },
@@ -1161,6 +1206,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.tips{
+    color: red;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+}
 .red{
   color: red;
 }
@@ -1213,7 +1264,15 @@ export default {
         }
         .el-form{
           .row{
+            position: relative;
             padding-bottom: 18px;
+            .tips{
+              position: absolute;
+              right: 99px;
+            }
+            .textArea{
+
+            }
             span{
               display: inline-block;
             }
@@ -1360,7 +1419,34 @@ export default {
   }
   //操作记录表格样式
   /deep/.myRecordForm{
-    min-width: 500px;
+    min-width: 380px;
+    max-width: 480px;
+    .el-dialog__header{
+      height: 30px;
+      .el-dialog__title{
+        position: absolute;
+        top: 5px;
+        font-size: 16px;
+      }
+      .el-dialog__headerbtn{
+        top: 6px;
+      }
+    }
+    .el-dialog__body{
+      position: relative;
+      padding-left: 30px;
+      padding-bottom: 40px;
+      .el-form-item{
+        min-height: 30px;
+        .el-form-item__content{
+          border: 1px solid #d2d2d2;
+          border-radius: 4px;
+        }
+        .el-input__inner{
+          height: 100% !important;
+        }
+      }
+    }
     .el-input__inner{
       cursor: default !important;
     }
@@ -1369,7 +1455,7 @@ export default {
     }
     .btn-confirm-record{
       position: absolute;
-      bottom: 0;
+      bottom: 10px !important;
       left: 50%;
       transform: translateX(-50%);
       background-color: #F8AC59;

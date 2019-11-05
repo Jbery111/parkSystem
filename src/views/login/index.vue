@@ -2,14 +2,14 @@
 <template>
   <div class="wy-login-container">
     <div class="wy-login-nav">
-      <span class="logo">宅-物业操作系统1.0</span>
+      <span class="logo">宅-物业管理系统</span>
       <ul style="cursor:pointer;">
         <li>关于我们</li>
-        <div style="height:1.56vh;border:1px solid white;margin-top:3px" />
+        <div style="height:12px;border:1px solid white;margin-top:4px" />
         <li>客服服务</li>
-        <div style="height:1.56vh;border:1px solid white;margin-top:3px" />
+        <div style="height:12px;border:1px solid white;margin-top:4px" />
         <li>反馈建议</li>
-        <div style="height:1.56vh;border:1px solid white;margin-top:3px" />
+        <div style="height:12px;border:1px solid white;margin-top:4px" />
         <li>隐私政策</li>
       </ul>
     </div>
@@ -66,7 +66,11 @@
         @click.native.prevent="handleLogin"
       >确认</el-button>
     </el-form>
-    <p class="wy-login-bottom">成都同享社圈智慧科技有限公司版权所有</p>
+    <div class="wy-login-bottom">
+    <span class="zi">成都同享社圈智慧科技有限公司版权所有</span>
+    <div style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;" ></div>
+    <a href="http://www.miibeian.gov.cn/" target="_blank" style="margin-left:10px; white-space:nowrap;position:absolute;">蜀ICP备19024682号</a>
+    </div>
   </div>
 </template>
 
@@ -244,46 +248,44 @@ input {
     color: rgba(255, 255, 255, 1);
     display: flex;
     justify-content: space-between;
-    padding: 3.1vh 2.9vw 0 4vw;
+    padding: 20px 29px 0 40px;
     font-family: MicrosoftYaHei;
     font-weight: 400;
+  
     span {
-      font-size: 1vw;
+      font-size: 18px;
+      white-space: nowrap !important;
     }
     ul {
       display: flex;
-      padding-top: 0.3vh;
+      padding-top: 3px;
+      float: right;
 
       li {
-        // height: 0.8vw;
-        // border-right: 1px solid white;
-        padding: 0 1vw 0 0.8vw;
-        font-size: 0.8vw;
+        padding: 0 16px;
+        font-size: 14px;
         font-family: MicrosoftYaHei;
         font-weight: 400;
+        white-space: nowrap !important;
       }
     }
   }
 }
-.el-form {
-  padding: 5.6vh 2.6vw 7.4vh 2.6vw;
-}
+
 .login-form {
   .title-container {
     cursor: default;
     width: auto;
-    height: 1.95vh;
-    font-size: 1.4vw;
+    font-size: 22px;
+    margin-bottom: 60px;
     box-sizing: border-box;
     font-family: MicrosoftYaHei;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
-    margin: 0px 0px 8.6vh 0px;
   }
   .icon-container {
     box-sizing: border-box;
-    font-size: 1.6vw;
-    // padding: 0px 5px 0px 5px;
+    font-size: 28px;
     color: rgba(102, 102, 102, 1);
     .svg-user {
       font-size: 1.8vw;
@@ -306,42 +308,49 @@ input {
 }
 .forget {
   float: right;
-  right: 1.8vw;
-  height: 0.78vh;
-  font-size: 0.8vw;
+  font-size:12px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
   color: rgba(51, 51, 51, 1);
   cursor: pointer;
   width: auto;
   // position: absolute;
-  margin-bottom: 5.8vh;
+  margin-bottom: 45px;
   // top: 10px;
 }
 .success {
-  margin-top: 4vh !important;
-  // background-color: #f00 !important;
   border-color: #25bad9;
 }
 .show-pwd {
   position: absolute;
   right: 0.7vw;
   top: 1.2vh;
-  font-size: 1vw;
+  font-size: 16px;
   color: $dark_gray;
   cursor: pointer;
   user-select: none;
 }
-.wy-login-bottom {
+.wy-login-bottom{
   position: absolute;
-  bottom: 1.3vh;
-  right: 43vw;
-  color: rgba(255, 255, 255, 1);
-  font-size: 0.8vw;
-  font-family: MicrosoftYaHei;
-  font-weight: 400;
-  cursor: default;
-}
+  bottom: 12px;
+  color: #fff;
+  font-size: 14px;
+  margin: 0 38%;
+  width: 100%;
+  white-space:nowrap !important;
+.zi {
+     position: absolute;
+     text-align: center;
+     color: rgba(255, 255, 255, 1);
+     font-family: MicrosoftYaHei;
+     font-weight: 400;
+     cursor: default;
+     white-space:nowrap;
+     width: 280px;
+     
+     }
+    
+  }
 </style>
 
 
@@ -349,36 +358,37 @@ input {
 $btn-height: 4.2vh;
 .el-form {
   position: absolute;
-  top: 24vh;
-  right: 10vw;
-  min-width: 21.8vw;
-  height: auto;
+  top: 180px;
+  right: 150px;
+  min-width: 350px;
+  height: 420px;
   max-width: 100%;
   margin: 0 auto;
   overflow: hidden;
   background: rgba(255, 255, 255, 1);
   border-radius: 14px;
-  padding: 5.6vh 2.6vw 7.5vh 2.6vw !important;
+  padding: 40px 35px !important;
   .el-form-item {
     position: relative;
     width: 100%;
-    height: 5.3vh;
+    height: 43px !important;
     margin-bottom: 0px !important;
-    margin-top: 3.1vh;
+    margin-top: 12px;
     border-bottom: 1px solid rgba(160, 160, 160, 1);
     .el-input {
       width: 82%;
       border: none;
-      font-size: 0.9vw;
-      margin-top: 1vh;
+      font-size: 16px;
+      // margin-top: 1vh;
       .el-input__inner {
         border: none;
         outline: none;
+        height: 20px !important;
         padding: 0 1.09vw;
+        color: #999999;
       }
       .el-input__inner::-webkit-input-placeholder {
         font-size: 0.9vw;
-        // padding: 0 0 20px 0;
       }
       .el-input__inner::-moz-placeholder {
         font-size: 0.9vw;
@@ -392,21 +402,17 @@ $btn-height: 4.2vh;
 
   .el-button {
     width: 100%;
-    height: $btn-height;
-    // background: #f00;
+    height: 35px;
     background: rgba(37, 186, 217, 1);
     border-radius: 4px;
-    // margin: 1.5vh 0 1.5vh 0;
-    font-size: 0.95vw;
+    font-size: 16px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(255, 255, 255, 1);
     display: flex;
-    // margin-top: 6.5vh !important;
     justify-content: center;
     align-items: center;
-    padding-top: 1vh;
-    // padding-bottom: 1.95vh !important;
+    line-height: 6px;
     box-sizing: border-box;
   }
 }

@@ -3,14 +3,14 @@
   <!-- 输入新密码页面 -->
   <div class="wy-login-container">
     <div class="wy-login-nav">
-      <span>宅-物业操作系统1.0</span>
+      <span>宅-物业管理系统</span>
       <ul style="cursor:pointer;">
         <li>关于我们</li>
-        <div style="height:1.56vh;border:1px solid white;margin-top:3px" />
+        <div style="height:12px;border:1px solid white;margin-top:4px" />
         <li>客服服务</li>
-        <div style="height:1.56vh;border:1px solid white;margin-top:3px" />
+        <div style="height:12px;border:1px solid white;margin-top:4px" />
         <li>反馈建议</li>
-        <div style="height:1.56vh;border:1px solid white;margin-top:3px" />
+        <div style="height:12px;border:1px solid white;margin-top:4px" />
         <li>隐私政策</li>
       </ul>
     </div>
@@ -68,7 +68,11 @@
         <div :class="flag!==1 ? 'btn1':'btn2'" @mouseover="flag=2" @click="handleforgive">放弃</div>
       </div>
     </el-form>
-    <p class="wy-login-bottom">成都同享社圈智慧科技有限公司版权所有</p>
+    <div class="wy-login-bottom">
+    <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
+    <div style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;" ></div>
+    <a href="http://www.miibeian.gov.cn/" target="_blank" style="margin-left:10px; white-space:nowrap;position:absolute;">蜀ICP备19024682号</a>
+    </div>
   </div>
 </template>
 
@@ -247,22 +251,24 @@ $btn-height: 4.2vh;
     color: rgba(255, 255, 255, 1);
     display: flex;
     justify-content: space-between;
-    padding: 3.1vh 2.9vw 0 4vw;
+    padding: 20px 29px 0 40px;
     font-family: MicrosoftYaHei;
     font-weight: 400;
     span {
-      font-size: 1vw;
+      font-size: 18px;
+      white-space: nowrap !important;
     }
     ul {
       display: flex;
-      padding-top: 0.3vh;
+      padding-top: 3px;
+      float: right;
+
       li {
-        // height: 0.8vw;
-        // border-right: 1px solid white;
-        padding: 0 1vw 0 0.8vw;
-        // font-size: 0.8vw;
+        padding: 0 16px;
+        font-size: 14px;
         font-family: MicrosoftYaHei;
         font-weight: 400;
+        white-space: nowrap !important;
       }
     }
   }
@@ -270,18 +276,15 @@ $btn-height: 4.2vh;
     .title-container {
       cursor: default;
       width: auto;
-      height: 1.95vh;
-      font-size: 1.4vw;
+      font-size: 22px;
       box-sizing: border-box;
       font-family: MicrosoftYaHei;
       font-weight: 400;
       color: rgba(51, 51, 51, 1);
-      margin: 0 0px 8.6vh 0px;
     }
     .icon-container {
       box-sizing: border-box;
-      font-size: 1.38vw;
-      // padding: 0px 5px 0 5px;
+      font-size: 28px;
       color: rgba(102, 102, 102, 1);
       margin-top: 0.65vh;
     }
@@ -356,17 +359,29 @@ $btn-height: 4.2vh;
     cursor: pointer;
     user-select: none;
   }
-  .wy-login-bottom {
-    cursor: default;
-    position: absolute;
-    bottom: 1.3vh;
-    right: 43vw;
-    color: rgba(255, 255, 255, 1);
-    font-size: 0.8vw;
-    font-family: MicrosoftYaHei;
-    font-weight: 400;
-  }
+  
 }
+.wy-login-bottom{
+  position: absolute;
+  bottom: 12px;
+  color: #fff;
+  font-size: 14px;
+  margin: 0 38%;
+  width: 100%;
+  white-space:nowrap !important;
+.zi {
+     position: absolute;
+     text-align: center;
+     color: rgba(255, 255, 255, 1);
+     font-family: MicrosoftYaHei;
+     font-weight: 400;
+     cursor: default;
+     white-space:nowrap;
+     width: 280px;
+     
+     }
+    
+  }
 </style>
 
 // 忘记密码输入新密码
