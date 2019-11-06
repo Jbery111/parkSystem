@@ -1,6 +1,7 @@
 
 <template>
   <div id="house-details">
+    <span v-show="showDot" class="dot"></span>
   <div v-if="houseDetailShow">
     <!-- <router-view /> -->
     <!--搜索栏-->
@@ -396,6 +397,7 @@ export default {
   },
   data() {
     return {
+      showDot: false,
       amazing: true,
       tips: {
         checktime: false, // 交房时间是否为空
@@ -534,11 +536,32 @@ export default {
   created() {
     this.userInfo = this.getUserInfo()
     this.userInfo.token = JSON.parse(localStorage.getItem('userInfo')).token
+    this.getJudgeList()
     this.getHouseType()
     this.getHouseList()
     
   },
   methods: {
+    getJudgeList() {
+      const { Communityid, token } = this.userInfo
+      axios.post('http://test.txsqtech.com/index/Toexamine/examine',
+      {
+        Communityid,
+        page: '1',
+        count: '10'
+      },
+      {
+        headers: {
+          token
+        }   
+      }).then(res => {
+        if(res.data.code === 200) {
+            if(res.data.msg.data.length>0){
+              this.showDot = true
+            }
+        }
+      })
+    },
     ok() {
       this.isShowExcel = false
       this.isError = false
@@ -1214,6 +1237,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.dot{
+      display: inline-block;
+      z-index: 10;;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #F44;
+      position: absolute;
+      top: -34px;
+      left: 257px;
+    }
 .tips{
     color: red;
     font-size: 12px;

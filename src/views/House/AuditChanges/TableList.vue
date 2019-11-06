@@ -28,8 +28,8 @@
                 <el-table-column v-if="isShowDetail" prop="data.typeName" label="房屋类型" min-width="80" />
                 <el-table-column v-if="isShowDetail" prop="data.Price" label="物业费单价(元)" min-width="120" />
                 <el-table-column v-if="isShowDetail" prop="data.state" label="房屋状态" min-width="80" />
-                <el-table-column v-if="isShowDetail" prop="data.checktime" label="交房时间" min-width="100" />
-                <el-table-column v-if="isShowDetail" prop="data.wuye_price" label="物业费到期时间" min-width="120" />
+                <el-table-column v-if="isShowDetail" prop="data.checktime" label="交房时间" min-width="120" />
+                <el-table-column v-if="isShowDetail" prop="data.wuye_price" label="物业费到期时间" min-width="130" />
                 <el-table-column v-if="isShowDetail" prop="data.centn" class-name="note" label="房屋备注"  min-width="120" />
                 <el-table-column
                     v-if="!isShowDetail"

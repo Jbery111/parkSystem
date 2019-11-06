@@ -1,6 +1,7 @@
 
 <template>
   <div id="HouseType">
+    <span v-show="showDot" class="dot"></span>
     <!-- 三级菜单出口 -->
     <!-- <router-view /> -->
     <!--
@@ -155,6 +156,7 @@ export default {
   name: 'HouseType',
   data() {
     return {
+      showDot: false,
       selfType: '',
       isShowTip: false,
       account: '',
@@ -248,9 +250,30 @@ export default {
     this.userInfo = this.getUserInfo()
     // console.log('用户信息如下', this.userInfo)
     this.token = JSON.parse(localStorage.getItem('userInfo')).token
+    this.getJudgeList()
     this.getHouseList()
   },
   methods: {
+    getJudgeList() {
+      const { Communityid, token } = this.userInfo
+      axios.post('http://test.txsqtech.com/index/Toexamine/examine',
+      {
+        Communityid,
+        page: '1',
+        count: '10'
+      },
+      {
+        headers: {
+          token
+        }   
+      }).then(res => {
+        if(res.data.code === 200) {
+            if(res.data.msg.data.length>0){
+              this.showDot = true
+            }
+        }
+      })
+    },
     getUserInfo() {
       return JSON.parse(localStorage.getItem('userInfo')).data
     },
@@ -527,6 +550,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.dot{
+      display: inline-block;
+      z-index: 10;;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #F44;
+      position: absolute;
+      top: -64px;
+      left: 237px;
+    }
   /deep/.btn-modify{
     background: #25bad9;
   }

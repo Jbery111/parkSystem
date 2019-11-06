@@ -1,6 +1,6 @@
 <template>
   <div id="audit-changes">
-    <span class="dot"></span>
+    <span v-show="showDot" class="dot"></span>
     <!-- 审核修改1 <button @click="change">切换</button> -->
 
     <!-- 表格 -->
@@ -153,6 +153,7 @@ export default {
   name: 'AuditChanges',
   data () {
     return {
+      showDot: false,
       showRecord: false,
       formLabelWidth: '120px', // 记录表格宽度
       RecordialogFormVisible: false,
@@ -362,12 +363,13 @@ export default {
         }   
       }).then(res => {
         if(res.data.code === 200) {
+            if(res.data.msg.data.length>0){
+              this.showDot = true
+            }
             this.judgeList = res.data.msg.data
             this.pageInfo.page = Number(res.data.msg.page)
             this.pageInfo.pageNum = res.data.msg.pageNum
             this.pageInfo.total = res.data.msg.total
-            
-
         }
         console.log(this.judgeList, this.pageInfo,'审核列表')
       })
@@ -377,17 +379,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    // .dot{
-    //   display: inline-block;
-    //   z-index: 10;;
-    //   width: 6px;
-    //   height: 6px;
-    //   border-radius: 50%;
-    //   background-color: #F44;
-    //   position: absolute;
-    //   top: 18px;
-    //   left: 248px;
-    // }
+    .dot{
+      display: inline-block;
+      z-index: 10;;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #F44;
+      position: absolute;
+      top: 18px;
+      left: 248px;
+    }
       //操作记录表格样式
   /deep/.myRecordForm{
     min-width: 380px;
