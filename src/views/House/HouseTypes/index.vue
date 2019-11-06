@@ -30,7 +30,7 @@
     <div class="block">
       <p
         class="record-data"
-      >共{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页,{{ pageInfo.total }}条</p>
+      >共{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页 共{{ pageInfo.total }}条</p>
       <el-pagination
         background
         :page-size="pageInfo.listRows"
@@ -140,7 +140,7 @@
               type="text"
               size="small"
               class="operateBtn btn-record"
-              @click="handleRecordClick(scope.row)" style="width:83px;"
+              @click="handleRecordClick(scope.row)" style="width:72px;"
             >操作记录</el-button>
           </template>
         </el-table-column>
@@ -550,6 +550,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  /deep/.el-table__body tr:hover>td{
+    background-color: #EFF2F5!important;
+  }
+ 
+  /deep/.el-table__body tr.current-row>td{
+    background-color: #EFF2F5!important;
+  }
 .dot{
       display: inline-block;
       z-index: 10;;
@@ -558,8 +565,8 @@ export default {
       border-radius: 50%;
       background-color: #F44;
       position: absolute;
-      top: -64px;
-      left: 237px;
+      top: -48px;
+      left: 220px;
     }
   /deep/.btn-modify{
     background: #25bad9;
@@ -571,8 +578,8 @@ export default {
     color: #fff;
     display: inline-block;
     border-radius: 4px;
-    height: 32px;
-    width: 56px;
+    height: 30px;
+    width: 52px;
     padding: 4px;
     font-size: 14px;
   }
@@ -684,13 +691,15 @@ export default {
   #HouseType{
     position: relative;
     height: 90%;
-    margin: 30px 20px;
+    margin: 20px;
     background-color: #fff;
     .table-box{ //table
       position: absolute;
       width: 100%;
-      top: 44px;
+      top: 42px;
       height: 618px;
+      min-width:850px;
+      min-height: 660px;
       bottom: 32px;
       /deep/.el-table__header{
         width: 100% !important;
@@ -751,27 +760,27 @@ export default {
     }
 
     .box-header{
-      height: 26px;
+      height: 30px;
       position: relative;
       .add-btn{
         cursor: pointer;
         background-color: #25BAD9;
         color: #fff;
-        height: 32px;
-        line-height: 32px;
+        height: 30px;
+        line-height: 30px;
         position: absolute;
         font-size: 14px;
-        top: 50%;
+        top: 42%;
         bottom: 50%;
         margin-top: -13px;
-        padding: 0 12px;
+        padding: 0 8px;
         border-radius: 4px;
     }
     .search-btn{
         position: absolute;
-        height: 26px;
+        height: 30px;
         background-color: #25BAD9;
-        top: 50%;
+        top: 42%;
         bottom: 50%;
         right: 20px;
         margin-top: -13px;
@@ -802,94 +811,91 @@ export default {
   //分页器的样式
   .block {
     .record-data {
-      cursor: pointer;
-      display: inline-block;
-      height: 20px;
-      width: 1000px;
-      // background-color: green;
-      // float: right;
-      padding-left: 4.5vw;
-      margin-top: 15px;
-      position: absolute;
-      font-size: 0.8vw;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: rgba(51, 51, 51, 1);
+      cursor: default;
+    display: inline-block;
+    line-height: 18px;
+    margin-top: 17px;
+    position: absolute;
+    font-size: 14px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: rgba(51, 51, 51, 1);
     }
     position: absolute;
-    margin-right: 1.4vw;
-    bottom: 30px;
-    right: 2vw;
+    top: 720px;
     height: 40px;
     width: 100%;
-    // padding-left: 90px;
     .el-pagination {
-      // background-color: green;
       position: absolute;
-      bottom: 0px;
-      right: 50px;
-      height: 2.8vh !important;
-      margin-right: -1.9vw !important;
-      /deep/button {
-        // background-color: #f00 !important;
-        min-width: 1.6vw !important;
-        height: 2.8vh;
+    bottom: 0px;
+    right: 68px;
+    /deep/button {
+      min-width: 24px !important;
+      height: 24px;
+      cursor: default;
       }
       /deep/.el-pagination__jump {
-        // background-color: #f00;
         position: relative;
-        margin-left: 0px;
-        color: #fff;
-        font-size: 0px;
-        //input和ul是否居中
-        margin-top: 0px;
-        // &::before {
-        //   content: "前往";
-        //   color: #000;
-        // }
+      margin-left: 5px;
+      background: #5FAFE4;
+      height: 24px;
+      border-radius: 3px;
+      color: #fff;
+      font-size: 0px;
+      //input和ul是否居中
+      margin-top: 0px;
         .el-input {
-          // border: 1px solid;
-          font-size: 10px;
+          font-family: Microsoft YaHei;
+        font-weight: 400;
+        height: 24px;
+        width: 38px;
+        margin-left: 0px;
+        border-radius: 3px;
+        color: rgba(102, 102, 102, 1);
+        outline: none;
+        text-align: center;
+          /deep/.el-input__inner {
+            font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
+          display: inline-block;
+          margin-left: 48px ;
+          width: 40px;
+          height: 24px !important;
+          border: 1px solid rgba(239, 242, 245, 1) !important;
+          border-radius: 3px;
           outline: none;
-          /deep/.el-input__inner {
-            font-size: 14px;
-            font-family: Microsoft YaHei;
-            font-weight: 400;
-            color: rgba(102, 102, 102, 1);
-            display: inline-block;
-            // background-color: #f00 !important;
-            // border: 1px solid !important;
-            width: 44px;
-            height: 2.8vh !important;
-            border: 1px solid rgba(239, 242, 245, 1) !important;
-            border-radius: 2px;
-            margin-left: 12px;
-            outline: none;
           }
           &::before {
             content: "前往";
-            color: rgba(102, 102, 102, 1);
-            font-size: 0.8vw;
+          color: #fff;
+          font-size: 14px;
+          display: inline-block;
+          position: absolute;
+          margin-left: 4px;
+          text-align: center;
+          margin-top: 3px;
+          height: 24px;
           }
           &:after {
             content: "页";
-            padding-left: 0.5vw !important;
-            font-size: 0.8vw;
+          padding-left: 10px !important;
+          font-size: 14px;
+          position: absolute;
+          top: 3px;
           }
         }
       }
       /deep/.el-pager li {
-        min-width: 1.6vw;
-        height: 2.8vh;
-        border-radius: 2px;
-        font-size: 10px;
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(102, 102, 102, 1);
-        line-height: 2.8vh;
+        min-width: 24px;
+      height: 24px;
+      border-radius: 2px;
+      font-size: 10px;
+      font-family: Microsoft YaHei;
+      font-weight: 400;
+      color: rgba(102, 102, 102, 1);
+      line-height: 24px;
       }
     }
     /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {

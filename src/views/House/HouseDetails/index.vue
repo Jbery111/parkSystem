@@ -25,18 +25,19 @@
           <el-button size="small" type="primary" class="add-btn1" @click="uploadFile">导入房屋</el-button>
         </el-upload>
 
-        <span v-show="!isShowExcel" class="search-btn" @click="handleSearch">搜索</span>
+        <span v-show="!isShowExcel" class="search-btn" @click="handleSearch"><svg-icon icon-class="search1" /></span>
         <el-input
           v-show="!isShowExcel"
           v-model="searchData"
           class="sreach-box"
           clearable
-          placeholder="快速搜索"
+          placeholder="请输入搜索内容"
+          @keyup.enter.native="handleSearch"
         />
       </div>
 
       <div v-if="!isMainBox" class="box-header">
-        <span class="add-btn" @click="backToLastPage">返回上一页</span>
+        <span class="add-btn" @click="backToLastPage" style="background:#25BAD9;">返回上一页</span>
       </div>
     </div>
     <!-- 房屋列表  -->
@@ -50,8 +51,8 @@
         >
         <el-table-column prop="userHouseBuilding" label="楼栋" min-width="50" />
         <el-table-column prop="userHouseUnit" label="单元" min-width="50" />
-        <el-table-column prop="userHouseNumber" label="门牌号" min-width="80" />
-        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="120" />
+        <el-table-column prop="userHouseNumber" label="门牌号" min-width="65" />
+        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="100" />
         <el-table-column prop="typeName" label="房屋类型" min-width="80" />
         <el-table-column prop="Price" label="物业费单价(元)" min-width="120" />
         <el-table-column 
@@ -72,11 +73,11 @@
         </el-table-column>
         <el-table-column prop="checktime" label="交房时间" min-width="100" />
         <el-table-column prop="wuye_price" label="物业费到期时间" min-width="120" />
-        <el-table-column prop="centn" class-name="note" label="房屋备注"  min-width="120" />
+        <el-table-column prop="centn" class-name="note" label="房屋备注"  min-width="80" />
         <el-table-column
           label="操作"
           fixed="right"
-          min-width="300"
+          min-width="280"
           >
           <template slot-scope="scope">
             <el-button
@@ -84,31 +85,34 @@
               size="small"
               class="operateBtn btn-modify"
               @click="handleModifyClick(scope.row)"
+              style="height:30px; width:52px; "
             >修改</el-button>
             <el-button
               type="text"
               size="small"
               class="operateBtn btn-modify"
               @click="handleUserInfoClick(scope.row)"
+              style="width:72px; height:30px; margin-left:8px; background:#1FBBA6"
             >住户信息</el-button>
             <el-button
               type="text"
               size="small"
               class="operateBtn btn-modify"
               @click="handleCarInfoClick(scope.row)"
+              style="width:72px; height:30px; margin-left:8px;"
             >车位信息</el-button>
             <el-button
               type="text"
               size="small"
               class="operateBtn btn-record"
               @click="handleRecordClick(scope.row)"
+              style="width:72px; height:30px; margin-left:8px;"
             >操作记录</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div v-if='isShowExcel' class="table-box">
-      <p>{{prop.length}}</p>
       <!-- 展示Excel -->
       <el-table
         class="rollTable"
@@ -135,7 +139,7 @@
     <div v-show="!isShowExcel" class="block">
       <p
         class="record-data"
-      >共1{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页,{{ pageInfo.total }}条</p>
+      >共1{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页 共{{ pageInfo.total }}条</p>
       <el-pagination
         background
         :page-size="pageInfo.listRows"
@@ -590,7 +594,9 @@ export default {
           setTimeout(() => {
             this.amazing = true
           }, 1);
-          
+        }
+        else if (res.data.code === 10000) {
+          this.$router.push('/')
         }
         console.log(this.dr_nameId,'aaaaaaa')
       })
@@ -1237,6 +1243,14 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
+  /deep/.el-table__body tr:hover>td{
+    background-color: #EFF2F5!important;
+  }
+ 
+  /deep/.el-table__body tr.current-row>td{
+    background-color: #EFF2F5!important;
+  }
 .dot{
       display: inline-block;
       z-index: 10;;
@@ -1245,8 +1259,8 @@ export default {
       border-radius: 50%;
       background-color: #F44;
       position: absolute;
-      top: -34px;
-      left: 257px;
+      top: -28px;
+      left: 240px;
     }
 .tips{
     color: red;
@@ -1513,12 +1527,14 @@ export default {
 
   #house-details{
     position: relative;
+    padding: 20px;
     height: 90%;
     background-color: #fff;
     .table-box{ //table
-      position: absolute;
+      position: relative;
       width: 100%;
-      top: 60px;
+      top: 13px;
+      min-width: 1266px;
       bottom: 32px;
       /deep/.el-table__header{
         width: 100% !important;
@@ -1531,7 +1547,7 @@ export default {
         padding: 0;
       }
       /deep/.myRow > td {
-        padding: 0;
+        padding: 7px 0;
       }
       /deep/.myCell {
         border-collapse: collapse;  
@@ -1598,20 +1614,20 @@ export default {
     }
 
     .box-header{
-      height: 60px;
+      height: 30px;
       position: relative;
       .add-btn{
         cursor: pointer;
-        background-color: #25BAD9;
+        background-color: #1FBBA6;
         color: #fff;
         height: 30px;
         line-height: 30px;
         position: absolute;
-        top: 50%;
+        top: 43%;
+        font-size: 14px;
         bottom: 50%;
-        left: 20px;
         margin-top: -13px;
-        padding: 0 12px;
+        padding: 0 8px;
         border-radius: 4px;
     }
     .load-btn{
@@ -1619,146 +1635,145 @@ export default {
       color: #25BAD9;
       position: absolute;
       font-size: 12px;
-      right: 20px;
-      top: -25px;
+      right: 0px;
+      top: -45px;
     }
     .add-btn1{
         cursor: pointer;
         background-color: #25BAD9;
+        border: 1px solid #25bad9;
         color: #fff;
         height: 30px;
-        line-height: 30px;
+        line-height: 28px;
+        font-size: 14px;
         position: absolute;
-        top: 50%;
+        top: 42%;
         bottom: 50%;
-        left: 130px;
+        left: 82px;
         margin-top: -13px;
-        padding: 0 12px;
+        padding: 0 8px;
         border-radius: 4px;
     }
     .search-btn{
         position: absolute;
-        height: 26px;
-        background-color: #25BAD9;
-        top: 50%;
+        height: 30px;
+        background-color: #bfbfbf;
+        top: 42%;
         bottom: 50%;
-        right: 20px;
+        right: 0px;
+        border-radius: 0 3px 3px 0;
         margin-top: -13px;
         z-index: 9;
         color: #fff;
         font-size: 14px;
-        line-height: 26px;
+        line-height: 30px;
         padding: 0 5px;
         cursor: pointer;
       }
     .sreach-box{
       width: 200px;
-      height: 26px;
+      height: 30px;
       position: absolute;
-      top: 50%;
-      bottom: 50%;
-      right: 20px;
+      top: 42%;
+      right: 0px;
+      border-radius: 3px;
       margin-top: -13px;
-      background-color: #ddd;
-      border: 1px solid #ddd;
+      border: 1px solid #bfbfbf;
       /deep/.el-input__inner{
         height: 100% !important;
-        padding-left: 0 !important;
+        padding-left: 7px !important;
       }
     }
   }
   //分页器的样式
   .block {
     .record-data {
-      cursor: pointer;
-      display: inline-block;
-      height: 20px;
-      width: 1000px;
-      // background-color: green;
-      // float: right;
-      padding-left: 4.5vw;
-      margin-top: 15px;
-      position: absolute;
-      font-size: 0.8vw;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: rgba(51, 51, 51, 1);
+      cursor: default;
+    display: inline-block;
+    line-height: 18px;
+    margin-top: 15px;
+    position: absolute;
+    font-size: 14px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: rgba(51, 51, 51, 1);
     }
     position: absolute;
-    margin-right: 1.4vw;
-    bottom: 0;
-    right: 2vw;
+    top: 742px;
     height: 40px;
     width: 100%;
-    // padding-left: 90px;
     .el-pagination {
-      // background-color: green;
       position: absolute;
-      bottom: 0px;
-      right: 50px;
-      height: 2.8vh !important;
-      margin-right: -1.9vw !important;
+    top: 10px;
+    right: 68px;
+    width: 235px;
       /deep/button {
-        // background-color: #f00 !important;
-        min-width: 1.6vw !important;
-        height: 2.8vh;
-        cursor: default;
+        min-width: 24px !important;
+      height: 24px;
+      cursor: default;
       }
       /deep/.el-pagination__jump {
-        // background-color: #f00;
         position: relative;
-        margin-left: 0px;
-        color: #fff;
-        font-size: 0px;
-        //input和ul是否居中
-        margin-top: 0px;
-        // &::before {
-        //   content: "前往";
-        //   color: #000;
-        // }
+      margin-left: 5px;
+      background: #5FAFE4;
+      height: 24px;
+      border-radius: 3px;
+      color: #fff;
+      font-size: 0px;
+      //input和ul是否居中
+      margin-top: 0px;
         .el-input {
-          // border: 1px solid;
-          font-size: 10px;
+          font-family: Microsoft YaHei;
+        font-weight: 400;
+        height: 24px;
+        width: 38px;
+        margin-left: 0px;
+        border-radius: 3px;
+        color: rgba(102, 102, 102, 1);
+        outline: none;
+        text-align: center;
+          /deep/.el-input__inner {
+            font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
+          display: inline-block;
+          margin-left: 48px ;
+          width: 40px;
+          height: 24px !important;
+          border: 1px solid rgba(239, 242, 245, 1) !important;
+          border-radius: 3px;
           outline: none;
-          /deep/.el-input__inner {
-            font-size: 10px;
-            font-family: Microsoft YaHei;
-            font-weight: 400;
-            color: rgba(102, 102, 102, 1);
-            display: inline-block;
-            // background-color: #f00 !important;
-            // border: 1px solid !important;
-            width: 44px;
-            height: 2.8vh !important;
-            border: 1px solid rgba(239, 242, 245, 1) !important;
-            border-radius: 2px;
-            margin-left: 12px;
-            outline: none;
           }
           &::before {
-            content: "前往";
-            color: rgba(102, 102, 102, 1);
-            font-size: 0.8vw;
+             content: "前往";
+          color: #fff;
+          font-size: 14px;
+          display: inline-block;
+          position: absolute;
+          margin-left: 4px;
+          text-align: center;
+          margin-top: 3px;
+          height: 24px;
           }
           &:after {
             content: "页";
-            padding-left: 0.5vw !important;
-            font-size: 0.8vw;
+          padding-left: 10px !important;
+          font-size: 14px;
+          position: absolute;
+          top: 3px;
           }
         }
       }
       /deep/.el-pager li {
-        min-width: 1.6vw;
-        height: 2.8vh;
-        border-radius: 2px;
-        font-size: 10px;
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(102, 102, 102, 1);
-        line-height: 2.8vh;
+        min-width: 24px;
+      height: 24px;
+      border-radius: 2px;
+      font-size: 10px;
+      font-family: Microsoft YaHei;
+      font-weight: 400;
+      color: rgba(102, 102, 102, 1);
+      line-height: 24px;
       }
     }
     /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {

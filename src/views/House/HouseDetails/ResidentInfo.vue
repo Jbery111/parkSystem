@@ -1,13 +1,20 @@
 <template>
   <div id="enterprise-info" class="infor-warp">
-    <span class="load-class" @click="clickDownLoad">下载住户模板</span>
+    <span v-if="!isShowExcel" class="load-class" @click="clickDownLoad" v-show="xiazai">下载住户模板</span>
     <div v-if="isShowHis" slot="header" class="clearfix">
       <div v-if="!isShowExcel" class="box-header-right">
         <span class="add-btn" @click="exitBefore">返回上一级</span>
         <span class="add-btn add-btn2" @click="addUser">添加住户</span>
         <!-- <span class="add-btn">导入住户</span> -->
 
-        <el-upload v-if="!isShowExcel" action="#" multiple :before-upload="beforeUpload" :limit="1">
+        <el-upload
+          v-if="!isShowExcel"
+          action="#"
+          multiple
+          :before-upload="beforeUpload"
+          :limit="1"
+          :show-file-list="false"
+        >
           <el-button size="small" type="primary" class="add-btn">导入住户</el-button>
         </el-upload>
       </div>
@@ -78,11 +85,13 @@
             <el-button
               v-if="!isShowExcel"
               v-show="isShowHis"
+              ref="faceNames"
               type="text"
               size="small"
               class="operateBtn btn-modify"
               @click="handleFaceClick(scope.row)"
-            >{{ faceName }}</el-button>
+              v-html="scope.row.imgtype === 2 ? '人脸录入':'查看人脸'"
+            />
             <el-button
               v-if="!isShowExcel"
               v-show="isShowHis"
@@ -332,7 +341,7 @@
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
           </div>
-          <span ref="identiToast" class="tips">请上传身份证正面</span>
+          <span ref="identiToast1" class="tips">请上传身份证正面</span>
         </div>
         <!-- 上传人脸照 -->
         <div class="upimg-class upimg-bottom">
@@ -380,9 +389,16 @@
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
           </div>
-          <span ref="faceToast" class="tips">请上传人脸图片</span>
+          <span ref="faceToast1" class="tips">请上传人脸图片</span>
         </div>
-        <div class="addNow" style="top:80%;" @click="uploadFaceHandler">确认上传</div>
+        <div
+          v-loading="loading"
+          class="addNow"
+          style="top:80%;"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
+          @click="uploadFaceHandler"
+        >确认上传</div>
       </el-dialog>
 
       <!-- 查看人脸 -->
@@ -390,25 +406,28 @@
         title="查看人脸"
         custom-class="myAddForm"
         :append-to-body="true"
-        class="face-class"
+        class="face-class face-class1"
         :visible.sync="fcDialogFormVisible1"
       >
         <!-- 查看人脸上传身份证正面 -->
         <div class="upimg-class upimg-top">
           <span>身份证（正面）:</span>
+          <p class="reupload1">重新上传</p>
+
           <div class="up-img">
             <el-upload
-              :limit="1"
+              :limit="2"
               action="#"
-              :on-remove="handleRemove"
+              :file-list="temImgArr1"
+              :on-remove="handleRemove3"
               :on-preview="handlePictureCardPreview"
-              :on-change="handleChange"
+              :on-change="handleChange3"
               list-type="picture-card"
               :auto-upload="false"
             >
-              <i slot="default" class="el-icon-plus" />
+              <svg-icon icon-class="upload" />
               <div slot="file" slot-scope="{file}">
-                <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
+                <!-- <img class="el-upload-list__item-thumbnail" :src="file.url" alt /> -->
                 <span class="el-upload-list__item-actions">
                   <span
                     class="el-upload-list__item-preview"
@@ -435,24 +454,27 @@
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
           </div>
+          <span ref="identiToast" class="tips">请上传身份证正面</span>
         </div>
         <!-- 查看人脸上传人脸照 -->
         <div class="upimg-class upimg-bottom">
+          <p class="reupload">重新上传</p>
           <span>人脸照:</span>
           <div class="up-img" style="left:80px;">
             <el-upload
-              :limit="1"
+              :limit="2"
               action="#"
-              :on-remove="handleRemove1"
+              :on-remove="handleRemove4"
               :on-preview="handlePictureCardPreview"
-              :on-change="handleChange1"
+              :on-change="handleChange4"
               list-type="picture-card"
               :auto-upload="false"
+              :file-list="temImgArr2"
             >
-              <i slot="default" class="el-icon-plus" />
+              <svg-icon icon-class="upload" />
               <div slot="file" slot-scope="{file}">
                 <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
-                <span class="el-upload-list__item-actions">
+                <!-- <span class="el-upload-list__item-actions">
                   <span
                     class="el-upload-list__item-preview"
                     @click="handlePictureCardPreview(file)"
@@ -465,7 +487,7 @@
                   <span class="el-upload-list__item-delete" @click="handleRemove(file)">
                     <i class="el-icon-delete" />
                   </span>
-                </span>
+                </span>-->
               </div>
             </el-upload>
             <!-- 图片预览box下半部分 -->
@@ -481,8 +503,9 @@
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
           </div>
+          <span ref="faceToast" class="tips">请上传人脸图片</span>
         </div>
-        <div class="addNow" style="top:80%;">确认上传</div>
+        <div v-loading="loading1" class="addNow" style="top:80%;" @click="onsubmitModify">确认</div>
       </el-dialog>
     </div>
     <!-- 确认导入弹框 -->
@@ -570,13 +593,83 @@
         <div class="addNow" @click="dialogFormVisibleRecord=false">确认</div>
       </el-form>
     </el-dialog>
+    <!-- 添加住户弹框1 -->
+    <el-dialog
+      title="添加住户"
+      custom-class="myAddForm"
+      class="position:fixed;top:10px;"
+      :append-to-body="true"
+      :visible.sync="dialogFormVisible8"
+    >
+      <el-form ref="form" :model="addData" label-width="100px">
+        <el-form-item label="房屋编号:">
+          <el-input v-model="addData.housenumber" disabled />
+        </el-form-item>
+        <span class="tips" />
+        <el-form-item label="住户姓名:">
+          <el-input v-model="addData.name" />
+        </el-form-item>
+        <span ref="userToast" class="tips">请填写住户姓名</span>
+        <!-- 不会变动的联系方式 -->
+        <!-- <el-form-item label="联系方式:">
+          <el-input />
+        </el-form-item>-->
+        <!-- <span class="tips">请输入公司名称</span> -->
+        <!-- 联系方式box -->
+        <section v-for="(value, index) in contactData" :key="index">
+          <!-- 联系方式加 -->
+          <section v-if="index === 0">
+            <el-form-item label="联系方式:" class="connect-class">
+              <el-input v-model="contactData[index]" />
+              <i class="el-icon-plus" @click="addlastitems(index)" />
+            </el-form-item>
+            <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
+          </section>
+          <!-- 联系方式减(添加的子项目) -->
+          <section v-if="index > 0">
+            <el-form-item label="联系方式:" class="connect-class">
+              <el-input v-model="contactData[index]" />
+              <i class="el-icon-close" @click="rmlastitems(index)" />
+            </el-form-item>
+            <span :ref="`contactData${index}`" class="tips">请输入正确的手机号码</span>
+          </section>
+        </section>
+        <!-- 身份证号 -->
+        <el-form-item label="身份证号:">
+          <el-input v-model="addData.identity" placeholder="选填" />
+        </el-form-item>
+        <span ref="phoneNum" class="tips">请输入联系电话</span>
+        <el-form-item label="工作单位:">
+          <el-input v-model="addData.Workunit" placeholder="选填" />
+        </el-form-item>
+        <span ref="phoneNum" class="tips">请输入联系电话</span>
+        <el-form-item label="选择类别:">
+          <el-radio-group v-model="radio" @change="radioHandler">
+            <el-radio :label="1">房主</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <span ref="typeToast" class="tips">请选择住户身份</span>
+        <el-form-item label="是否是党员:">
+          <el-radio-group v-model="radio1" @change="radioHandler1">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="2">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <span ref="dangToast" class="tips">请选择住户党员身份</span>
+        <!-- 备注 -->
+        <el-form-item label="备注:" style="height:125px !important;margin-top:20px;">
+          <el-input v-model="addData.conet" style="resize:none;" type="textarea" />
+        </el-form-item>
+        <div class="addNow" @click="submitHandler1">下一步</div>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import { Message } from 'element-ui'
-import { postHouseholdSelect, postHouseholdInsert, postHouseExcel, postExcelImport, postFace, postHistory, postChange, postSelect, postUpdete } from '@/api/residerInfo'
+import { postHouseholdSelect, postHouseholdInsert, postHouseExcel, postExcelImport, postFace, postHistory, postChange, postSelect, postUpdete, postFaces } from '@/api/residerInfo'
 import { getInfo } from '@/utils/auth'
 export default {
   name: 'ResidentInfo',
@@ -584,6 +677,13 @@ export default {
   // data数据
   data () {
     return {
+      xiazai: true,
+      isRepeatData: null,
+      isRepeatData1: null,
+      loading1: false,
+      loading: false,
+      temImgArr1: [], // 缩略
+      temImgArr2: [],
       faceName: '人脸录入',
       isError: false,
       isShowExcel: false,
@@ -594,6 +694,8 @@ export default {
       mod: false, // 不需要遮罩层
       fileLists: [], // 添加身份证
       fileLists1: [], // 添加人脸
+      fileLists3: [],
+      fileLists4: [],
       ImgDiaLog: { // 图片弹窗显示与否
         origin: false,
         originSrc: '',
@@ -620,6 +722,7 @@ export default {
       centerDialogVisible4: false, // 变更
       dialogFormVisibleDetail: false,
       dialogFormVisibleRecord: false, // 操作记录
+      dialogFormVisible8: false, // 第二个添加住户弹出框
       // 查询企业信息
       tableData: [
         // {
@@ -644,7 +747,7 @@ export default {
         //   housenumber: '1111' // 房屋编号
         // }
       ],
-
+      changeQuery: {}, // 当只有一个住户时点击变更进入添加的页面点击下一步到是否变更住户接口需要的参数
       addData: {
         housenumber: '', // 房屋编号
         name: '', // 住户姓名
@@ -813,6 +916,12 @@ export default {
     handleRemove1 (file, fileList) {
       this.fileLists1 = fileList
     },
+    handleRemove3 (file, fileList) {
+      this.fileLists3 = fileList
+    },
+    handleRemove4 (file, fileList) {
+      this.fileLists4 = fileList
+    },
     handlePictureCardPreview (file) {
       this.ImgDiaLog.addSrc = file.url
       this.ImgDiaLog.add = true // 添加预览
@@ -829,7 +938,7 @@ export default {
       // }
     },
     handleChange1 (file, fileList) {
-      console.log(file, fileList, '图片事件')
+      console.log(file, fileList, '图片事件1')
       if (fileList.length < 2) { // 允许最多上传三张图片
         this.fileLists1 = fileList
       }
@@ -837,9 +946,31 @@ export default {
       //   Message('上传的图片已达上线')
       // }
     },
+    handleChange3 (file, fileList) {
+      console.log(file, fileList, '图片事件3')
+      // if (fileList.length < 2) { // 允许最多上传三张图片
+      this.fileLists3 = fileList
+      // }
+      // console.log(fileList[0].url)
+      this.temImgArr1 = [{ url: fileList[1].url }]
+      // if (fileList.length === 2) {
+      //   Message('上传的图片已达上线')
+      // }
+    },
+    handleChange4 (file, fileList) {
+      console.log(file, fileList, '图片事件4')
+      // if (fileList.length < 2) { // 允许最多上传三张图片
+      this.fileLists4 = fileList
+      // }
+      this.temImgArr2 = [{ url: fileList[1].url }]
+      // if (fileList.length === 2) {
+      //   Message('上传的图片已达上线')
+      // }
+    },
     // 确认上传
     uploadFaceHandler () {
       // console.log(this.fileLists[0].raw, this.fileLists1[0], 'file')
+      this.loading = true
       const { Communityid, uname } = this.userInfoData
       const id = this.userId
       const formData = new FormData()
@@ -857,28 +988,39 @@ export default {
       //   console.log(resp, '832')
       // })
       postFace(formData).then(resp => {
+        this.loading = false
         console.log(resp, '人脸上传返回的resp')
         if (resp.code === 401) {
-          this.$refs.faceToast.style.color = 'red'
+          this.$refs.faceToast1.style.color = 'red'
           setTimeout(() => {
-            this.$refs.faceToast.style.color = ''
+            this.$refs.faceToast1.style.color = ''
           }, 2000)
         } else if (resp.code === 402) {
-          this.$refs.identiToast.style.color = 'red'
+          this.$refs.identiToast1.style.color = 'red'
           setTimeout(() => {
-            this.$refs.identiToast.style.color = ''
+            this.$refs.identiToast1.style.color = ''
           }, 2000)
         } else if (resp.code === 403 || resp.code === 404) {
           Message(resp.msg)
         } else {
           // 查看人脸是否上传成功
           const id = this.userId
+          const page = this.currentPage
+          const { Communityid } = this.userInfoData
+          const Houseid = this.houseid
           console.log(id, '863')
           setTimeout(() => {
             postSelect({ id }).then(resp => {
               console.log(resp, '832')
-              this.fcDialogFormVisible = false
-              Message(resp.msg)
+
+              if (resp.code === 200) {
+                this.fcDialogFormVisible = false
+                Message(resp.msg)
+                this.getHouseuserLists(page, Houseid, Communityid)
+              } else {
+                this.fcDialogFormVisible = false
+                Message(resp.msg)
+              }
             })
           }, 1000)
         }
@@ -989,7 +1131,7 @@ export default {
               if ((/^1[3456789]\d{9}$/.test(item))) {
                 this.$refs[`contactData1${index}`][0].style.color = ''
               } else {
-                this.$refs[`contactData${index}`][0].innerHTML = '请输入正确的电话号码'
+                this.$refs[`contactData1${index}`][0].innerHTML = '请输入正确的电话号码'
                 this.$refs[`contactData1${index}`][0].style.color = 'red'
                 setTimeout(() => {
                   this.$refs[`contactData1${index}`][0].style.color = ''
@@ -1021,7 +1163,7 @@ export default {
       console.log(cc1, cc2, 'cc1cc1')
       const phone = cc1.join(',')
       // console.log(this.contactData1, phone, 'phone992')
-      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData1)) {
+      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData1) && this.isRepeatData1 === null) {
         console.log('请求修改接口')
         const type = this.radio
         const dang = this.radio1
@@ -1046,6 +1188,8 @@ export default {
           } else if (resp.code === 405) {
             Message(resp.msg)
             this.dialogFormVisible2 = false
+          } else if (resp.code === 406) {
+            Message(resp.msg)
           }
         })
       }
@@ -1068,19 +1212,38 @@ export default {
       }
     },
     // 电话号码重复验证并提示
+    // isRepeat (arr) {
+    //   const nArr = arr.slice().sort()
+    //   for (let i = 0; i < arr.length; i++) {
+    //     if (nArr[i] === nArr[i + 1]) {
+    //       // alert("数组重复内容" + nArr[i])
+    //       this.$refs[`contactData${i + 1}`][0].innerHTML = '该号码与以上号码重复，请重新填写'
+    //       setTimeout(() => {
+    //         this.$refs[`contactData${i + 1}`][0].innerHTML = ''
+    //       }, 2000)
+    //       this.$refs[`contactData${i + 1}`][0].style.color = 'red'
+    //     }
+    //   }
+    // },
     isRepeat (arr) {
-      const nArr = arr.slice().sort()
+      this.isRepeatData = null
+      var hash = {}
       for (let i = 0; i < arr.length; i++) {
-        if (nArr[i] === nArr[i + 1]) {
-          // alert("数组重复内容" + nArr[i])
-          this.$refs[`contactData${i + 1}`][0].innerHTML = '该号码与以上号码重复，请重新填写'
+        if (typeof hash[arr[i]] === 'undefined') {
+          hash[arr[i]] = i
+        } else {
+          this.isRepeatData = 1
+          console.log(hash, i, 'hash')
+          this.$refs[`contactData${i}`][0].innerHTML = '该号码与以上号码重复，请重新填写'
           setTimeout(() => {
-            this.$refs[`contactData${i + 1}`][0].innerHTML = ''
+            this.$refs[`contactData${i}`][0].innerHTML = ''
           }, 2000)
-          this.$refs[`contactData${i + 1}`][0].style.color = 'red'
+          this.$refs[`contactData${i}`][0].style.color = 'red'
         }
       }
+      // return false
     },
+    // 检测数组重复项
     isRepeat1 (arr) {
       const nArr = arr.slice().sort()
       for (let i = 0; i < arr.length; i++) {
@@ -1094,15 +1257,19 @@ export default {
     },
     // 修改时的isRepeat
     isRepeat2 (arr) {
-      const nArr = arr.slice().sort()
+      this.isRepeatData1 = null
+      var hash = {}
       for (let i = 0; i < arr.length; i++) {
-        if (nArr[i] === nArr[i + 1]) {
-          // alert("数组重复内容" + nArr[i])
-          this.$refs[`contactData1${i + 1}`][0].innerHTML = '该号码与以上号码重复，请重新填写'
+        if (typeof hash[arr[i]] === 'undefined') {
+          hash[arr[i]] = i
+        } else {
+          this.isRepeatData1 = 1
+          console.log(hash, i, 'hash')
+          this.$refs[`contactData1${i}`][0].innerHTML = '该号码与以上号码重复，请重新填写'
           setTimeout(() => {
-            this.$refs[`contactData1${i + 1}`][0].innerHTML = ''
+            this.$refs[`contactData1${i}`][0].innerHTML = ''
           }, 2000)
-          this.$refs[`contactData1${i + 1}`][0].style.color = 'red'
+          this.$refs[`contactData1${i}`][0].style.color = 'red'
         }
       }
     },
@@ -1114,26 +1281,115 @@ export default {
       this.dialogFormVisibleDetail = true
       this.radio2 = row.dang
     },
-    // 点击人脸录入
+    // 点击人脸录入或者查看人脸
     handleFaceClick (row) {
       console.log(row, '729')
-      this.file = ''
-      this.userId = row.id
-      this.fcDialogFormVisible = true
-      this.fileLists1 = []
-      this.fileLists = []
-      this.$refs.upload.clearFiles()
-      this.$refs.upload1.clearFiles()
+      if (row.imgtype === 2) {
+        this.file = ''
+        this.userId = row.id
+        this.fcDialogFormVisible = true
+        this.fileLists1 = []
+        this.fileLists = []
+        this.$refs.upload.clearFiles()
+        this.$refs.upload1.clearFiles()
+      } else {
+        this.userId = row.id
+        this.fcDialogFormVisible1 = true
+        const img = row.img
+        const picture = row.picture
+        this.temImgArr1 = [{ url: picture }]
+        this.temImgArr2 = [{ url: img }]
+        this.fileLists3 = []
+        this.fileLists4 = []
+        // console.log(this.fileLists, this.fileLists1, '1143')
+      }
+    },
+    onsubmitModify () {
+      // alert('修改人脸')
+      this.loading1 = true
+      const { Communityid, uname } = this.userInfoData
+      const id = this.userId
+      const formData = new FormData()
+      formData.append('id', id)
+      formData.append('Communityid', Communityid)
+      formData.append('uname', uname)
+      console.log(this.fileLists3, this.fileLists4, '56565656')
+      if (this.fileLists3.length > 1) {
+        formData.append('picture', this.fileLists3[1].raw)
+      } else {
+        formData.append('picture', null)
+      }
+      if (this.fileLists4.length > 1) {
+        formData.append('img', this.fileLists4[1].raw)
+      } else {
+        formData.append('img', null)
+      }
+      postFaces(formData).then(resp => {
+        this.loading1 = false
+        console.log(resp, '修改人脸')
+        if (resp.code === 401) {
+          this.$refs.faceToast.style.color = 'red'
+          setTimeout(() => {
+            this.$refs.faceToast.style.color = ''
+          }, 2000)
+        } else if (resp.code === 402) {
+          this.$refs.identiToast.style.color = 'red'
+          setTimeout(() => {
+            this.$refs.identiToast.style.color = ''
+          }, 2000)
+        } else if (resp.code === 403 || resp.code === 404) {
+          Message(resp.msg)
+          this.fcDialogFormVisible1 = false
+        } else {
+          // 查看人脸是否上传成功
+          const id = this.userId
+          console.log(id, '863')
+          setTimeout(() => {
+            postSelect({ id }).then(resp => {
+              // console.log(resp, '832')
+
+              if (resp.code === 400) {
+                this.fcDialogFormVisible1 = false
+                Message('修改失败')
+              } else {
+                this.fcDialogFormVisible1 = false
+                Message('修改成功')
+              }
+            })
+          }, 1000)
+        }
+      })
     },
     // 点击变更
     handleExchangeClick (row) {
-      this.centerDialogVisible4 = true
+      console.log(row, '点击变更row')
       this.userId = row.id
+      if (row.nubers === 1 && row.type === 1) {
+        this.addData.name = ''
+        this.addData.housenumber = this.housenumber
+        this.addData.identity = ''
+        this.addData.Workunit = ''
+        this.addData.type = ''
+        this.addData.dang = ''
+        this.addData.conet = ''
+        this.rightConct = []
+        this.contactData = ['']
+        // console.log('change')
+        this.dialogFormVisible8 = true
+        this.radio = 1
+        this.radio1 = 2
+        this.addData.housenumber = this.housenumber
+      } else {
+        this.centerDialogVisible4 = true
+      }
     },
     changeQuerenHandler () {
+      this.xiazai = false
       const id = this.userId
       const uname = this.userInfoData.uname
-      postChange({ id, uname }).then(resp => {
+      const cQuery = { ...this.changeQuery, id, uname }
+      console.log(cQuery, 'kkkkkk')
+      postChange(cQuery).then(resp => {
         console.log(resp, '变更')
         this.centerDialogVisible4 = false
         Message(resp.msg)
@@ -1158,6 +1414,7 @@ export default {
       })
     },
     exitHisHandler () {
+      this.xiazai = true
       const { Communityid } = this.userInfoData
       const Houseid = this.houseid
       this.getHouseuserLists(1, Houseid, Communityid)
@@ -1218,22 +1475,19 @@ export default {
           }
         })
       }
-      const cc = this.distinct(this.contactData)
       const cc3 = this.contactData.filter(this.filterConcat)
       this.isRepeat(cc3)
-      // console.log(this.isRepeat1(cc3), 'ccccc3')
+      console.log(this.isRepeatData, 'cc3')
+      const cc = this.distinct(this.contactData)
       const cc2 = cc3.every(this.checkContact)
       const cc1 = cc.filter(this.checkContact)
-      // console.log(this.contactData, 'this.contactData')
-      // console.log(cc1, cc2, 'cc1cc1')
       const phone = cc1.join(',')
       const type = this.radio
       const dang = this.radio1
       const { Communityid, uname } = this.userInfoData
       const Houseid = this.houseid
       const { name, identity, Workunit, conet } = this.addData
-      // console.log(phone, '55')
-      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData)) {
+      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData) && this.isRepeatData === null) {
         postHouseholdInsert({ Communityid, Houseid, uname, name, identity, Workunit, conet, dang, type, phone }).then(resp => {
           console.log(resp, 'tianjia')
           if (resp.code === 200) {
@@ -1267,12 +1521,77 @@ export default {
             setTimeout(() => {
               this.$refs.dangToast.style.color = ''
             }, 2000)
-          } else if (resp.code === 405 || resp.code === 406) {
+          } else if (resp.code === 405) {
             Message(resp.msg)
           } else if (resp.code === 401) {
             this.$refs.userToast.style.color = 'red'
+          } else if (resp.code === 406) {
+            Message(resp.msg)
+            this.dialogFormVisible = false
           }
         })
+      }
+    },
+    submitHandler1 () {
+      console.log(this.addData, '变更chenge')
+      if (this.addData.name === '') {
+        this.$refs.userToast.style.color = 'red'
+        setTimeout(() => {
+          this.$refs.userToast.style.color = ''
+        }, 2000)
+      } else {
+        // 循环验证
+        this.contactData.forEach((item, index) => {
+          if (index) {
+            // 如果为添加的项目，则为空时不提示，有内容且填错才提示
+            if (item === '') {
+              this.$refs[`contactData${index}`][0].style.color = ''
+            } else {
+              if ((/^1[3456789]\d{9}$/.test(item))) {
+                this.$refs[`contactData${index}`][0].style.color = ''
+              } else {
+                this.$refs[`contactData${index}`][0].innerHTML = '请输入正确的电话号码'
+                this.$refs[`contactData${index}`][0].style.color = 'red'
+                setTimeout(() => {
+                  this.$refs[`contactData${index}`][0].style.color = ''
+                }, 2000)
+              }
+            }
+          } else {
+            // 如果为第一项
+            if ((/^1[3456789]\d{9}$/.test(item))) {
+              this.$refs[`contactData${index}`][0].style.color = ''
+            } else {
+              this.$refs[`contactData${index}`][0].style.color = 'red'
+              // console.log(this.$refs[`contactData${index}`][0])
+              setTimeout(() => {
+                this.$refs[`contactData${index}`][0].style.color = ''
+              }, 2000)
+            }
+          }
+        })
+      }
+      const cc = this.distinct(this.contactData)
+      const cc3 = this.contactData.filter(this.filterConcat)
+      this.isRepeat(cc3)
+      // console.log(this.isRepeat1(cc3), 'ccccc3')
+      const cc2 = cc3.every(this.checkContact)
+      const cc1 = cc.filter(this.checkContact)
+      // console.log(this.contactData, 'this.contactData')
+      // console.log(cc1, cc2, 'cc1cc1')
+      // const id = this.userId
+      const phone = cc1.join(',')
+      const type = this.radio
+      const dang = this.radio1
+      const { Communityid } = this.userInfoData
+      const Houseid = this.houseid
+      const { name, identity, Workunit, conet } = this.addData
+      // console.log(phone, '55')
+      this.changeQuery = { Communityid, Houseid, name, identity, Workunit, conet, dang, type, phone }
+      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData)) {
+        console.log(this.changeQuery, 'hhahha')
+        this.centerDialogVisible4 = true
+        this.dialogFormVisible8 = false
       }
     }
   }
@@ -1284,7 +1603,7 @@ export default {
   padding: 0;
 }
 /deep/.myRow > td {
-  padding: 0;
+  padding: 15px 0 !important;
 }
 /deep/.myCell {
   border-collapse: collapse;
@@ -1293,7 +1612,7 @@ export default {
   }
 }
 /deep/.el-card__body {
-  padding-top: 0 !important;
+  padding: 0 !important;
 }
 /deep/.infor-warp {
   height: 500px;
@@ -1309,6 +1628,7 @@ export default {
 }
 .btn-modify {
   background: #25bad9;
+
 }
 .btn-licence {
   background: #1fbba6;
@@ -1325,7 +1645,6 @@ export default {
   white-space: nowrap;
 }
 /deep/.up-img {
-  //width: 60px;
   z-index: 999;
   height: 60px;
   overflow: hidden;
@@ -1593,11 +1912,14 @@ export default {
 
 /deep/.list-card {
   position: relative;
-  // background-color: #ddd !important;
+  border: none;
+  width: 100%;
+  min-height: 730px;
   height: 100%;
+  min-width: 1000px;
 }
 #enterprise-info {
-  height: 80%;
+  min-height: 730px;
   position: relative;
   .my-pagination-box {
     z-index: 9999;
@@ -1619,51 +1941,57 @@ export default {
 }
 .clearfix {
   width: 100%;
-  // height: 50px;
-  padding: 0 30px 0 12px;
+  height: 30px;
+  margin-bottom: 12px;
   .box-right {
-    height: 60px;
-    padding-top: 20px;
     box-sizing: border-box;
+    height: 30px;
     .add-btn1 {
       cursor: pointer;
       background-color: #25bad9;
       color: #fff;
-      height: 26px;
-      margin-top: 20px;
-      padding: 0 12px;
+      font-size: 14px;
+      position: absolute;
+      height: 30px;
+      padding: 5px 8px 6px 8px;
       border-radius: 4px;
       box-sizing: border-box;
     }
   }
   .box-header-right {
     float: left;
-    height: 60px;
     display: flex;
     justify-content: space-around;
-    width: 300px;
+    
     .add-btn {
       cursor: pointer;
       background-color: #25bad9;
+      border: 1px solid #25bad9;
       color: #fff;
-      height: 26px;
-      margin-top: 20px;
-      padding: 0 12px;
+      height: 30px;
+      text-align: center;
+      font-size: 14px;
+      width: 86px;
+      padding: 0;
       border-radius: 4px;
+      
+      line-height: 30px;
       box-sizing: border-box;
     }
     .add-btn2 {
       background-color: #1fbba6ff;
+      margin: 0 8px;
     }
   }
   .box-header-left {
     float: right;
     cursor: pointer;
-    background-color: #25bad9;
+    background-color: #66CFE4;
     color: #fff;
-    height: 26px;
-    margin-top: 20px;
-    padding: 0 12px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    padding: 0 8px;
     border-radius: 4px;
     box-sizing: border-box;
   }
@@ -1692,104 +2020,98 @@ export default {
   .record-data {
     cursor: default;
     display: inline-block;
-    height: 20px;
-    width: 1000px;
-    // background-color: green;
-    // float: right;
-    padding-left: 4.5vw;
-    margin-top: 15px;
+    line-height: 18px;
+    margin-top: 16px;
     position: absolute;
-    font-size: 0.8vw;
+    font-size: 14px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
   }
-  position: absolute;
-  margin-right: 1.4vw;
-  // bottom: 100px;
-  top: 75vh;
-  // left: -2vw;
-  right: 2vw;
+  position: relative;
+  top: -51px;
   height: 40px;
   width: 100%;
-  // padding-left: 90px;
   .el-pagination {
-    // background-color: green;
     position: absolute;
-    bottom: 0;
-    right: 3.3vw;
-    height: 2.8vh !important;
-    margin-right: -1.9vw !important;
+    bottom: 0px;
+    right: 68px;
     /deep/button {
-      // background-color: #f00 !important;
-      min-width: 1.6vw !important;
-      height: 2.8vh;
+      min-width: 24px !important;
+      height: 24px;
+      cursor: default;
     }
     /deep/.el-pagination__jump {
-      // background-color: #f00;
       position: relative;
       margin-left: 0px;
+      background: #5FAFE4;
+      height: 24px;
+      border-radius: 3px;
       color: #fff;
       font-size: 0px;
       //input和ul是否居中
       margin-top: 0px;
-      // &::before {
-      //   content: "前往";
-      //   color: #000;
-      // }
+
       .el-input {
-        // border: 1px solid;
         font-family: Microsoft YaHei;
         font-weight: 400;
-        height: 2.8vh;
-        min-width: 2.5vw;
+        height: 24px;
+        width: 40px;
+        margin-left: 3px;
+        border-radius: 3px;
         color: rgba(102, 102, 102, 1);
         outline: none;
+        text-align: center;
+
         /deep/.el-input__inner {
-          font-size: 10px;
+          font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
           display: inline-block;
-          // background-color: #f00 !important;
-          // border: 1px solid !important;
-          width: 44px;
-          height: 2.8vh !important;
+          margin-left: 48px ;
+          width: 40px;
+          height: 24px !important;
           border: 1px solid rgba(239, 242, 245, 1) !important;
-          border-radius: 2px;
-          // margin-left: 12px;
+          border-radius: 3px;
           outline: none;
         }
         &::before {
           content: "前往";
-          color: rgba(102, 102, 102, 1);
-          font-size: 0.8vw;
-          margin-left: 0.35vw;
-          margin-right: 0.95vw;
-          margin-top: 0.1vh !important;
+          color: #fff;
+          font-size: 14px;
+          display: inline-block;
+          position: absolute;
+          margin-left: 4px;
           text-align: center;
+          margin-top: 3px;
+          height: 24px;
         }
         &:after {
           content: "页";
-          padding-left: 0.5vw !important;
-          font-size: 0.8vw;
+          padding-left: 10px !important;
+          font-size: 14px;
+          position: absolute;
+          top: 3px;
         }
       }
     }
     /deep/.el-pager li {
-      min-width: 1.6vw;
-      height: 2.8vh;
+      min-width: 24px;
+      height: 24px;
       border-radius: 2px;
       font-size: 10px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(102, 102, 102, 1);
-      line-height: 2.8vh;
+      line-height: 24px;
     }
   }
   /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
-    background: #5fafe4;
+    background: #5FAFE4;
     color: rgba(255, 255, 255, 1);
+    height: 24px;
+    line-height: 24px;
   }
 }
 .face-class {
@@ -1843,13 +2165,13 @@ export default {
   color: #25bad9;
   position: absolute;
   font-size: 12px;
-  right: 20px;
-  top: -25px;
+  right: 0px;
+  top: -42px;
 }
 .excel-class {
   /deep/.el-table__body-wrapper {
     height: 100% !important;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
   }
 }
 //确认导入弹框
@@ -1892,7 +2214,7 @@ export default {
       padding: 47px 0 50px 0 !important;
       position: relative;
       height: 200px;
-      overflow-x: inherit;
+      overflow-x: hidden;
       div {
         width: 100%;
         height: 110px;
@@ -1946,5 +2268,40 @@ export default {
     height: 255px;
     margin-top: 15% !important;
   }
+}
+.face-class1 {
+  // background: #f00;
+  .reupload {
+    color: #5fafe4ff;
+    position: absolute;
+    top: 0px;
+    left: 150px;
+  }
+  .reupload1 {
+    color: #5fafe4ff;
+    position: absolute;
+    top: 0px;
+    left: 199px;
+  }
+  /deep/.el-upload--picture-card {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    width: 100px !important;
+    position: relative;
+    .svg-icon {
+      color: #5fafe4ff;
+      position: absolute;
+      top: 11px;
+      left: 62px;
+      font-size: 26px;
+    }
+  }
+  /deep/.el-upload-list {
+    // background-color: #f00 !important;
+    position: relative;
+  }
+}
+/deep/.el-upload-list__item {
+  transition: none !important;
 }
 </style>

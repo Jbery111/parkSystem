@@ -379,6 +379,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  /deep/.el-table__body tr:hover>td{
+    background-color: #EFF2F5!important;
+  }
+ 
+  /deep/.el-table__body tr.current-row>td{
+    background-color: #EFF2F5!important;
+  }
     .dot{
       display: inline-block;
       z-index: 10;;
@@ -387,8 +394,8 @@ export default {
       border-radius: 50%;
       background-color: #F44;
       position: absolute;
-      top: 18px;
-      left: 248px;
+      top: 26px;
+      left: 240px;
     }
       //操作记录表格样式
   /deep/.myRecordForm{
