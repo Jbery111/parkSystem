@@ -35,7 +35,7 @@ const houseInfoRouter = {
       name: 'AuditChanges',
       hidden: true,
       component: AuditChanges,
-      meta: { title: '审核修改', auth_id: 5 }
+      meta: { title: '审核列表', auth_id: 5 }
     }
   ]
 }

@@ -3,6 +3,7 @@
       <div class="button">
           返回首页
       </div>
+      
       form1
   </div>
 </template>

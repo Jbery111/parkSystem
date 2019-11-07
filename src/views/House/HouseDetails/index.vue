@@ -12,9 +12,9 @@
         <span v-show="!isShowExcel" class="add-btn" @click="clickAddHouse">添加房屋</span>
 
         <span v-if="!isError" v-show="isShowExcel" class="add-btn" @click="backToLastPage">返回上一级</span>
-        <span v-if="!isError" v-show="isShowExcel" class="add-btn1" @click="excelImport">确认导入</span>
+        <span v-if="!isError" v-show="isShowExcel" class="add-btn1" style="margin-left:14px;" @click="excelImport">确认导入</span>
         <span v-if="isError" style="background:#F8AC59" v-show="isShowExcel" class="add-btn" @click="ok">确认</span>
-        <span v-if="isError" style="position:absolute;left:100px;top:20px;color:#f44;">提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
+        <span v-if="isError" style="position:absolute;left:72px;top:5px;color:#f44; font-size:14px;">提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
         <el-upload
           v-show="!isShowExcel"
           action="#"
@@ -205,18 +205,18 @@
           </el-select>
           <span v-if="isShowTip" v-show="n1" class="tips">请选择房屋类型</span>
         </el-form-item>
-        <el-form-item label="楼栋:">
-          <el-input v-model.number="addData.userHouseBuilding" />
+        <el-form-item label="楼栋1:">
+          <el-input v-model.number="addData.userHouseBuilding" @mousewheel.native.prevent type="number" />
           <span v-if="isShowTip" v-show="!n1&&n2" class="tips">请填写楼栋</span>
           <span v-if="isShowTip" v-show="!n1&&n2&&e" class="tips" style="background:#fff;">此房屋已存在,请检查楼栋</span>
         </el-form-item>
         <el-form-item label="单元:">
-          <el-input v-model.number="addData.userHouseUnit" />
+          <el-input v-model.number="addData.userHouseUnit" @mousewheel.native.prevent type="number" />
           <span v-if="isShowTip" v-show="!n1&&!n2&&n3" class="tips">请填写单元</span>
           <span v-if="isShowTip" v-show="!n1&&!n2&&n3&&e" class="tips" style="background:#fff;">此房屋已存在,请检查单元</span>
         </el-form-item>
         <el-form-item label="门牌号:">
-          <el-input v-model.number="addData.userHouseNumber" />
+          <el-input v-model.number="addData.userHouseNumber" @mousewheel.native.prevent type="number" />
           <span v-if="isShowTip" v-show="!n1&&!n2&&!n3&&n4" class="tips">请填写门牌号</span>
           <span v-if="isShowTip" v-show="!n1&&!n2&&!n3&&n4&&e" class="tips" style="background:#fff;">此房屋已存在,请检查门牌号</span>
         </el-form-item>
@@ -333,21 +333,21 @@
             <span class="t1">楼栋:</span>
             <span class="t2">{{ originData.userHouseBuilding }}</span>
             <span class="t3">修改为:</span>
-            <input class="t4" v-model="modifyData.userHouseBuilding" type="text">
+            <input class="t4" v-model="modifyData.userHouseBuilding" @mousewheel.prevent type="number">
             <p v-if="tips.isExist" class="tips">此房屋已存在,请检查楼栋</p>
           </div>
           <div class="row">
             <span class="t1">单元:</span>
             <span class="t2">{{ originData.userHouseUnit }}</span>
             <span class="t3">修改为:</span>
-            <input class="t4" v-model="modifyData.userHouseUnit" type="text">
+            <input class="t4" v-model="modifyData.userHouseUnit" @mousewheel.prevent type="number">
             <p v-if="tips.isExist" class="tips">此房屋已存在,请检查单元</p>
           </div>
           <div class="row">
             <span class="t1">门牌号:</span>
             <span class="t2">{{ originData.userHouseNumber }}</span>
             <span class="t3">修改为:</span>
-            <input class="t4" v-model="modifyData.userHouseNumber" type="text">
+            <input class="t4" v-model="modifyData.userHouseNumber" @mousewheel.prevent type="number">
             <p v-if="tips.isExist" class="tips">此房屋已存在,请检查门牌号</p>
           </div>
           <div class="row">
@@ -376,8 +376,8 @@
           />
           <p v-if="tips.reason" class="tips" style="right:290px !important;top:23px">必填</p>
         </div>
-        <div v-show="!isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify1">确认修改</div>
-        <div v-show="isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify2">确认修改</div>
+        <div v-if="!isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify1">确认修改</div>
+        <div v-if="isDeleteHouse" class="addNow" style="cursor:pointer" @click="clickConfirmModify2">确认修改dd</div>
       </el-form>
     </el-dialog>
   </div>
@@ -531,6 +531,34 @@ export default {
           }
         } else {
           this.addData.Housingarea = o
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    'modifyData.Housingarea': {
+      handler(n, o) {
+        n = String(n)
+        if (Number(n) == n) {
+          if (n.includes('.')) {
+            this.modifyData.Housingarea = n.slice(0, n.indexOf('.') + 3)
+          }
+        } else {
+          this.modifyData.Housingarea = o
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    'modifyData.Price': {
+      handler(n, o) {
+        n = String(n)
+        if (Number(n) == n) {
+          if (n.includes('.')) {
+            this.modifyData.Price = n.slice(0, n.indexOf('.') + 3)
+          }
+        } else {
+          this.modifyData.Price = o
         }
       },
       deep: true,
@@ -826,7 +854,10 @@ export default {
       if(this.modifyData.centns){
         this.sendDeleteRequest()
       } else{
-        // alert("no")
+        this.tips.reason = true
+        setTimeout(() => {
+          this.tips.reason = false
+        },3000)
       }
     },
     sendDeleteRequest() {
@@ -844,14 +875,20 @@ export default {
       }).then(res => {
         console.log(res)
         if(res.data.code === 200){
+          
           this.detailFormVisible = false
           this.isDeleteHouse = false
+          this.getHouseList()
           this.clearModifyData()
           this.$message({
-            message: "申请删除房屋成功",
+            message: "申请删除房屋成功22",
             type: "success"
           })
-        } else {
+        }
+        else if(res.data.code === 10000){
+          this.$router.push('/')
+        }
+         else {
           this.$message({
             message: res.data.msg,
             type: "error"
@@ -866,6 +903,9 @@ export default {
       console.log(this.addData, '添加的数据')
       this.varifyData(this.addData) // 验证数据
       if (!this.n1 && !this.n2 && !this.n3 && !this.n4 && !this.n5) {
+        if(!this.addData.checktime) {
+          this.addData.wuye_price = null
+        }
         this.sendAddRequest()
       } else {
         // alert('no')
@@ -1242,15 +1282,10 @@ export default {
   // }
 }
 </script>
+
+ 
 <style lang="scss" scoped>
 
-  /deep/.el-table__body tr:hover>td{
-    background-color: #EFF2F5!important;
-  }
- 
-  /deep/.el-table__body tr.current-row>td{
-    background-color: #EFF2F5!important;
-  }
 .dot{
       display: inline-block;
       z-index: 10;;
@@ -1290,6 +1325,27 @@ export default {
   //添加表单样式
   /deep/ .myAddForm{
     width: 520px !important;
+    .el-input__inner::-webkit-outer-spin-button,
+    .el-input__inner::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        appearance: none; 
+        margin: 0; 
+    }
+    /* 火狐 */
+    /* 谷歌 */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        appearance: none; 
+        margin: 0; 
+    }
+    /* 火狐 */
+    input{
+        -moz-appearance:textfield;
+    }
+    .el-input__inner{
+        -moz-appearance:textfield;
+    }
     .el-input__inner{
       width: 96%;
       margin-left: 2px;
@@ -1540,7 +1596,7 @@ export default {
         width: 100% !important;
       }
       /deep/.el-table__body{
-
+       
       }
       /deep/.myRow {
         height: 30px;
@@ -1726,8 +1782,8 @@ export default {
           font-family: Microsoft YaHei;
         font-weight: 400;
         height: 24px;
-        width: 38px;
-        margin-left: 0px;
+        width: 40px;
+        margin-left: 3px;
         border-radius: 3px;
         color: rgba(102, 102, 102, 1);
         outline: none;

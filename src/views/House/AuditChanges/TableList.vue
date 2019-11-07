@@ -42,16 +42,16 @@
                         v-if="!isShowDetail"
                         type="text"
                         size="small"
-                        class="operateBtn btn-detail"
-                        @click="handleDetailClick(scope.row)"
-                        >房屋详情</el-button>
+                        class="operateBtn btn-judge"
+                        @click="handleJudgeClick(scope.row)" style="width:83px;"
+                        >审核</el-button>
                         <el-button
                         v-if="!isShowDetail"
                         type="text"
                         size="small"
-                        class="operateBtn btn-judge"
-                        @click="handleJudgeClick(scope.row)" style="width:83px;"
-                        >审核</el-button>
+                        class="operateBtn btn-detail"
+                        @click="handleDetailClick(scope.row)"
+                        >房屋详情</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -150,18 +150,19 @@ export default {
 
 <style lang='scss' scoped>
 /deep/.btn-judge{
-    width: 45px !important;
+    width: 52px !important;
     background: #25bad9;
   }
   /deep/.btn-detail{
-    background-color: #bfbfbf;
+    background-color: #1FBBA6;
   }
   /deep/.operateBtn{
     color: #fff;
     display: inline-block;
     border-radius: 4px;
-    height: 32px;
+    height: 30px;
     padding: 4px;
+    width:72px;
     font-size: 14px;
   }
 </style>

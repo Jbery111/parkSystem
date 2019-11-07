@@ -9,13 +9,14 @@
       @fun5="handleCarClick" @fun6="handleRecordClick" @back="back" />
 
     <!-- 页码 -->
-    <Pages v-show="isShowPage" v-if="pageInfo.page" :pageInfo="pageInfo" @handleSizeChange="handleSizeChange" 
+    <Pages v-show="isShowPage" v-if="pageInfo.page" :ff="pageInfo" :pageInfo="pageInfo" @handleSizeChange="handleSizeChange" 
       @handleCurrentChange="handleCurrentChange" @nextClickHandler="nextClickHandler"/>
 
     <!-- 申请修改详情弹窗 -->
     <!-- <DetailDialog :detailData='detailData' @agreen="agreen" @refuse="refuse"/> -->
     <el-dialog
-      title="申请修改详情"
+      v-if="detailFormVisible"
+      :title="isShowDelete?'审核':'操作记录'"
       custom-class="myDetailForm"
       class="position:fixed;top:10px;"
       :append-to-body="true"
@@ -25,7 +26,7 @@
       >
       <el-form label-width="380px">
 
-        <div v-if="detailFormVisible">
+        <div v-if="!isShowDelete">
           <div class="row">
             <span class="t1">房屋类型:</span>
             <span class="t2">{{detailData.data.typeName}}</span>
@@ -36,31 +37,31 @@
             <span class="t1">楼栋:</span>
             <span class="t2">{{detailData.data.userHouseBuilding}}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.userHouseBuildings}}</span>
+            <span class="t4">{{detailData.data.userHouseBuildings=='0'?'':detailData.data.userHouseBuildings}}</span>
           </div>
           <div class="row">
             <span class="t1">单元:</span>
             <span class="t2">{{detailData.data.userHouseUnit}}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.userHouseUnits}}</span>
+            <span class="t4">{{detailData.data.userHouseUnits=='0'?'':detailData.data.userHouseUnits}}</span>
           </div>
           <div class="row">
             <span class="t1">门牌号:</span>
             <span class="t2">{{detailData.data.userHouseNumber}}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.userHouseNumbers}}</span>
+            <span class="t4">{{detailData.data.userHouseNumbers=='0'?'':detailData.data.userHouseNumbers}}</span>
           </div>
           <div class="row">
             <span class="t1">房屋面积:</span>
             <span class="t2">{{detailData.data.Housingarea}}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.Housingareas}}</span>
+            <span class="t4">{{detailData.data.Housingareas=='0'?'':detailData.data.Housingareas}}</span>
           </div>
           <div class="row">
             <span class="t1">物业费单价:</span>
             <span class="t2">{{detailData.data.Price}}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.Prices}}</span>
+            <span class="t4">{{detailData.data.Prices=='0'?'':detailData.data.Prices}}</span>
           </div>
           <div class="row" style="position:relative; height:100px;">
             <span style="position:absolute;left:0">*申请理由:</span>
@@ -75,6 +76,9 @@
             />
           </div>
         </div>
+        <div v-if="isShowDelete" style="height:80px;padding-top:20px;">
+          <p style="color:#FE3D3D;font-size:14px;text-align:center">{{detailData.test}}</p>
+        </div>
 
         
         <div class="btn agreen" style="cursor:pointer" @click="agreen">同意</div>
@@ -86,7 +90,7 @@
     <!-- 操作记录 -->
     <el-dialog
       v-if="showRecord"
-      title="操作记录"
+      :title="操作记录"
       :modal="true"
       :append-to-body="true"
       :visible.sync="RecordialogFormVisible"
@@ -153,6 +157,8 @@ export default {
   name: 'AuditChanges',
   data () {
     return {
+      ff: 'fff',
+      isShowDelete: false, // 是删除还是详情
       showDot: false,
       showRecord: false,
       formLabelWidth: '120px', // 记录表格宽度
@@ -184,6 +190,15 @@ export default {
     Pages,
     // DetailDialog
   },
+  // watch: {
+  //   'pageInfo.total': {
+  //     handler(n, o) {
+  //       console.log('aa')
+  //     },
+  //     deep: true,
+  //     immediate: true
+  //   }
+  // },
   created() {
     this.getUserInfo()
     console.log(this.userInfo)
@@ -234,20 +249,29 @@ export default {
     },
     // 点击审核
     handleJudgeClick(v) { 
-      this.detailFormVisible = true
-      this.detailData = v
+        this.detailFormVisible = true
+        this.detailData = v
+        if(this.detailData.test.slice(0,2) === '删除'){
+          this.isShowDelete = true
+        } else {
+          this.isShowDelete = false
+        }
+      
       console.log(v)
       //显示审核表格
     },
     agreen() {
       // alert("同意")
-      this.sendAgreenRequest() 
+      if(this.isShowDelete){
+        this.sendAgreenRequest1() // 同意删除
+      } else {
+        this.sendAgreenRequest() // 同意修改
+      }  
     },
     refuse() {
       // alert("拒绝") 
       this.detailFormVisible = false
       this.refuseFormVisible = true
-      
     },
     handleRefuseClose() {
       this.refuseReason.centnsa = ''
@@ -256,7 +280,12 @@ export default {
     },
     didRefuse() {
       if(this.refuseReason.centnsa){
-        this.sendRefuseRequest() 
+        if(this.isShowDelete){
+          this.sendRefuseRequest1() 
+        } else {
+          this.sendRefuseRequest() 
+        }
+        
       } else {
         this.tips.reason = true
         setTimeout(() => {
@@ -265,6 +294,7 @@ export default {
       }
       
     },
+    //同意修改
     sendAgreenRequest() {
       const { userHouseId } = this.detailData
       const{ token,uname } = this.userInfo
@@ -283,13 +313,39 @@ export default {
           this.getJudgeList()
           this.detailFormVisible = false
           this.$message({
-            message: "已同意",
+            message: "已同意修改",
             type: "success"
           })
         }
         console.log(res)
       })
     },
+    //同意删除
+    sendAgreenRequest1() {
+      const { userHouseId } = this.detailData
+      const{ token} = this.userInfo
+      axios.post("http://test.txsqtech.com/index/Toexamine/datele",
+      {
+        userHouseId,
+      },
+      {
+        headers: {
+          token
+        }
+      }
+      ).then(res => {
+        if(res.data.code === 200){
+          this.getJudgeList()
+          this.detailFormVisible = false
+          this.$message({
+            message: "已同意删除",
+            type: "success"
+          })
+        }
+        console.log(res)
+      })
+    },
+    //修改拒绝
     sendRefuseRequest() {
       const { userHouseId } = this.detailData
       const { token, uname } = this.userInfo
@@ -311,7 +367,36 @@ export default {
           this.refuseFormVisible = false
           this.refuseReason.centnsa = ''
           this.$message({
-            message: "已拒绝",
+            message: "已拒绝该修改请求",
+            type: "success"
+          })
+        }
+        console.log(res)
+      })
+    },
+    //删除拒绝
+    sendRefuseRequest1() {
+      const { userHouseId } = this.detailData
+      const { token, uname } = this.userInfo
+      const { centnsa } = this.refuseReason
+      axios.post("http://test.txsqtech.com/index/Toexamine/deirte",
+      {
+        userHouseId,
+        usname: uname,
+        centnsa
+      },
+      {
+        headers: {
+          token
+        }
+      }
+      ).then(res => {
+        if(res.data.code === 200){
+          this.getJudgeList()
+          this.refuseFormVisible = false
+          this.refuseReason.centnsa = ''
+          this.$message({
+            message: "已拒绝该删除请求",
             type: "success"
           })
         }
@@ -379,6 +464,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  #audit-changes{
+    padding: 20px;
+  }
   /deep/.el-table__body tr:hover>td{
     background-color: #EFF2F5!important;
   }
@@ -394,7 +482,7 @@ export default {
       border-radius: 50%;
       background-color: #F44;
       position: absolute;
-      top: 26px;
+      top: 25px;
       left: 240px;
     }
       //操作记录表格样式

@@ -1,10 +1,10 @@
 <template>
   <div id="enterprise-info" class="infor-warp">
-    <span v-if="!isShowExcel" class="load-class" @click="clickDownLoad" v-show="xiazai">下载住户模板</span>
+    <span v-if="!isShowExcel" v-show="xiazai" class="load-class" @click="clickDownLoad">下载住户模板</span>
     <div v-if="isShowHis" slot="header" class="clearfix">
       <div v-if="!isShowExcel" class="box-header-right">
         <span class="add-btn" @click="exitBefore">返回上一级</span>
-        <span class="add-btn add-btn2" @click="addUser">添加住户</span>
+        <span class="add-btn add-btn2" @click="addUser" style="width:72px; margin:0 8px;">添加住户</span>
         <!-- <span class="add-btn">导入住户</span> -->
 
         <el-upload
@@ -15,14 +15,14 @@
           :limit="1"
           :show-file-list="false"
         >
-          <el-button size="small" type="primary" class="add-btn">导入住户</el-button>
+          <el-button size="small" type="primary" class="add-btn" style="width:72px;">导入住户</el-button>
         </el-upload>
       </div>
       <div v-if="!isShowExcel" class="box-header-left" @click="historyHandler">历史住户</div>
       <!-- 点击到入住户 -->
       <div v-if="isShowExcel" v-show="!isError" class="box-header-right" style="width:200px;">
         <span class="add-btn" @click="exitHandler">返回上一级</span>
-        <span class="add-btn add-btn2" @click="querenUpload">确认导入</span>
+        <span class="add-btn add-btn2" @click="querenUpload" style="width:72px;">确认导入</span>
       </div>
     </div>
     <!-- 历史住户的返回上一级 -->
@@ -31,17 +31,18 @@
         <span class="add-btn1" @click="exitHisHandler">返回上一级</span>
       </div>
     </div>
-    <div v-if="isError" class="clearfix" style="height:50px">
+    <div v-if="isError" class="clearfix" style="height:0px">
       <span
         v-if="isError"
         v-show="isShowExcel"
-        style="background:#F8AC59;position:absolute;left:20px;top:10px;cursor:pointer;"
+        style="background:#F8AC59;position:absolute;left:
+        0px;top:10px;cursor:pointer; width:52px; height:30px; border-radius:4px; padding:5px 12px; font-size:14px; margin-top:-10px; color:#fff;"
         class="add-btn"
         @click="querenHandler"
       >确认</span>
       <span
         v-if="isError"
-        style="position:absolute;left:100px;top:10px;color:#f44;height:60px;"
+        style="position:absolute;left:72px;top:5px;color:#f44; font-size:14px;"
       >提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
     </div>
     <!-- <div class="noInfo" v-if="!isShowCard">
@@ -51,6 +52,7 @@
       <!-- 住户信息列表 -->
       <el-table
         v-if="!isShowExcel"
+        v-show="isShowHis"
         empty-text="暂无数据"
         :data="tableData"
         row-class-name="myRow"
@@ -62,7 +64,7 @@
         <el-table-column prop="phone" label="联系电话" min-width="200" />
         <el-table-column prop="type" label="住户身份" min-width="100">
           <template slot-scope="scope">
-            <p v-html="scope.row.type === 1 ? '户主':scope.row.type === 2?'家属':'租户'" />
+            <p v-html="scope.row.type === 1 ? '房主':scope.row.type === 2?'家属':'租户'" />
           </template>
         </el-table-column>
         <el-table-column prop="conet" label="备注" min-width="250" class="note" />
@@ -75,13 +77,15 @@
               size="small"
               class="operateBtn btn-modify"
               @click="handleModifyClick(scope.row)"
+              style="height:30px; width:52px; "
             >修改</el-button>
             <el-button
               v-if="!isShowExcel"
               size="small"
               class="operateBtn btn-licence"
               @click="handleDetailClick(scope.row)"
-            >查看详情</el-button>
+              style="width:72px; height:30px; margin-left:8px; border:1px solid #1FBBA6;"
+            >更多</el-button>
             <el-button
               v-if="!isShowExcel"
               v-show="isShowHis"
@@ -90,6 +94,7 @@
               size="small"
               class="operateBtn btn-modify"
               @click="handleFaceClick(scope.row)"
+              style="width:72px; height:30px; margin-left:8px;"
               v-html="scope.row.imgtype === 2 ? '人脸录入':'查看人脸'"
             />
             <el-button
@@ -98,6 +103,74 @@
               type="text"
               size="small"
               class="operateBtn btn-record"
+              style="height:30px; width:52px; margin-left:8px;"
+              @click="handleExchangeClick(scope.row)"
+            >变更</el-button>
+            <el-button
+              v-if="!isShowExcel"
+              type="text"
+              size="small"
+              class="operateBtn btn-record"
+              style="width:72px; height:30px; margin-left:8px;"
+              @click="handleRecordClick(scope.row)"
+            >操作记录</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 历史住户 -->
+      <el-table
+        v-if="!isShowHis"
+        empty-text="暂无数据"
+        :data="tableData"
+        row-class-name="myRow"
+        cell-class-name="myCell"
+        style="width: 100%; height:100%;"
+      >
+        <el-table-column prop="housenumber" label="房屋编号" min-width="120" />
+        <el-table-column prop="username" label="历史住户姓名" min-width="120" />
+        <el-table-column prop="phone" label="联系电话" min-width="200" />
+        <el-table-column prop="type" label="历史住户身份" min-width="100">
+          <template slot-scope="scope">
+            <p v-html="scope.row.type === 1 ? '房主':scope.row.type === 2?'家属':'租户'" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="conet" label="备注" min-width="250" class="note" />
+        <el-table-column v-if="!isShowExcel" label="操作" min-width="400" fixed="right">
+          <template slot-scope="scope">
+            <el-button
+              v-if="!isShowExcel"
+              v-show="isShowHis"
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              style="height:30px; width:52px; "
+              @click="handleModifyClick(scope.row)"
+            >修改</el-button>
+            <el-button
+              v-if="!isShowExcel"
+              size="small"
+              class="operateBtn btn-licence"
+              style="width:72px; height:30px; margin-left:8px; border:1px solid #1FBBA6;"
+              @click="handleDetailClick(scope.row)"
+            >更多</el-button>
+            <el-button
+              v-if="!isShowExcel"
+              v-show="isShowHis"
+              ref="faceNames"
+              type="text"
+              size="small"
+              class="operateBtn btn-modify"
+              @click="handleFaceClick(scope.row)"
+              style="width:72px; height:30px; margin-left:8px;"
+              v-html="scope.row.imgtype === 2 ? '人脸录入':'查看人脸'"
+            />
+            <el-button
+              v-if="!isShowExcel"
+              v-show="isShowHis"
+              type="text"
+              size="small"
+              class="operateBtn btn-record"
+              style="height:30px; width:52px; margin-left:8px;"
               @click="handleExchangeClick(scope.row)"
             >变更</el-button>
             <el-button
@@ -106,11 +179,11 @@
               size="small"
               class="operateBtn btn-record"
               @click="handleRecordClick(scope.row)"
+              style="width:72px; height:30px; margin-left:8px;"
             >操作记录</el-button>
           </template>
         </el-table-column>
       </el-table>
-
       <!-- 展示Excel -->
       <div v-if="isShowExcel">
         <el-table
@@ -131,6 +204,7 @@
           <el-table-column v-if="prop.length===8" :prop="prop[7]" label="原因" min-width="100" />
         </el-table>
       </div>
+      <!-- 历史住户 -->
     </el-card>
     <!-- 分页 -->
     <div v-if="!isShowExcel" class="block">
@@ -151,6 +225,7 @@
         class="position:fixed;top:10px;"
         :append-to-body="true"
         :visible.sync="dialogFormVisible"
+        :close-on-click-modal="false"
       >
         <el-form ref="form" :model="addData" label-width="100px">
           <el-form-item label="房屋编号:">
@@ -189,7 +264,7 @@
           <el-form-item label="身份证号:">
             <el-input v-model="addData.identity" placeholder="选填" />
           </el-form-item>
-          <span ref="phoneNum" class="tips">请输入联系电话</span>
+          <span ref="identifyToast1" class="tips">请输入联系电话</span>
           <el-form-item label="工作单位:">
             <el-input v-model="addData.Workunit" placeholder="选填" />
           </el-form-item>
@@ -224,6 +299,7 @@
         class="position:fixed;top:10px;"
         :append-to-body="true"
         :visible.sync="dialogFormVisible2"
+        :close-on-click-modal="false"
       >
         <el-form ref="form" :model="addData" label-width="100px">
           <el-form-item label="房屋编号:">
@@ -262,7 +338,7 @@
           <el-form-item label="身份证号:">
             <el-input v-model="modifyData.identity" placeholder="选填" />
           </el-form-item>
-          <span ref="phoneNum" class="tips">请输入联系电话</span>
+          <span ref="identifyToast2" class="tips" />
           <el-form-item label="工作单位:">
             <el-input v-model="modifyData.Workunit" placeholder="选填" />
           </el-form-item>
@@ -297,6 +373,7 @@
         :append-to-body="true"
         class="face-class"
         :visible.sync="fcDialogFormVisible"
+        :close-on-click-modal="false"
       >
         <!-- 上传身份证正面 -->
         <div class="upimg-class upimg-top">
@@ -308,9 +385,11 @@
               action="#"
               :on-remove="handleRemove"
               :on-preview="handlePictureCardPreview"
+              v-show="uploadIdenty"
               :on-change="handleChange"
               list-type="picture-card"
               :auto-upload="false"
+              :class="{hide:hideUpload}"
             >
               <i slot="default" class="el-icon-plus" />
               <div slot="file" slot-scope="{file}">
@@ -321,9 +400,6 @@
                     @click="handlePictureCardPreview(file)"
                   >
                     <i class="el-icon-zoom-in" />
-                  </span>
-                  <span class="el-upload-list__item-delete" @click="handleRemove(file)">
-                    <i class="el-icon-delete" />
                   </span>
                 </span>
               </div>
@@ -337,6 +413,7 @@
               :modal="mod"
               :append-to-body="true"
               :fullscreen="true"
+              :close-on-click-modal="false"
             >
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
@@ -349,13 +426,14 @@
           <div class="up-img" style="left:80px;">
             <el-upload
               ref="upload1"
-              :limit="1"
               action="#"
+              :limit="1"
               :on-remove="handleRemove1"
               :on-preview="handlePictureCardPreview"
               :on-change="handleChange1"
               list-type="picture-card"
               :auto-upload="false"
+              :class="{hide:hideUpload1}"
             >
               <i slot="default" class="el-icon-plus" />
               <div slot="file" slot-scope="{file}">
@@ -385,6 +463,7 @@
               :modal="mod"
               :append-to-body="true"
               :fullscreen="true"
+              :close-on-click-modal="false"
             >
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
@@ -408,6 +487,7 @@
         :append-to-body="true"
         class="face-class face-class1"
         :visible.sync="fcDialogFormVisible1"
+        :close-on-click-modal="false"
       >
         <!-- 查看人脸上传身份证正面 -->
         <div class="upimg-class upimg-top">
@@ -435,9 +515,9 @@
                   >
                     <i class="el-icon-zoom-in" />
                   </span>
-                  <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+                  <!-- <span class="el-upload-list__item-delete" @click="handleRemove(file)">
                     <i class="el-icon-delete" />
-                  </span>
+                  </span>-->
                 </span>
               </div>
             </el-upload>
@@ -450,6 +530,7 @@
               :modal="mod"
               :append-to-body="true"
               :fullscreen="true"
+              :close-on-click-modal="false"
             >
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
@@ -499,6 +580,7 @@
               :modal="mod"
               :append-to-body="true"
               :fullscreen="true"
+              :close-on-click-modal="false"
             >
               <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
             </el-dialog>
@@ -549,6 +631,7 @@
       :append-to-body="true"
       :visible.sync="dialogFormVisibleDetail"
       class="detaill-class"
+      :close-on-click-modal="false"
     >
       <el-form ref="form" :model="detailData" label-width="100px">
         <el-form-item label="工作单位:">
@@ -558,10 +641,11 @@
         <el-form-item label="身份证号:">
           <el-input v-model="detailData.identity" disabled />
         </el-form-item>
+        <span ref="identifyToast" class="tips" />
         <el-form-item label="是否是党员:">
           <el-radio-group v-model="radio2">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="2">否</el-radio>
+            <el-radio :label="1" disabled>是</el-radio>
+            <el-radio :label="2" disabled>否</el-radio>
           </el-radio-group>
         </el-form-item>
         <span ref="dangToast" class="tips">请选择住户党员身份</span>
@@ -576,6 +660,7 @@
       :append-to-body="true"
       :visible.sync="dialogFormVisibleRecord"
       class="detaill-class"
+      :close-on-click-modal="false"
     >
       <el-form ref="form" :model="recordData" label-width="125px">
         <el-form-item label="上次操作员:">
@@ -638,7 +723,7 @@
         <el-form-item label="身份证号:">
           <el-input v-model="addData.identity" placeholder="选填" />
         </el-form-item>
-        <span ref="phoneNum" class="tips">请输入联系电话</span>
+        <span ref="identifyToast3" class="tips" />
         <el-form-item label="工作单位:">
           <el-input v-model="addData.Workunit" placeholder="选填" />
         </el-form-item>
@@ -677,6 +762,11 @@ export default {
   // data数据
   data () {
     return {
+      hideUpload1: false,
+      hideUpload: false,
+      limitCount: 1,
+      uploadRl: true,
+      uploadIdenty: true,
       xiazai: true,
       isRepeatData: null,
       isRepeatData1: null,
@@ -912,9 +1002,11 @@ export default {
     handleRemove (file, fileList) {
       console.log(fileList, 636)
       this.fileLists = fileList
+      this.hideUpload = fileList.length >= this.limitCount
     },
     handleRemove1 (file, fileList) {
       this.fileLists1 = fileList
+      this.hideUpload1 = fileList.length >= this.limitCount
     },
     handleRemove3 (file, fileList) {
       this.fileLists3 = fileList
@@ -933,18 +1025,25 @@ export default {
       if (fileList.length < 2) { // 允许最多上传三张图片
         this.fileLists = fileList
       }
+      this.hideUpload = fileList.length >= this.limitCount
+      // this.$refs.upload
+      // this.$refs.upload.clearFiles()
+      // console.log(this.$refs.upload.style)
+      // this.uploadIdenty = false
       // if (fileList.length === 2) {
       //   Message('上传的图片已达上线')
       // }
     },
     handleChange1 (file, fileList) {
       console.log(file, fileList, '图片事件1')
-      if (fileList.length < 2) { // 允许最多上传三张图片
-        this.fileLists1 = fileList
-      }
-      // if (fileList.length === 2) {
-      //   Message('上传的图片已达上线')
+      // if (fileList.length < 2) { // 允许最多上传三张图片
+      this.fileLists1 = fileList
+      this.hideUpload1 = fileList.length >= this.limitCount
       // }
+      // if (fileList.length === 2) {
+      //   // Message('上传的图片已达上线')
+      // }
+      this.uploadRl = false
     },
     handleChange3 (file, fileList) {
       console.log(file, fileList, '图片事件3')
@@ -1011,8 +1110,6 @@ export default {
           console.log(id, '863')
           setTimeout(() => {
             postSelect({ id }).then(resp => {
-              console.log(resp, '832')
-
               if (resp.code === 200) {
                 this.fcDialogFormVisible = false
                 Message(resp.msg)
@@ -1153,6 +1250,7 @@ export default {
       }
       console.log(this.isRepeat1(this.contactData1), 'shuzuquc!!!!!!!!!!!!!!!!')
       // 数组去重
+      const cc6 = this.checkIdentify1(this.modifyData.identity)
       const cc = this.distinct(this.contactData1)
       const cc3 = this.contactData1.filter(this.filterConcat)
       this.isRepeat2(cc3)
@@ -1163,7 +1261,7 @@ export default {
       console.log(cc1, cc2, 'cc1cc1')
       const phone = cc1.join(',')
       // console.log(this.contactData1, phone, 'phone992')
-      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData1) && this.isRepeatData1 === null) {
+      if (cc6 && cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData1) && this.isRepeatData1 === null) {
         console.log('请求修改接口')
         const type = this.radio
         const dang = this.radio1
@@ -1196,6 +1294,56 @@ export default {
     },
     modifyChange () {
       console.log('change')
+    },
+    //身份证正则验证
+    checkIdentify (item) {
+      if (item) {
+        if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {
+          return item
+        } else {
+          console.log('jingru ')
+          this.$refs.identifyToast1.innerHTML = '请输入正确的身份证'
+          setTimeout(() => {
+            this.$refs.identifyToast1.innerHTML = ''
+          }, 2000)
+          this.$refs.identifyToast1.style.color = 'red'
+        }
+      } else {
+        return true
+      }
+    },
+    //修改
+    checkIdentify1 (item) {
+      if (item) {
+        if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {
+          return item
+        } else {
+          console.log('jingru ')
+          this.$refs.identifyToast2.innerHTML = '请输入正确的身份证'
+          setTimeout(() => {
+            this.$refs.identifyToast2.innerHTML = ''
+          }, 2000)
+          this.$refs.identifyToast2.style.color = 'red'
+        }
+      } else {
+        return true
+      }
+    },
+    checkIdentify2 (item) {
+      if (item) {
+        if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {
+          return item
+        } else {
+          console.log('jingru ')
+          this.$refs.identifyToast3.innerHTML = '请输入正确的身份证'
+          setTimeout(() => {
+            this.$refs.identifyToast3.innerHTML = ''
+          }, 2000)
+          this.$refs.identifyToast3.style.color = 'red'
+        }
+      } else {
+        return true
+      }
     },
     // 电话号码正则验证
     checkContact (item) {
@@ -1292,6 +1440,8 @@ export default {
         this.fileLists = []
         this.$refs.upload.clearFiles()
         this.$refs.upload1.clearFiles()
+        this.hideUpload = false
+        this.hideUpload1 = false
       } else {
         this.userId = row.id
         this.fcDialogFormVisible1 = true
@@ -1343,17 +1493,19 @@ export default {
         } else {
           // 查看人脸是否上传成功
           const id = this.userId
+          const page = this.currentPage
+          const { Communityid } = this.userInfoData
+          const Houseid = this.houseid
           console.log(id, '863')
           setTimeout(() => {
             postSelect({ id }).then(resp => {
-              // console.log(resp, '832')
-
               if (resp.code === 400) {
                 this.fcDialogFormVisible1 = false
                 Message('修改失败')
               } else {
                 this.fcDialogFormVisible1 = false
                 Message('修改成功')
+                this.getHouseuserLists(page, Houseid, Communityid)
               }
             })
           }, 1000)
@@ -1399,6 +1551,7 @@ export default {
     },
     historyHandler () {
       // alert('历史住户')
+      this.xiazai = false
       this.isShowHis = false
       const { Communityid } = this.userInfoData
       const Houseid = this.houseid
@@ -1475,6 +1628,8 @@ export default {
           }
         })
       }
+      const cc6 = this.checkIdentify(this.addData.identity)
+      // console.log(cc6, 'cc6666666666666666666666666')
       const cc3 = this.contactData.filter(this.filterConcat)
       this.isRepeat(cc3)
       console.log(this.isRepeatData, 'cc3')
@@ -1487,7 +1642,7 @@ export default {
       const { Communityid, uname } = this.userInfoData
       const Houseid = this.houseid
       const { name, identity, Workunit, conet } = this.addData
-      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData) && this.isRepeatData === null) {
+      if (cc2 && cc6 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData) && this.isRepeatData === null) {
         postHouseholdInsert({ Communityid, Houseid, uname, name, identity, Workunit, conet, dang, type, phone }).then(resp => {
           console.log(resp, 'tianjia')
           if (resp.code === 200) {
@@ -1571,6 +1726,7 @@ export default {
           }
         })
       }
+      const cc6 = this.checkIdentify2(this.addData.identity)
       const cc = this.distinct(this.contactData)
       const cc3 = this.contactData.filter(this.filterConcat)
       this.isRepeat(cc3)
@@ -1588,7 +1744,7 @@ export default {
       const { name, identity, Workunit, conet } = this.addData
       // console.log(phone, '55')
       this.changeQuery = { Communityid, Houseid, name, identity, Workunit, conet, dang, type, phone }
-      if (cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData)) {
+      if (cc6 && cc2 && this.isRepeat1(cc3) && this.isRepeat1(this.contactData)) {
         console.log(this.changeQuery, 'hhahha')
         this.centerDialogVisible4 = true
         this.dialogFormVisible8 = false
@@ -1628,7 +1784,6 @@ export default {
 }
 .btn-modify {
   background: #25bad9;
-
 }
 .btn-licence {
   background: #1fbba6;
@@ -1962,7 +2117,7 @@ export default {
     float: left;
     display: flex;
     justify-content: space-around;
-    
+
     .add-btn {
       cursor: pointer;
       background-color: #25bad9;
@@ -1974,8 +2129,7 @@ export default {
       width: 86px;
       padding: 0;
       border-radius: 4px;
-      
-      line-height: 30px;
+      line-height: 28px;
       box-sizing: border-box;
     }
     .add-btn2 {
@@ -1986,7 +2140,7 @@ export default {
   .box-header-left {
     float: right;
     cursor: pointer;
-    background-color: #66CFE4;
+    background-color: #66cfe4;
     color: #fff;
     height: 30px;
     line-height: 30px;
@@ -2044,7 +2198,7 @@ export default {
     /deep/.el-pagination__jump {
       position: relative;
       margin-left: 0px;
-      background: #5FAFE4;
+      background: #5fafe4;
       height: 24px;
       border-radius: 3px;
       color: #fff;
@@ -2069,7 +2223,7 @@ export default {
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
           display: inline-block;
-          margin-left: 48px ;
+          margin-left: 48px;
           width: 40px;
           height: 24px !important;
           border: 1px solid rgba(239, 242, 245, 1) !important;
@@ -2108,7 +2262,7 @@ export default {
     }
   }
   /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
-    background: #5FAFE4;
+    background: #5fafe4;
     color: rgba(255, 255, 255, 1);
     height: 24px;
     line-height: 24px;
@@ -2165,8 +2319,8 @@ export default {
   color: #25bad9;
   position: absolute;
   font-size: 12px;
-  right: 0px;
-  top: -42px;
+  right: 6px;
+  top: -38px;
 }
 .excel-class {
   /deep/.el-table__body-wrapper {
@@ -2271,6 +2425,9 @@ export default {
 }
 .face-class1 {
   // background: #f00;
+  /deep/ .el-upload-list__item-delete {
+    display: none !important;
+  }
   .reupload {
     color: #5fafe4ff;
     position: absolute;
@@ -2304,4 +2461,12 @@ export default {
 /deep/.el-upload-list__item {
   transition: none !important;
 }
+
+/deep/.hide .el-upload--picture-card {
+  display: none !important;
+}
+// /deep/.el-radio__input.is-disabled .el-radio__inner,
+// .el-radio__input.is-disabled.is-checked .el-radio__inner {
+//   background-color: #f00 !important;
+// }
 </style>

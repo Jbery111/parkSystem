@@ -709,7 +709,7 @@ export default {
         padding: 0;
       }
       /deep/.myRow > td {
-        padding: 12px 0 12px 0;
+        padding: 15px 0;
       }
       /deep/.myCell {
         border-collapse: collapse;
