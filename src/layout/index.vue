@@ -31,8 +31,8 @@
           :close-on-click-modal="false"
         >
           <span @click="isCover1">我知道了</span>
-          <br>
-          <br>
+          <br >
+          <br >
         </el-dialog>
         <div v-if="type===2" class="outClass" @click="exitHandler()">直接退出</div>
       </div>
@@ -48,8 +48,8 @@
         :close-on-click-modal="false"
       >
         <span class="exit" @click="isCover2">{{ countdown + 's' }}秒后自动退出</span>
-        <br>
-        <br>
+        <br >
+        <br >
       </el-dialog>
       <!-- 遮罩三 -->
       <el-dialog
@@ -77,7 +77,7 @@
         top="40vh"
         :close-on-click-modal="false"
       >
-        <div>是否切换小区?</div>
+        <div>是否切换停车场?</div>
         <span slot="footer" class="dialog-footer">
           <el-button class="quxiao1" @click="centerDialogVisible2 = false">取 消</el-button>
           <el-button type="primary" @click="qiehuanHandler">确 定</el-button>
@@ -257,14 +257,19 @@ export default {
 @import "~@/styles/mixin.scss";
 @import "~@/styles/variables.scss";
 /deep/.el-dialog {
-  // width: 100% !important;
-  background: rgba(0, 0, 0, 0);
-  box-shadow: none;
-  margin: 0 auto;
+  background-color: #fff;
+  margin-top: 0% !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  min-width: 380px;
+  border-radius: 5px;
   .el-dialog__header {
     padding: 0px;
     .el-dialog__title {
-      font-size: 1.3vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(255, 255, 255, 1) !important;
@@ -274,14 +279,8 @@ export default {
   }
 
   .el-dialog__body {
-    // padding: 60px;
-    width: 18.2vw;
-    height: 22vh;
     border-radius: 4px;
-    // height: 50px;
     span {
-      font-size: 1.24vw;
-
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(254, 141, 79, 1);
@@ -291,7 +290,6 @@ export default {
   }
 }
 .outClass {
-  font-size: 1.2vw;
   position: absolute;
   top: 10%;
   right: 5%;
@@ -338,58 +336,38 @@ export default {
   width: calc(100% - 54px);
   width: 100%;
 }
-// .hideSidebar .fix-appmain {
-//   width: calc(100% - 54px);
-//   width: 90%;
-//   padding-right: 76px;
-// }
-.hideSidebar .app-main{
-  // width: 95.5%;
+
+.hideSidebar .app-main {
   height: 93.5%;
   margin-right: 86px;
 }
 .mobile .fixed-header {
   width: 100%;
 }
+
+//切换小区弹框//
 .chen {
   /deep/.el-dialog {
     background-color: #fff !important;
-    width: 18.2vw;
-    height: 22vh;
-    border-radius: 0.2vw;
-    // background-color: #fff;
-    // z-index: 888888888888888888888888888;
-    // .el-dialog__header {
-    //   button {
-    //     z-index: 19999;
-    //   }
-    // }
+    width: 18.23%;
+    height: 210px;
     .el-dialog__header {
-      padding: 1.2vh 0px 0.8vh 1.02vw;
-      // padding: 2.2vh 0px 1.2vh 0px;
-      // margin: 0px 1.02vw;
+      padding: 12px 0 10px 16px;
       text-align: left;
       border-bottom: 1px solid #eff2f5;
-      font-size: 0.87vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(51, 51, 51, 1);
       .el-dialog__title {
-        text-align: left;
-        // border-bottom: 1px solid #eff2f5;
-        font-size: 0.95vw;
+        font-size: 16px;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: rgba(51, 51, 51, 1) !important;
-        // color: red !important;
       }
-      // /deep/.el-dialog__headerbtn {
-      //   top: 3vh !important;
-      // }
+
       button {
         position: absolute;
-        top: 1.4vh;
-        // background-color: #f00;
+        top: 14px;
       }
     }
     .el-dialog--center {
@@ -399,36 +377,22 @@ export default {
       background-color: #fff;
       height: 110px !important;
       width: 100%;
-      padding: 2.8vh 0 21px 0 !important;
       position: relative;
-      // p {
-      //   width: 100%;
-      //   border-bottom: 1px solid #eff2f5;
-      //   position: absolute;
-      //   top: 1.8vh;
-      //   right: 0px;
-      //   // padding-left: 14px !important;
-      //   padding-bottom: 0.92vh;
-      //   color: #333333;
-      //   font-size: 0.95vw;
-      //   // float: left;
-      //   text-align: left;
-      // }
+
       div {
         width: 100%;
         height: 110px;
-        line-height: 5.2vh;
-        font-size: 0.85vw;
+        line-height: 68px;
+        font-size: 16px;
         text-align: center;
       }
     }
     .el-dialog__footer {
       position: absolute;
-      top: 15.7vh;
+      padding-top: 0 !important;
       width: 100%;
       display: flex;
       justify-content: center;
-      font-size: 0.75vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(153, 153, 153, 1);
@@ -437,16 +401,14 @@ export default {
         display: flex;
         justify-content: space-around;
         button {
-          width: 4vw;
-          height: 3.5vh;
-          line-height: 0.36vh;
-          font-size: 0.8vw;
+          width: 72px;
+          height: 30px;
+          line-height: 0px;
+          font-size: 14px;
           border-radius: 3px !important;
-          font-size: 0.8vw;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(255, 254, 254, 1);
-          // background-color: #f00;
           border: 1px solid #25bad9;
         }
       }

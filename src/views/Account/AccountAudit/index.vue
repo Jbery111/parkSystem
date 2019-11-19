@@ -57,7 +57,6 @@
       :append-to-body="true"
       center
       class="chen"
-      top="40vh"
       :close-on-click-modal="false"
     >
       <!-- <p>提示</p> -->
@@ -75,7 +74,6 @@
       :append-to-body="true"
       center
       class="chen"
-      top="40vh"
       :close-on-click-modal="false"
     >
       <!-- <p>提示</p> -->
@@ -463,40 +461,37 @@ export default {
 .chen {
   /deep/.el-dialog {
     background-color: #fff !important;
-    width: 18.2vw;
-    height: 22vh;
-    border-radius: 0.2vw;
-    // background-color: #fff;
-    // z-index: 888888888888888888888888888;
-    // .el-dialog__header {
-    //   button {
-    //     z-index: 19999;
-    //   }
-    // }
+    width: 18.23%;
+    height: 210px;
+    background-color: #fff;
+    margin-top: 0% !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    min-width: 380px;
+    border-radius: 5px;
     .el-dialog__header {
-      padding: 1.3vh 0px 1vh 1.02vw;
-      // padding: 2.2vh 0px 1.2vh 0px;
-      // margin: 0px 1.02vw;
+      padding: 12px 0 10px 16px;
       text-align: left;
       border-bottom: 1px solid #eff2f5;
-      font-size: 0.87vw;
+      font-size: 16px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(51, 51, 51, 1);
       .el-dialog__title {
         text-align: left;
-        border-bottom: 1px solid #eff2f5;
-        font-size: 0.95vw;
+        font-size: 16px;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: rgba(51, 51, 51, 1);
       }
-      // /deep/.el-dialog__headerbtn {
-      //   top: 3vh !important;
-      // }
+
       button {
         position: absolute;
-        top: 1.4vh;
+        top: 14px;
       }
     }
     .el-dialog--center {
@@ -506,36 +501,23 @@ export default {
       background-color: #fff;
       height: 110px !important;
       width: 100%;
-      padding: 2.8vh 0 21px 0 !important;
+      padding: 20px 50px 6px 48px !important;
       position: relative;
-      // p {
-      //   width: 100%;
-      //   border-bottom: 1px solid #eff2f5;
-      //   position: absolute;
-      //   top: 1.8vh;
-      //   right: 0px;
-      //   // padding-left: 14px !important;
-      //   padding-bottom: 0.92vh;
-      //   color: #333333;
-      //   font-size: 0.95vw;
-      //   // float: left;
-      //   text-align: left;
-      // }
+
       div {
         width: 100%;
         height: 110px;
-        line-height: 5.2vh;
-        font-size: 0.85vw;
+        line-height: 78px;
+        font-size: 16px;
         text-align: center;
       }
     }
     .el-dialog__footer {
       position: absolute;
-      top: 15.7vh;
+      padding-top: 0px;
       width: 100%;
       display: flex;
       justify-content: center;
-      font-size: 0.75vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(153, 153, 153, 1);
@@ -544,12 +526,11 @@ export default {
         display: flex;
         justify-content: space-around;
         button {
-          width: 4vw;
-          height: 3.5vh;
-          line-height: 0.36vh;
-          font-size: 0.8vw;
+          width: 72px;
+          height: 30px;
+          font-size: 14px;
+          line-height: 0;
           border-radius: 3px !important;
-          font-size: 0.8vw;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(255, 254, 254, 1);
@@ -568,6 +549,7 @@ export default {
     .el-button--primary {
       color: #ffffff;
       background-color: #25bad9;
+      border: 1px solid #25bad9;
     }
   }
 }

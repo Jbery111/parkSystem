@@ -23,23 +23,23 @@ const actions = {
       postLogin({ name: name.trim(), password: password })
         .then(response => {
           // 登陆
+          console.log(response, '停车场登录')
           if (response.code === 200) {
-            // commit('setUserInfo', {})
-            // localStorage.removeItem('userInfo')
-            // removeToken()
-            // const { data } = response
             commit('setUserInfo', response)
-            // console.log(response, 'list')
-            // const routeList = createRoute(response.list)
-            // console.log(routeList, 'response.list')
-            // commit('setRouterAsync', routeList)
-            // console.log(data.token, 'hahahhahahhhhhhhhhhhhhhhhhhhhhhhhhh')
+            // 将token存在session里面
             setToken(response.token)
+            // 将用户信息存在locaStorage里面
             localStorage.setItem('userInfo', JSON.stringify(response))
           } else if (response.code === 302) {
             commit('setUserInfo', response)
             setToken(response.token)
             localStorage.setItem('userInfo', JSON.stringify(response))
+          } else if (response.code === 201) {
+            // console.log('201+++++++++++++++')
+            commit('setUserInfo', response)
+            setToken(response.data.token)
+            localStorage.setItem('userInfo', JSON.stringify(response))
+            // this.$router.push('/loginenternewpwd')
           }
           resolve(response)
         }).catch(error => {
@@ -113,9 +113,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       postRetrieve({ phone: username, code, auth }).then((response) => {
         resolve(response)
-        commit('setUserInfo', {})
-        localStorage.removeItem('userInfo')
-        removeToken()
       }).catch(error => {
         reject(error)
       })

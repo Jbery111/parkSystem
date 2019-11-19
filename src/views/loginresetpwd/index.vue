@@ -3,7 +3,7 @@
   <!-- 重置密码页面 -->
   <div class="wy-login-container">
     <div class="wy-login-nav">
-      <span>宅-物业管理系统</span>
+      <span>宅-停车场管理系统</span>
       <ul style="cursor:pointer;">
         <li>关于我们</li>
         <div style="height:12px;border:1px solid white;margin-top:4px" />

@@ -2,7 +2,7 @@
   <!-- 输入新密码页面 -->
   <div class="wy-login-container">
     <div class="wy-login-nav">
-      <span>宅-物业管理系统</span>
+      <span>宅-停车场管理系统</span>
       <ul style="cursor:pointer;">
         <li>关于我们</li>
         <div style="height:12px;border:1px solid white;margin-top:4px" />
@@ -68,9 +68,15 @@
       </div>
     </el-form>
     <div class="wy-login-bottom">
-    <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
-    <div style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;" ></div>
-    <a href="http://www.miibeian.gov.cn/" target="_blank" style="margin-left:10px; white-space:nowrap;position:absolute;">蜀ICP备19024682号</a>
+      <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
+      <div
+        style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;"
+      ></div>
+      <a
+        href="http://www.miibeian.gov.cn/"
+        target="_blank"
+        style="margin-left:10px; white-space:nowrap;position:absolute;"
+      >蜀ICP备19024682号</a>
     </div>
   </div>
 </template>
@@ -366,29 +372,26 @@ $btn-height: 4.2vh;
     cursor: pointer;
     user-select: none;
   }
-  
 }
-.wy-login-bottom{
+.wy-login-bottom {
   position: absolute;
   bottom: 12px;
   color: #fff;
   font-size: 14px;
   margin: 0 38%;
   width: 100%;
-  white-space:nowrap !important;
-.zi {
-     position: absolute;
-     text-align: center;
-     color: rgba(255, 255, 255, 1);
-     font-family: MicrosoftYaHei;
-     font-weight: 400;
-     cursor: default;
-     white-space:nowrap;
-     width: 280px;
-     
-     }
-    
+  white-space: nowrap !important;
+  .zi {
+    position: absolute;
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    cursor: default;
+    white-space: nowrap;
+    width: 280px;
   }
+}
 </style>
 
 // 输入新密码

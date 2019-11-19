@@ -3,13 +3,13 @@ import request from '@/utils/request'
 // 查询权限
 export function postAddto(data) {
   const { Communityid, page = 1, sition } = data
-  return request.get(`http://test.txsqtech.com/index/Jurisdiction/addto?page=${page}&sition=${sition}&Communityid=${Communityid}`)
+  return request.get(`/index/Jurisdiction/addto?page=${page}&sition=${sition}&Communityid=${Communityid}`)
 }
 
 // 查询权限组
 export function postQuerysa(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/Jurisdiction/querysa',
+    url: '/index/Jurisdiction/querysa',
     method: 'post',
     data
   })
@@ -17,7 +17,7 @@ export function postQuerysa(data) {
 // 添加权限
 export function postQuerys(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/Jurisdiction/querys',
+    url: '/index/Jurisdiction/querys',
     method: 'post',
     data
   })
@@ -25,7 +25,7 @@ export function postQuerys(data) {
 // 修改权限名
 export function postUpdate(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/Jurisdiction/updete',
+    url: '/index/Jurisdiction/updete',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function postUpdate(data) {
 // 删除权限
 export function postDelete(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/Jurisdiction/delete',
+    url: '/index/Jurisdiction/delete',
     method: 'post',
     data
   })
@@ -42,7 +42,7 @@ export function postDelete(data) {
 // 获取权限按钮
 export function postButton(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/button',
+    url: '/index/index/button',
     method: 'post',
     data
   })
@@ -53,12 +53,12 @@ export function postButton(data) {
 export function postAccount(data) {
   const { Communityid, page = 1, sition } = data
   // console.log(data, '查询用户需要的参数')
-  return request.get(`http://test.txsqtech.com/index/account/account?page=${page}&sition=${sition}&Communityid=${Communityid}`)
+  return request.get(`/index/account/account?page=${page}&sition=${sition}&Communityid=${Communityid}`)
 }
 // 添加用户
 export function postAccaddto(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/account/addto',
+    url: '/index/account/addto',
     method: 'post',
     data
   })
@@ -67,7 +67,7 @@ export function postAccaddto(data) {
 export function postJurisdiction(data) {
   // console.log(data, '62222')
   return request({
-    url: 'http://test.txsqtech.com/index/account/Jurisdiction',
+    url: '/index/account/Jurisdiction',
     method: 'post',
     data
   })
@@ -76,7 +76,7 @@ export function postJurisdiction(data) {
 export function postSearch(data) {
   // console.log(data, '62222')
   return request({
-    url: 'http://test.txsqtech.com/index/account/search',
+    url: '/index/account/search',
     method: 'post',
     data
   })
@@ -84,13 +84,13 @@ export function postSearch(data) {
 // export function postSearch (data) {
 //   console.log(data, '搜索的请求的参数')
 //   const { page = 1, name, Communityid, sition } = data
-//   return request.get(`http://test.txsqtech.com/index/account/account?page=${page}&sition=${sition}&Communityid=${Communityid}&name=${name}`)
+//   return request.get(`/index/account/account?page=${page}&sition=${sition}&Communityid=${Communityid}&name=${name}`)
 // }
 // 修改用户
 export function postupdatas(data) {
   // console.log(data, '898989')
   return request({
-    url: 'http://test.txsqtech.com/index/account/updetes',
+    url: '/index/account/updetes',
     method: 'post',
     data
   })
@@ -99,7 +99,7 @@ export function postupdatas(data) {
 export function postDeletes(data) {
   // console.log(data, '898989')
   return request({
-    url: 'http://test.txsqtech.com/index/account/delete',
+    url: '/index/account/delete',
     method: 'post',
     data
   })
@@ -108,7 +108,7 @@ export function postDeletes(data) {
 export function postDongjie(data) {
   // console.log(data, '898989')
   return request({
-    url: 'http://test.txsqtech.com/index/account/deletes',
+    url: '/index/account/deletes',
     method: 'post',
     data
   })
@@ -118,7 +118,7 @@ export function postDongjie(data) {
 export function postToexamine(data) {
   // console.log(data, '898989')
   return request({
-    url: 'http://test.txsqtech.com/index/account/toexamine',
+    url: '/index/account/toexamine',
     method: 'post',
     data
   })
@@ -127,7 +127,7 @@ export function postToexamine(data) {
 export function postTongyi(data) {
   // console.log(data, '898989')
   return request({
-    url: 'http://test.txsqtech.com/index/account/toexamines',
+    url: '/index/account/toexamines',
     method: 'post',
     data
   })
@@ -136,7 +136,7 @@ export function postTongyi(data) {
 export function postJujue(data) {
   // console.log(data, '898989')
   return request({
-    url: 'http://test.txsqtech.com/index/account/toexamineNo',
+    url: '/index/account/toexamineNo',
     method: 'post',
     data
   })

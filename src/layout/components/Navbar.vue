@@ -7,25 +7,28 @@
     />
     <div class="second">
       <div class="form-btn" style="background-color:#fff;">
-        <input type="text" placeholder="">
+        <input type="text" placeholder />
         <div class="serach">搜索</div>
       </div>
       <span class="huanyin" style="cursor:default;">欢迎您，{{ huanyingName }}</span>
       <!-- <span class="nothing" /> -->
     </div>
     <ul class="right-menu">
-      <li @click="triggerHandler" style="margin:0 14px; white-space:nowrap;">
+      <li style="margin:0 14px; white-space:nowrap;" @click="triggerHandler">
         <svg-icon icon-class="dingwei" />
         <span>{{ dingweiName }}</span>
       </li>
-      <li style="margin:0 14px">
+      <li style="margin:0 14px width:60px;">
         <svg-icon icon-class="bianqian1" />
+        <span>便签</span>
       </li>
-      <li style="margin:0 14px">
+      <li style="margin:0 14px width:100px;">
         <svg-icon icon-class="shezhi1" />
+        <span>修改资料</span>
       </li>
-      <li @click="isShowT3" style="margin:0 14px">
+      <li style="margin:0 14px width:100px;" @click="isShowT3">
         <svg-icon icon-class="tuichu1" />
+        <span>退出</span>
       </li>
     </ul>
   </div>
@@ -48,18 +51,18 @@ export default {
     ...mapState(['userInfo'])
   },
   methods: {
-    toggleSideBar() {
+    toggleSideBar () {
       // console.log('svgxvsghfbyjegfe3g')
       this.$store.dispatch('app/toggleSideBar')
     },
-    async logout() {
+    async logout () {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
-    isShowT3() {
+    isShowT3 () {
       this.$emit('isShowTHander')
     },
-    triggerHandler() {
+    triggerHandler () {
       if (this.userInfo.Jurisdiction === 3) {
         return
       } else {
@@ -89,7 +92,7 @@ export default {
     height: 100%;
     float: left;
     cursor: pointer;
-    transition:  0.3s;
+    transition: 0.3s;
     -webkit-tap-highlight-color: transparent;
 
     // &:hover {
@@ -209,6 +212,9 @@ export default {
   .right-menu li span {
     font-size: 14px;
     margin-left: 3px;
+  }
+  .right-menu li {
+    width: 100px !important;
   }
 }
 </style>

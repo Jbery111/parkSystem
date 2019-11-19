@@ -5,10 +5,10 @@ import { getToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
 // axios.defaults.headers.common['token'] = 'eyJ1aWQiOjEsImlwIjoiMjIwLjE2Ni4yMzguMjI5In0'
 const service = axios.create({
-  // baseURL: 'http://test.txsqtech.com', // url = base url + request url
-  // headers: {
-  //   'Content-Type': 'application/json;charset=UTF-8'
-  // },
+  baseURL: 'http://park.txsqtech.com', // url = base url + request url
+  headers: {
+    'Content-Type': 'application/json;charset=UTF-8'
+  },
   timeout: 5000 // request timeout
 })
 
@@ -25,17 +25,18 @@ service.interceptors.request.use(
   // window.history.pushState('forward', null, '')
   // window.history.forward(1)
   config => {
-    if (getToken()) {
-      config.headers['token'] = store.getters.token
-    } else {
-      const obj = {}
-      for (const i in config.headers) {
-        if (i !== 'token') {
-          obj[i] = config.headers[i]
-        }
-      } // 这里没用
-      config.headers = obj
-    }
+    // if (getToken()) {
+    //   console.log(store.getters.token, 'store.getters.token')
+    //   config.headers['token'] = store.getters.token
+    // } else {
+    //   const obj = {}
+    //   for (const i in config.headers) {
+    //     if (i !== 'token') {
+    //       obj[i] = config.headers[i]
+    //     }
+    //   } // 这里没用
+    //   config.headers = obj
+    // }
     return config
   },
   error => {

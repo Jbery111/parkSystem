@@ -103,36 +103,20 @@
     <!-- 新增账号遮罩层 -->
     <el-dialog
       :visible.sync="centerDialogVisible"
-      width="26.02%"
+      width="400px"
       center
       :append-to-body="true"
       :close-on-click-modal="false"
     >
       <span slot="title">{{ titleName }}</span>
       <el-form :label-position="labelPosition" label-width="80px">
-        <div class="form-item" style="height:6vh">
+        <div class="form-item" style="height:60px">
           <el-form-item label="姓名:">
             <input v-model="formAlign.name" type="text" @focus="handlerName" >
+            <p class="mistack-message">{{ mistakeToast1 }}</p>
           </el-form-item>
-          <p
-            class="mistack-message"
-            style="color:red;
-            color: red;
-            position: relative;
-            top:-0.5vh;
-            left: 2.2vw;
-            margin-left: 0.9vw;
-            margin-top: 0.2vh;
-            box-sizing: border-box;
-            font-size: 0.8vw;
-            transform: scale(0.9);
-            font-family: Microsoft YaHei;
-            font-weight: 400;
-            color: rgba(255, 0, 0, 1);
-            "
-          >{{ mistakeToast1 }}</p>
         </div>
-        <div class="form-item" style="height:6vh">
+        <div class="form-item" style="height:60px">
           <el-form-item label="账号:">
             <input
               ref="nameInput"
@@ -141,24 +125,8 @@
               placeholder="请输入手机号"
               @focus="handlerPhone"
             >
+            <p class="mistack-message">{{ mistakeToast2 }}</p>
           </el-form-item>
-          <p
-            class="mistack-message"
-            style="color:red;
-            color: red;
-            position: relative;
-            top:-0.5vh;
-            left: 1.5vw;
-            margin-left: 1.7vw;
-            margin-top: 0.2vh;
-            box-sizing: border-box;
-            font-size: 0.8vw;
-            transform: scale(0.9);
-            font-family: Microsoft YaHei;
-            font-weight: 400;
-            color: rgba(255, 0, 0, 1);
-            "
-          >{{ mistakeToast2 }}</p>
         </div>
         <div class="form-item">
           <el-form-item label="职位:" class="region-class">
@@ -167,7 +135,7 @@
               type="text"
               v-model="formAlign.region"
             >-->
-            <el-select v-model="poname" placeholder="请选择职位">
+            <el-select v-model="poname" placeholder="请选择职位" no-data-text="暂无数据">
               <el-option
                 v-for="item in cities"
                 :key="item.poname"
@@ -178,24 +146,8 @@
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
+            <p class="mistack-message">{{ mistakeToast3 }}</p>
           </el-form-item>
-          <p
-            class="mistack-message"
-            style="color:red;
-            color: red;
-            position: relative;
-            top:-0.5vh;
-            left: 1.5vw;
-            margin-left: 1.7vw;
-            margin-top: 0.2vh;
-            box-sizing: border-box;
-            font-size: 0.8vw;
-            transform: scale(0.9);
-            font-family: Microsoft YaHei;
-            font-weight: 400;
-            color: rgba(255, 0, 0, 1);
-            "
-          >{{ mistakeToast3 }}</p>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -205,20 +157,20 @@
     <!-- 修改权限 -->
     <el-dialog
       :visible.sync="centerDialogVisible1"
-      width="24.43%"
+      width="400px"
       center
       :append-to-body="true"
       :close-on-click-modal="false"
     >
       <span slot="title">{{ titleName }}</span>
       <el-form :label-position="labelPosition" label-width="80px">
-        <div class="form-item" style="height:6vh">
+        <div class="form-item" style="height:60px">
           <el-form-item label="姓名:">
             <input v-model="formAlign.name" type="text" @focus="handlerName" >
+            <p class="mistack-message1">{{ mistakeToast1 }}</p>
           </el-form-item>
-          <p class="mistack-message1">{{ mistakeToast1 }}</p>
         </div>
-        <div class="form-item" style="height:6vh">
+        <div class="form-item" style="height:60px">
           <el-form-item label="账号:">
             <input
               ref="nameInput"
@@ -227,8 +179,8 @@
               placeholder="请输入手机号"
               @focus="handlerPhone"
             >
+            <p class="mistack-message1">{{ mistakeToast2 }}</p>
           </el-form-item>
-          <p class="mistack-message1">{{ mistakeToast2 }}</p>
         </div>
         <div class="form-item" style="height:6vh">
           <el-form-item label="职位:" class="region-class1">
@@ -237,14 +189,14 @@
               type="text"
               v-model="formAlign.region"
             >-->
-            <el-select v-model="poname" placeholder="请选择职位">
+            <el-select v-model="poname" placeholder="请选择职位" no-data-text="暂无数据">
               <el-option v-for="item in cities" :key="item.poname" :value="item.poname">
                 <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
+            <p class="mistack-message1">{{ mistakeToast3 }}</p>
           </el-form-item>
-          <p class="mistack-message1">{{ mistakeToast3 }}</p>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -505,11 +457,12 @@ export default {
     },
     // 点击新增账号
     addtoHandler() {
-      const { name, phone } = this.formAlign
+      var { name, phone } = this.formAlign
       const { Communityid, sition } = this.userInfoData.data
       const propertyId2 = this.userInfoData.data.propertyId
       const propertyId = propertyId2.toString()
       const poid = this.dataPoid
+      phone = Number(phone)
       console.log({ Communityid, propertyId, poid, sition, name, phone }, '新增权限的请求参数')
       postAccaddto({ Communityid, propertyId, poid, sition, name, phone }).then(resp => {
         // this.dataPoid = null
@@ -943,21 +896,21 @@ export default {
       }
       //操作
       .choice-box {
-        width: 8.05vw;
-        height: 11.85vh;
+        width: 126px;
+        height: 140px;
         background: rgba(255, 255, 255, 1);
         border: 1px solid rgba(238, 238, 238, 1);
         box-shadow: 0px 6px 5px 0px rgba(153, 153, 153, 0.08);
         position: absolute;
         z-index: 3169 !important;
-        left: -1.1vw;
+        left: 0;
         cursor: pointer;
         p {
           width: 100%;
-          height: 3vh;
-          line-height: 3vh;
-          padding-left: 0.5vw;
-          font-size: 0.75vw;
+          height: 35px;
+          line-height: 35px;
+          padding-left: 10px;
+          font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
@@ -968,7 +921,6 @@ export default {
       }
       .dongjie {
         color: red;
-        // background-color: #fff;
       }
       .notdongjie {
         color: #606266;
@@ -1085,95 +1037,81 @@ export default {
   }
 }
 /deep/.el-dialog {
-  border-radius: 0.2vw;
   background-color: #fff;
-  margin-top: 35vh !important;
+  margin-top: 0% !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  min-width: 380px;
+  border-radius: 5px;
+
+  .el-dialog__wrapper {
+    overflow: auto;
+  }
+
   .el-dialog__header {
-    padding: 1.2vh 0px 0.8vh 1.02vw;
-    // margin: 0px 14px;
+    padding: 12px 0 10px 16px;
     text-align: left;
     border-bottom: 1px solid #eff2f5;
-    font-size: 0.87vw;
+    font-size: 16px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
     .el-dialog__title {
       text-align: left;
-      border-bottom: 1px solid #eff2f5;
-      font-size: 0.87vw;
+      font-size: 16px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(51, 51, 51, 1);
     }
     button {
       position: absolute;
-      top: 1.4vh;
+      top: 14px;
     }
   }
   /deep/.el-dialog__body {
     overflow: hidden;
-    padding: 2vh 29px 21px 52px !important;
+    padding: 20px 48px 27px 30px !important;
     .form-item {
       height: 40px;
-      // .zhiwei {
-      //   margin-bottom: 0px;
-      //   height: 3.5vh !important;
-      //   .el-form-item__label {
-      //     width: 64px !important;
-      //     height: 11px;
-      //     display: inline-block;
-      //     font-size: 0.85vw;
-      //     font-family: Microsoft YaHei;
-      //     font-weight: 400;
-      //     color: rgba(102, 102, 102, 1);
-      //     // letter-spacing: 8px;
-      //   }
-      //   .el-form-item__content {
-      //     margin-left: 64px !important;
-      //     input {
-      //       // width: 83% !important;
-      //       // width: 189px;
 
-      //       border: 1px solid rgba(210, 210, 210, 1);
-      //       border-radius: 3px;
-      //       outline: none;
-      //       font-size: 0.85vw;
-      //       font-family: Microsoft YaHei;
-      //       font-weight: 400;
-      //       color: rgba(102, 102, 102, 1);
-      //     }
-      //   }
-      // }
       .el-form-item {
         margin-bottom: 0px;
-        height: 4.5vh !important;
-        margin-top: 0.78vh;
-        margin-left: 0.9vw;
+        margin-top: 1px;
         &__label {
           width: 64px !important;
-          height: 11px;
+          height: 30px;
           display: inline-block;
-          font-size: 0.85vw;
+          padding: 0 !important;
+          font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
-          // letter-spacing: 2px;
         }
         &__content {
           margin-left: 64px !important;
           input {
-            width: 83%;
+            position: relative;
+            height: 30px;
+            width: 100% !important;
             padding-left: 8px;
             border: 1px solid rgba(210, 210, 210, 1);
-            // color: red;
-            background-color: #fff;
+            border-radius: 3px;
+            outline: none;
+            color: #333333;
+            padding-left: 8px;
           }
         }
         input {
           outline: none;
-          font-size: 0.8vw;
+          font-size: 14px;
           border-radius: 3px;
-          height: 3.36vh !important;
+          margin-left: 12px;
+          width: 90% !important;
+          height: 32px !important;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
@@ -1184,29 +1122,25 @@ export default {
         .el-form-item__content {
           margin-left: 64px !important;
           .el-input {
-            // background-color: #f00;
-            width: 157%;
+            width: 126%;
           }
           .el-input__suffix {
-            left: 190px;
+            left: 195px;
           }
         }
         input {
-          // background-color: #f00 !important;
           border-radius: 3px;
           border: 1px solid rgba(210, 210, 210, 1) !important;
-          // border: 1px solid rgba(210, 210, 210, 1);
         }
       }
       .region-class1 {
         .el-form-item__content {
           margin-left: 64px !important;
           .el-input {
-            // background-color: #f00;
-            width: 143%;
+            width: 126%;
           }
           .el-input__suffix {
-            left: 173px;
+            left: 195px;
           }
         }
         input {
@@ -1217,66 +1151,54 @@ export default {
         }
       }
 
-      .mistack-message1 {
-        color: red;
+      .mistack-message {
         position: relative;
-        top: -0.8vh;
-        left: 1vw !important;
-        margin-left: 2.2vw;
-        margin-top: 0.2vh;
+        color: red;
+        top: -12px;
+        text-align: left;
+        margin-left: 0px;
         box-sizing: border-box;
-        font-size: 0.8vw;
+        font-size: 14px;
         transform: scale(0.9);
         font-family: Microsoft YaHei;
         font-weight: 400;
-        margin-top: 2px;
-        box-sizing: border-box;
-        font-size: 0.8vw;
-        transform: scale(0.9);
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(255, 0, 0, 1);
       }
     }
   }
   .el-dialog__footer {
     padding-top: 0px;
     button {
-      width: 14.4%;
-      height: 3.3vh;
+      width: 62px;
+      height: 30px;
       line-height: 0;
       outline: none;
       border: none;
-      // text-align: left;
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 0 auto;
       background: rgba(248, 172, 89, 1);
       border-radius: 3px;
-      font-size: 0.8vw;
+      font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
-      margin-bottom: 0.4vh;
-      margin-top: 0.4vh;
       color: rgba(255, 254, 254, 1);
+      margin-bottom: 4px;
     }
   }
 }
 //登录记录样式
 .login-record {
   /deep/.el-dialog {
-    // background-color: #f00;
-    margin-top: 22vh !important;
-    border-radius: 0.2vw !important;
-    // width: 1000px !important;
+    border-radius: 4px !important;
     .el-dialog__body {
-      padding: 18px 38px 21px 30px !important;
+      padding: 18px 38px 21px 43px !important;
       .el-form-item__content {
         margin-left: 87px !important;
+        padding-left: 8px;
       }
       .el-form-item__label {
-        width: 6.5vw !important;
+        width: 95px !important;
       }
     }
   }
@@ -1285,15 +1207,13 @@ export default {
 .chen {
   /deep/.el-dialog {
     background-color: #fff !important;
-    width: 18.2vw;
-    height: 22vh;
-    // background-color: #fff;
-    // z-index: 888888888888888888888888888;
+    width: 18.23%;
+    height: 210px;
     /deep/.el-dialog__header {
       border-bottom: 1px solid #eff2f5;
       .el-dialog__title {
         border-bottom: none;
-        font-size: 0.87vw;
+        font-size: 16px;
       }
       button {
         z-index: 19999;
@@ -1305,23 +1225,21 @@ export default {
     .el-dialog__body {
       background-color: #fff;
       height: 110px !important;
-      padding: 1vh 0 21px 50px !important;
       position: relative;
       div {
-        width: 80%;
+        width: 100%;
         height: 110px;
-        line-height: 9.2vh;
-        font-size: 0.85vw;
+        line-height: 78px;
+        margin-left: 8px;
+        font-size: 16px;
         text-align: center;
       }
     }
     .el-dialog__footer {
       position: absolute;
-      top: 15.7vh;
       width: 100%;
       display: flex;
       justify-content: center;
-      font-size: 0.75vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(153, 153, 153, 1);
@@ -1330,12 +1248,10 @@ export default {
         display: flex;
         justify-content: space-around;
         button {
-          width: 4vw;
-          height: 3.5vh;
-          line-height: -0.64vh;
-          font-size: 0.8vw;
+          width: 72px;
+          height: 30px;
+          font-size: 14px;
           border-radius: 3px !important;
-          font-size: 0.8vw;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(255, 254, 254, 1);
@@ -1378,7 +1294,6 @@ export default {
   left: 240px;
 }
 /deep/.el-pagination.is-background .btn-next:disabled {
-  // background-color: #f00;
   cursor: default;
 }
 /deep/.el-pagination.is-background .btn-prev:disabled {

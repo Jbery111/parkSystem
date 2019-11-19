@@ -43,7 +43,6 @@ export default {
   },
   watch: {
     '$route'(to, from) {
-      // console.log(to, 'tototootototototot')
       const fullPath = to.fullPath
       const str = fullPath.split('/')
       const strData = str[1]
@@ -51,6 +50,7 @@ export default {
       const lists = routerOptions.filter(item => item.name === strData)
       if (strData === 'dashboard') {
         // console.log(strData)
+        console.log(lists[0], 'tototootototototot')
       } else {
         this.setRouterAsync(lists[0])
       }

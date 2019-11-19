@@ -4,7 +4,7 @@
     <div v-if="isShowHis" slot="header" class="clearfix">
       <div v-if="!isShowExcel" class="box-header-right">
         <span class="add-btn" @click="exitBefore">返回上一级</span>
-        <span class="add-btn add-btn2" @click="addUser" style="width:72px; margin:0 8px;">添加住户</span>
+        <span class="add-btn add-btn2" style="width:72px; margin:0 8px;" @click="addUser">添加住户</span>
         <!-- <span class="add-btn">导入住户</span> -->
 
         <el-upload
@@ -22,7 +22,7 @@
       <!-- 点击到入住户 -->
       <div v-if="isShowExcel" v-show="!isError" class="box-header-right" style="width:200px;">
         <span class="add-btn" @click="exitHandler">返回上一级</span>
-        <span class="add-btn add-btn2" @click="querenUpload" style="width:72px;">确认导入</span>
+        <span class="add-btn add-btn2" style="width:72px;" @click="querenUpload">确认导入</span>
       </div>
     </div>
     <!-- 历史住户的返回上一级 -->
@@ -76,15 +76,15 @@
               type="text"
               size="small"
               class="operateBtn btn-modify"
-              @click="handleModifyClick(scope.row)"
               style="height:30px; width:52px; "
+              @click="handleModifyClick(scope.row)"
             >修改</el-button>
             <el-button
               v-if="!isShowExcel"
               size="small"
               class="operateBtn btn-licence"
-              @click="handleDetailClick(scope.row)"
               style="width:72px; height:30px; margin-left:8px; border:1px solid #1FBBA6;"
+              @click="handleDetailClick(scope.row)"
             >更多</el-button>
             <el-button
               v-if="!isShowExcel"
@@ -93,8 +93,8 @@
               type="text"
               size="small"
               class="operateBtn btn-modify"
-              @click="handleFaceClick(scope.row)"
               style="width:72px; height:30px; margin-left:8px;"
+              @click="handleFaceClick(scope.row)"
               v-html="scope.row.imgtype === 2 ? '人脸录入':'查看人脸'"
             />
             <el-button
@@ -160,8 +160,8 @@
               type="text"
               size="small"
               class="operateBtn btn-modify"
-              @click="handleFaceClick(scope.row)"
               style="width:72px; height:30px; margin-left:8px;"
+              @click="handleFaceClick(scope.row)"
               v-html="scope.row.imgtype === 2 ? '人脸录入':'查看人脸'"
             />
             <el-button
@@ -178,8 +178,8 @@
               type="text"
               size="small"
               class="operateBtn btn-record"
-              @click="handleRecordClick(scope.row)"
               style="width:72px; height:30px; margin-left:8px;"
+              @click="handleRecordClick(scope.row)"
             >操作记录</el-button>
           </template>
         </el-table-column>
@@ -382,10 +382,10 @@
             <el-upload
               ref="upload"
               :limit="1"
+              v-show="uploadIdenty"
               action="#"
               :on-remove="handleRemove"
               :on-preview="handlePictureCardPreview"
-              v-show="uploadIdenty"
               :on-change="handleChange"
               list-type="picture-card"
               :auto-upload="false"
@@ -1211,6 +1211,7 @@ export default {
     },
     // 修改修改
     modifyHandler () {
+      console.log('点击修改44444444444444444444444444444444444444444444')
       if (this.modifyData.name === '') {
         this.$refs.userToast.style.color = 'red'
         setTimeout(() => {
@@ -1295,7 +1296,7 @@ export default {
     modifyChange () {
       console.log('change')
     },
-    //身份证正则验证
+    // 身份证正则验证
     checkIdentify (item) {
       if (item) {
         if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {
@@ -1312,7 +1313,7 @@ export default {
         return true
       }
     },
-    //修改
+    // 修改
     checkIdentify1 (item) {
       if (item) {
         if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {

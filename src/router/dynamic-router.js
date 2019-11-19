@@ -1,8 +1,12 @@
 import Layout from '@/layout'
-import cooperationRouter from './modules/cooperation'
-import houseInfoRouter from './modules/houseInfo'
+import parkManageRouter from './modules/parkManage'
+import incomeRouter from './modules/income'
 import accountInfoRouter from './modules/accountInfo'
-import entranceRouter from './modules/entranceguard'
+import parkconcessionRouter from './modules/parkconcession'
+import carmanageRouter from './modules/carmanage'
+import qrcodeChargeRouter from './modules/qrcodeCharge'
+import statisticInfoRouter from './modules/statisticInfo'
+import hardwareRouter from './modules/hardware'
 // const dashboard = () => import('@/views/dashboard/index')
 /* 需要权限判断的路由 */
 const dynamicRoutes = [
@@ -33,7 +37,7 @@ const dynamicRoutes = [
       }
     ]
   },
-  houseInfoRouter,
+  incomeRouter,
   {
     path: '/car',
     component: Layout,
@@ -51,10 +55,15 @@ const dynamicRoutes = [
     ]
   },
   // 合作企业
-  cooperationRouter,
+  parkManageRouter,
   // 账号分配
-  accountInfoRouter,
-  entranceRouter
+  parkconcessionRouter,
+  // 车辆车位管理
+  carmanageRouter,
+  qrcodeChargeRouter,
+  statisticInfoRouter,
+  hardwareRouter,
+  accountInfoRouter
 ]
 
 export default dynamicRoutes

@@ -2,7 +2,7 @@
 <template>
   <div class="wy-login-container">
     <div class="wy-login-nav">
-      <span class="logo">宅-物业管理系统</span>
+      <span class="logo">宅-停车场管理系统</span>
       <ul style="cursor:pointer;">
         <li>关于我们</li>
         <div style="height:12px;border:1px solid white;margin-top:4px" />
@@ -67,9 +67,15 @@
       >确认</el-button>
     </el-form>
     <div class="wy-login-bottom">
-    <span class="zi">成都同享社圈智慧科技有限公司版权所有</span>
-    <div style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;" ></div>
-    <a href="http://www.miibeian.gov.cn/" target="_blank" style="margin-left:10px; white-space:nowrap;position:absolute;">蜀ICP备19024682号</a>
+      <span class="zi">成都同享社圈智慧科技有限公司版权所有</span>
+      <div
+        style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;"
+      />
+      <a
+        href="http://www.miibeian.gov.cn/"
+        target="_blank"
+        style="margin-left:10px; white-space:nowrap;position:absolute;"
+      >蜀ICP备19024682号</a>
     </div>
   </div>
 </template>
@@ -159,7 +165,6 @@ export default {
     },
     handleLogin () {
       localStorage.setItem('isRefresh', true)
-      // console.log('chenshaungxue')
       this.login({
         name: this.loginForm.username,
         password: this.loginForm.password
@@ -180,7 +185,7 @@ export default {
             this.$store.commit('permission/CLEAR_MENU')
             this.$store.commit('permission/CLEAR_PERMISSION')
             this.$store.dispatch('permission/FETCH_PERMISSION')
-            console.log('普通员工')
+            console.log('普通员工111')
             if (response.amg === 1) {
               this.$router.replace('/dashboard')
               // this.$router.replace({ path: 'dashboard', query: { amg: '1' }})
@@ -212,6 +217,8 @@ export default {
           Message(response.msg ? response.msg : response.msg)
         } else if (response.code === 301) {
           Message(response.msg ? response.msg : response.msg)
+        } else if (response.code === 201) {
+          this.$router.replace('/setparams')
         }
       })
     },
@@ -251,7 +258,7 @@ input {
     padding: 20px 29px 0 40px;
     font-family: MicrosoftYaHei;
     font-weight: 400;
-  
+
     span {
       font-size: 18px;
       white-space: nowrap !important;
@@ -308,7 +315,7 @@ input {
 }
 .forget {
   float: right;
-  font-size:12px;
+  font-size: 12px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
   color: rgba(51, 51, 51, 1);
@@ -330,27 +337,25 @@ input {
   cursor: pointer;
   user-select: none;
 }
-.wy-login-bottom{
+.wy-login-bottom {
   position: absolute;
   bottom: 12px;
   color: #fff;
   font-size: 14px;
   margin: 0 38%;
   width: 100%;
-  white-space:nowrap !important;
-.zi {
-     position: absolute;
-     text-align: center;
-     color: rgba(255, 255, 255, 1);
-     font-family: MicrosoftYaHei;
-     font-weight: 400;
-     cursor: default;
-     white-space:nowrap;
-     width: 280px;
-     
-     }
-    
+  white-space: nowrap !important;
+  .zi {
+    position: absolute;
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    cursor: default;
+    white-space: nowrap;
+    width: 280px;
   }
+}
 </style>
 
 

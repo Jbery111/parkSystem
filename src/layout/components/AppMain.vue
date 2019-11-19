@@ -65,7 +65,8 @@ export default {
       this.isThreeMenu = false
       this.isDivShow = false
       // 对路由变化作出响应...
-      if (to.meta.title === '首页111') {
+      // console.log(to, '二级二级二级')
+      if (to.path === '/dashboard') {
         this.isDash = false
         this.clearRouterAsync()
         // console.log(this.secondRouterLists, '909090909090')

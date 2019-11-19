@@ -35,16 +35,16 @@ module.exports = {
       errors: true
     },
 
-    // 'proxy': {
-    //   '/index': {
-    //     target: 'http://test.txsqtech.com',
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/index': '/index'
-    //     }
-    //     // withCredentials: false
-    //   }
-    // },
+    'proxy': {
+      '/index': {
+        target: 'http://park.txsqtech.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/index': '/index'
+        }
+        // withCredentials: false
+      }
+    },
     // proxy: {
     //   '/index': {
     //     target: 'http://test.txsqtech.com:80',

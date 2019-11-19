@@ -1,16 +1,19 @@
 /* eslint-disable */
 import Vue from 'vue'
 import Router from 'vue-router'
-import cooperationRouter from './modules/cooperation'
-import houseInfoRouter from './modules/houseInfo'
+import parkManageRouter from './modules/parkManage'
+import incomeRouter from './modules/income'
 import accountInfoRouter from './modules/accountInfo'
-import entranceRouter from './modules/entranceguard'
+import parkconcessionRouter from './modules/parkconcession'
+import carmanageRouter from './modules/carmanage'
+import qrcodeChargeRouter from './modules/qrcodeCharge'
+import statisticInfoRouter from './modules/statisticInfo'
+import hardwareRouter from './modules/hardware'
+
 Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-// import cooperationRouter from './modules/cooperation'
-// import houseInfoRouter from './modules/houseInfo'
 // import accountInfoRouter from './modules/accountInfo'
 
 const dashboard = () => import('@/views/dashboard/index')
@@ -25,13 +28,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'dashboard',
       hidden: true,
-      component: dashboard,
-      // meta: { title: '', icon: 'logo' }
-      meta: {
-        title: '首页111',
-        icon: 'home3',
-        isToken: true
-      }
+      component: dashboard
     }]
   },
   {
@@ -42,6 +39,7 @@ export const constantRoutes = [
       toClearLocalStorage: true
     }
   },
+
   {
     path: '/loginretripwd',
     component: () => import('@/views/loginretripwd/index'),
@@ -97,6 +95,16 @@ export const constantRoutes = [
       isToken: true
     }
   },
+  //设置参数
+  {
+    path: '/setparams',
+    name: 'setparams',
+    component: () => import('@/views/SetParams/index'),
+    hidden: true,
+    meta: {
+      isToken: true
+    }
+  },
   {
     path: '/community',
     component: () => import('@/views/community/index'),
@@ -135,7 +143,103 @@ export const constantRoutes = [
       }
     ]
   },
-  houseInfoRouter,
+  // {
+  //   path: '/parkmanage',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'parkmanage',
+  //       component: () => import('@/views/ParkManage/index'),
+  //       meta: {
+  //         title: '停车场管理',
+  //         icon: 'cooper3',
+  //         auth_id: 53
+  //       }
+  //     }
+  //   ]
+  // },
+  {
+    path: '/incomestatic',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'incomestatic',
+        component: () => import('@/views/IncomeStatistics/index'),
+        meta: {
+          title: '收入统计',
+          icon: 'cooper3',
+          auth_id: 54
+        }
+      }
+    ]
+  },
+  {
+    path: '/parkconcession',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'parkconcession',
+        component: () => import('@/views/ParkConcession/index'),
+        meta: {
+          title: '停车场优惠',
+          icon: 'cooper3',
+          auth_id: 55
+        }
+      }
+    ]
+  },
+  {
+    path: '/qrcodeCharge',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'qrcodeCharge',
+        component: () => import('@/views/QrcodeCharge/index'),
+        meta: {
+          title: '二维码收费管理',
+          icon: 'cooper3',
+          auth_id: 57
+        }
+      }
+    ]
+  },
+  {
+    path: '/carmanage',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'carmanage',
+        component: () => import('@/views/CarManage/index'),
+        meta: {
+          title: '车辆车位管理',
+          icon: 'cooper3',
+          auth_id: 56
+        }
+      }
+    ]
+  },
+  {
+    path: '/statisticInfo',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'statisticInfo',
+        component: () => import('@/views/statisticInfo/index'),
+        meta: {
+          title: '信息统计',
+          icon: 'cooper3',
+          auth_id: 58
+        }
+      }
+    ]
+  },
+  incomeRouter,
   {
     path: '/car',
     component: Layout,
@@ -152,11 +256,16 @@ export const constantRoutes = [
       }
     ]
   },
-  // 合作企业
-  cooperationRouter,
+  // 停车场管理
+  parkManageRouter,
   // 账号分配
+  parkconcessionRouter,
+  //车辆车位管理
+  carmanageRouter,
+  qrcodeChargeRouter,
+  statisticInfoRouter,
+  hardwareRouter,
   accountInfoRouter,
-  entranceRouter,
   {
     path: '/account/Jurisdiction',
     name: 'Jurisdiction',
@@ -222,7 +331,6 @@ export const asyncRouterMap = [
       //     auth_id: 1
       //   }
       // },
-      // houseInfoRouter
       // {
       //   path: '/car',
       //   component: Layout,

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function postLogin(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/logins/login',
+    url: '/index/logins/login',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function postLogin(data) {
 
 export function postLogout(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/Signout',
+    url: '/index/index/Signout',
     method: 'post',
     data
   })
@@ -19,7 +19,7 @@ export function postLogout(data) {
 export function postGetCode(data) {
   console.log(data, '获取找回密码的验证码1111')
   return request({
-    url: 'http://test.txsqtech.com/index/logins/Code',
+    url: '/index/logins/Code',
     method: 'post',
     data
   })
@@ -28,7 +28,7 @@ export function postGetCode(data) {
 export function postGetCodes(data) {
   // console.log('重置获取验证码的参数111')
   return request({
-    url: 'http://test.txsqtech.com/index/logins/codes',
+    url: '/index/logins/codes',
     method: 'get',
     params: data
   })
@@ -37,7 +37,7 @@ export function postGetCodes(data) {
 export function postRetrieve(data) {
   console.log(data, '11111112222222222333333333333')
   return request({
-    url: 'http://test.txsqtech.com/index/logins/Retrieve',
+    url: '/index/logins/Retrieve',
     method: 'post',
     data
   })
@@ -46,7 +46,7 @@ export function postRetrieve(data) {
 // 重置密码
 export function postResetPwd(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/logins/Retrievea',
+    url: '/index/logins/Retrievea',
     method: 'post',
     data
   })
@@ -54,7 +54,7 @@ export function postResetPwd(data) {
 // 输入新密码
 export function postnewPwd(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/logins/Retrieves',
+    url: '/index/logins/Retrieves',
     method: 'post',
     data
   })
@@ -62,7 +62,7 @@ export function postnewPwd(data) {
 // 选择小区
 export function postHighest(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/Highest',
+    url: '/index/index/Highest',
     method: 'post',
     // headers: {  },
     // headers: {
@@ -89,7 +89,7 @@ export function postHighest(data) {
 // 按小区首字母搜索小区
 export function postHighests(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/Highests',
+    url: '/index/index/Highests',
     method: 'post',
     data
   })
@@ -97,7 +97,7 @@ export function postHighests(data) {
 // 查询小区
 export function postHighes(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/Highes',
+    url: '/index/index/Highes',
     method: 'post',
     data
   })
@@ -106,21 +106,21 @@ export function postHighes(data) {
 export function postget(data) {
   // console.log(data)
   const { page, Communityid, propertyId } = data
-  return request.get(`http://test.txsqtech.com/index/index/Highes?page=${page}&Communityid=${Communityid}&propertyId=${propertyId}`)
+  return request.get(`/index/index/Highes?page=${page}&Communityid=${Communityid}&propertyId=${propertyId}`)
 }
 // 按小区首字母搜索小区
 export function getLetter(data) {
   const { page, name, Communityid, propertyId } = data
-  return request.get(`http://test.txsqtech.com/index/index/Highests?page=${page}&Communityid=${Communityid}&propertyId=${propertyId}&name=${name}`)
+  return request.get(`/index/index/Highests?page=${page}&Communityid=${Communityid}&propertyId=${propertyId}&name=${name}`)
 }
 // 查询开票
 // export function postInvoices(data) {
 //   const { propertyId } = data
-//   return request.get(`http://test.txsqtech.com/index/index/Invoices?propertyId=${propertyId}`)
+//   return request.get(`/index/index/Invoices?propertyId=${propertyId}`)
 // }
 export function postInvoices(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/Invoices',
+    url: '/index/index/Invoices',
     method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
@@ -133,7 +133,7 @@ export function postInvoices(data) {
 export function postInvoicesSuccess(data) {
   // console.log(data)
   return request({
-    url: 'http://test.txsqtech.com/index/index/Invoice',
+    url: '/index/index/Invoice',
     method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'

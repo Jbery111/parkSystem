@@ -52,7 +52,7 @@ export default {
       const children = JSON.parse(JSON.stringify(mainChildren))
 
       children.push(...routes)
-      // console.log(MainContainer.children, children, '__________________________________------_______________')
+      console.log(MainContainer.children, children, '__________________________________------_______________')
       // children.shift()
       // // // /* 生成左侧导航菜单 */
       // commit('CLEAR_MENU')

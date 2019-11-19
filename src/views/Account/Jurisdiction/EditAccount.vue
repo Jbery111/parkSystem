@@ -6,7 +6,7 @@
         <span v-if="ishowAdd" id="newadd" @click="isShow1">新增权限</span>
         <el-table :data="tableData" style="width: 100%" empty-text="没有数据">
           <el-table-column prop="poname" label="职位" min-width="220" />
-          <!-- <el-table-column prop="po_notes" label="职位描述" min-width="400" @mouseleave="mouseHandler" /> -->
+
           <el-table-column prop="po_notes" label="职位描述" min-width="400" class="des-class">
             <template slot-scope="scope">{{ scope.row.po_notes }}</template>
           </el-table-column>
@@ -119,7 +119,7 @@ border-radius:4px;"
         show-checkbox
         get-current-node
         node-key="id"
-        :default-checked-keys="[47]"
+        :default-checked-keys="[68]"
         :props="defaultProps"
         disabled="true"
         :highlight-current="false"
@@ -286,34 +286,6 @@ export default {
       }
       // console.log(this.buttonLists, '182182')
       btnList.forEach(list => {
-        // console.log(list.auth_name)
-        // 判断该角色在该页面对应的权限按钮的显示
-        // console.log(this.isShowDelte, this.isShowEdit, this.ishowAdd, '555555')
-        // switch (list.auth_name) {
-        //   case '删除':
-        //     // ishowAdd: true,
-        //     //   isShowDelte: true,
-        //     //     isShowEdit: true
-        //     // this.isShowEdit = false
-        //     // this.ishowAdd = false
-        //     this.isShowDelte = true
-        //     break
-        //   case '修改':
-        //     // this.ishowAdd = false
-        //     // this.isShowDelte = false
-        //     this.isShowEdit = true
-        //     break
-        //   case '新增权限':
-        //     // this.isShowDelte = false
-        //     this.ishowAdd = true
-        //     // this.isShowEdit = false
-        //     break
-        //   default:
-        //     this.isShowEdit = false
-        //     this.ishowAdd = false
-        //     this.isShowDelte = false
-        //     break
-        // }
         console.log(list.auth_name, '3333')
         if (list.auth_name === '删除') {
           this.isShowDelte = true
@@ -501,8 +473,10 @@ export default {
             } else {
               this.defaultCheckedKeys = null
               postQuerysa({ Communityid, uid }).then(resp => {
+                // console.log({ Communityid, uid },'{ Communityid, uid }')
                 this.defaultCheckedKeys = []
                 const allTrees = resp.msg
+                // console.log(allTrees, 'postQuerysa11')
                 allTrees.forEach(item => {
                   if (item.label === '首页') {
                     item.children.forEach(item => {
@@ -515,8 +489,8 @@ export default {
                     item.disabled = false
                   }
                 })
-                console.log({ Communityid, uid }, allTrees, '创建职位时的treedata')
                 this.treeData = allTrees
+                console.log(this.treeData, '1212首页')
               })
               this.centerDialogVisible = false
               this.centerDialogVisible1 = !this.centerDialogVisible1
@@ -634,16 +608,10 @@ export default {
   }
 }
 </script>
-// <style lang='scss' scoped>
-</style>
 <style lang='scss' scoped>
 //卡片的样式
-.text {
-  font-size: 1.02vw;
-}
-
-.item {
-  margin-bottom: 2.3vh;
+/deep/.createJobDialog .el-dialog .el-dialog--center {
+  background-color: #f44 !important;
 }
 
 .clearfix:before,
@@ -654,26 +622,7 @@ export default {
 .clearfix:after {
   clear: both;
 }
-.clearfix {
-  span {
-    display: inline-block;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    // background-color: #f00;
-    color: #fff;
-    width: 4.17vw;
-    height: 3.4vh;
-    line-height: 3.4vh;
-    // background: rgba(37, 186, 217, 1);
-    border-radius: 0.2vw;
-    font-size: 0.75vw;
-    font-family: Microsoft YaHei;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 1);
-    cursor: pointer;
-  }
-}
+
 .box-card {
   min-height: 775px;
   position: relative;
@@ -695,8 +644,6 @@ export default {
       z-index: 222;
     }
     .el-table th {
-      // padding: 14px 55px !important;
-      font-size: 0.75vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(144, 147, 153, 1);
@@ -750,15 +697,7 @@ export default {
   color: #f00 !important;
   background: #f00 !important;
 }
-.page {
-  position: absolute;
-  bottom: 9.1vh;
-  right: 0.3vw;
-  font-size: 0.75vw;
-  font-family: Microsoft YaHei;
-  font-weight: 400;
-  color: rgba(102, 102, 102, 1);
-}
+
 //分页器的样式
 .block {
   .record-data {
@@ -852,118 +791,101 @@ export default {
 }
 /deep/ .el-dialog {
   background-color: #fff;
-  margin-top: 35vh !important;
-  border-radius: 0.2vw;
-  // margin: 20% 38% !important;
-
-  // height: 220px;
-  // overflow-x: hidden;
+  margin-top: 0% !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  min-width: 380px;
+  border-radius: 5px;
   .el-dialog__wrapper {
     overflow: auto;
   }
   .el-dialog__header {
-    padding: 1.2vh 0px 0.8vh 1.02vw;
-    // padding: 2.2vh 0px 1.2vh 0px;
-    // margin: 0px 1.02vw;
+    padding: 12px 0 10px 16px;
     text-align: left;
     border-bottom: 1px solid #eff2f5;
-    font-size: 0.87vw;
+    font-size: 16px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
     .el-dialog__title {
       text-align: left;
-      border-bottom: 1px solid #eff2f5;
-      font-size: 0.95vw;
+      font-size: 16px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(51, 51, 51, 1);
     }
-    // /deep/.el-dialog__headerbtn {
-    //   top: 3vh !important;
-    // }
+
     button {
       position: absolute;
-      top: 1.4vh;
+      top: 14px;
     }
   }
   /deep/.el-dialog__body {
     overflow: hidden;
-    padding: 2vh 29px 0.8vh 29px !important;
-    padding: 0px;
+    padding: 20px 50px 6px 48px !important;
     .form-item {
       height: 60px;
       .zhiwei {
         margin-bottom: 0px;
-        height: 4.5vh !important;
         .el-form-item__label {
-          // width: 90px !important;
-          height: 1.43vh;
           display: inline-block;
-          font-size: 0.85vw;
+          font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
+          padding: 0 !important;
+          white-space: nowrap;
           color: rgba(102, 102, 102, 1);
           text-align: right !important;
-          // margin-left: 0.3vw;
-
-          // letter-spacing: 8px;
         }
         .el-form-item__content {
-          // margin-left:90px!important;
           input {
-            width: 83% !important;
-            // width: 189px;
-            height: 3vh;
+            width: 87% !important;
             border: 1px solid rgba(210, 210, 210, 1);
             border-radius: 3px;
             outline: none;
             color: #333333;
-            font-size: 0.8vw;
             padding-left: 8px;
           }
         }
       }
       .el-form-item {
         margin-bottom: 0px;
-        height: 4.5vh !important;
-        margin-top: 0.78vh;
-        margin-left: 2.3vw;
+        margin-top: 1px;
+        text-align: center;
         &__label {
-          width: 4.68vw !important;
-          height: 1.43vh;
+          height: 30px;
           display: inline-block;
-          font-size: 0.85vw;
+          font-size: 14px;
+          padding: 0 !important;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
-          // letter-spacing: 2px;
         }
         &__content {
-          margin-left: 4.68vw !important;
           input {
             position: relative;
-            height: 3vh;
-            width: 83% !important;
+            height: 30px;
+            width: 87% !important;
             border: 1px solid rgba(210, 210, 210, 1);
             border-radius: 3px;
-            // color: red;
             outline: none;
             color: #333333;
-            font-size: 0.8vw;
             padding-left: 8px;
           }
         }
       }
+
       .mistack-message {
-        color: red;
-        position: absolute;
-        top: 120px;
-        // left: 2px;
-        margin-left: 3.9vw;
-        margin-top: 0.2vh;
+        position: relative;
+        top: -12px;
+        text-align: left;
+        margin-left: 5px;
         box-sizing: border-box;
-        font-size: 0.8vw;
+        font-size: 14px;
         transform: scale(0.9);
         font-family: Microsoft YaHei;
         font-weight: 400;
@@ -974,62 +896,31 @@ export default {
   .el-dialog__footer {
     padding-top: 0px;
     button {
-      width: 14.4%;
-      height: 3.3vh;
-      line-height: 0px;
+      width: 62px;
+      height: 30px;
+      line-height: 0;
       outline: none;
       border: none;
-      // text-align: left;
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 0 auto;
       background: rgba(248, 172, 89, 1);
       border-radius: 3px;
-      font-size: 0.8vw;
+      font-size: 14px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(255, 254, 254, 1);
-      margin-bottom: 0.4vh;
+      margin-bottom: 4px;
     }
   }
 }
-.tree-content1 {
-  /deep/.el-dialog {
-    margin: 20% 38% !important;
-  }
-  /deep/.el-dialog__body {
-    color: red;
-    margin-top: 1.43vh;
-    padding: 0px !important;
-    padding-left: 0.88vw !important;
-  }
-  .el-dialog__header {
-    .el-dialog__title {
-      border-bottom: none;
-    }
-  }
 
-  /deep/.el-dialog__footer {
-    margin-top: 3vh;
-    .toast {
-      // width: 50px;
-      height: 2.6vh;
-      font-size: 0.75vw;
-      transform: scale(0.95);
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: rgba(255, 0, 0, 1);
-    }
-  }
-}
 .chen {
   /deep/.el-dialog {
     background-color: #fff !important;
-    width: 18.2vw;
-    height: 22vh;
-    // background-color: #fff;
-    // z-index: 888888888888888888888888888;
+    width: 18.23%;
+    height: 210px;
     /deep/.el-dialog__header {
       button {
         z-index: 19999;
@@ -1041,23 +932,20 @@ export default {
     .el-dialog__body {
       background-color: #fff;
       height: 110px !important;
-      padding: 1vh 0 21px 50px !important;
       position: relative;
       div {
-        width: 80%;
+        width: 100%;
         height: 110px;
-        line-height: 9.2vh;
-        font-size: 0.85vw;
+        line-height: 78px;
+        font-size: 16px;
         text-align: center;
       }
     }
     .el-dialog__footer {
       position: absolute;
-      top: 15.7vh;
       width: 100%;
       display: flex;
       justify-content: center;
-      font-size: 0.75vw;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(153, 153, 153, 1);
@@ -1066,12 +954,10 @@ export default {
         display: flex;
         justify-content: space-around;
         button {
-          width: 4vw;
-          height: 3.5vh;
-          line-height: -0.64vh;
-          font-size: 0.8vw;
+          width: 72px;
+          height: 30px;
+          font-size: 14px;
           border-radius: 3px !important;
-          font-size: 0.8vw;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(255, 254, 254, 1);
@@ -1103,59 +989,47 @@ export default {
   left: 240px;
 }
 /deep/.el-tree-node {
-  // color: red !important;
   font-family: Microsoft YaHei;
   font-weight: 400;
   color: rgba(108, 108, 108, 1);
   .el-tree-node__label {
-    font-size: 0.75vw !important;
+    font-size: 14px !important;
   }
   .el-tree-node__content {
-    height: 3.3vh !important;
-    // line-height: 3.7vh;
+    height: 30px !important;
   }
   .el-checkbox__inner {
-    // background-color: green;
-    width: 1.02vw;
-    height: 2.2vh;
+    width: 20px;
+    height: 20px;
   }
   .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
     background-color: #409eff;
     border-color: #409eff;
     color: #fff !important;
-    // background-color: #f00;
     cursor: default !important;
     &::after {
-      // background-color: #fff;
       color: #fff !important;
       cursor: default !important;
     }
   }
 }
 /deep/.el-checkbox__inner::after {
-  // background-color: #f00;
-  height: 1.3vh;
-  left: 0.36vw;
-  top: 0.1vh;
-  width: 0.2vw;
+  height: 10px;
+  left: 6px;
+  top: 2px;
+  width: 4px;
 }
 /deep/.el-pagination.is-background .btn-next:disabled {
-  // background-color: #f00;
   cursor: default;
 }
 /deep/.el-pagination.is-background .btn-prev:disabled {
   cursor: default;
 }
-// /deep/.el-checkbox__input .is-disabled .is-checked {
-//   background-color: #f00 !important;
-// }
+
 .total-class {
   position: relative;
-  .cehn-class {
-    // background-color: #f00 !important;
-  }
+
   .div-class {
-    // display: none;
     width: 100px;
     height: 100px;
     position: absolute;
@@ -1169,9 +1043,7 @@ export default {
   left: 10px !important;
   z-index: 56789356345554555;
 }
-// #popover-id {
-//   background-color: #f00;
-// }
+
 #newadd {
   display: inline-block;
   display: flex;
@@ -1194,7 +1066,6 @@ export default {
   height: 20px;
   width: 30px;
   color: white;
-  margin-left: 0.25vw;
   cursor: pointer;
 }
 </style>

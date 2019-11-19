@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getList(params) {
   return request({
-    url: 'http://test.txsqtech.com/table/list',
+    url: '/table/list',
     method: 'get',
     params
   })
@@ -11,7 +11,7 @@ export function getList(params) {
 // 优惠套餐
 export function setmeal(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/setmeal',
+    url: '/index/index/setmeal',
     method: 'post',
     data
   })
@@ -20,7 +20,7 @@ export function setmeal(data) {
 // 获取套餐里的年数
 export function getYears(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/year',
+    url: '/index/index/year',
     method: 'post',
     data
   })
@@ -30,7 +30,7 @@ export function payMent(data) {
   // console.log('payment该传递的参数')
   // console.log(data)
   return request({
-    url: 'http://test.txsqtech.com/index/index/payment',
+    url: '/index/index/payment',
     method: 'post',
     data
   })
@@ -39,7 +39,7 @@ export function payMent(data) {
 // 获取支付状态
 export function setmeals(data) {
   return request({
-    url: 'http://test.txsqtech.com/index/index/setmeals',
+    url: '/index/index/setmeals',
     method: 'post',
     data
   })
