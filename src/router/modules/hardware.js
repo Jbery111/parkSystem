@@ -10,7 +10,7 @@ if (userInfoDatas) {
       if (item.auth_name === '硬件管理') {
         if (item.zi.length) {
           const ziRoutes = item.zi
-          pathR += ziRoutes[0].auth_a
+          pathR += ziRoutes[2].auth_a
           console.log(pathR, 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
         }
       }
@@ -31,6 +31,13 @@ const hardwareRouter = {
   },
   children: [
     {
+      path: 'SetParamss',
+      hidden: true,
+      name: 'SetParamss',
+      component: () => import('@/views/HardWare/SetParamss/index'),
+      meta: { title: '参数设置', auth_id: 66 }
+    },
+    {
       path: 'PastSets',
       hidden: true,
       name: 'PastSets',
@@ -44,14 +51,8 @@ const hardwareRouter = {
       name: 'CameraManages',
       component: () => import('@/views/HardWare/CameraManages/index'),
       meta: { title: '摄像头管理', auth_id: 65 }
-    },
-    {
-      path: 'SetParamss',
-      hidden: true,
-      name: 'SetParamss',
-      component: () => import('@/views/HardWare/SetParamss/index'),
-      meta: { title: '参数设置', auth_id: 66 }
     }
+
   ]
 }
 export default hardwareRouter

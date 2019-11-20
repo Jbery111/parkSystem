@@ -7,7 +7,7 @@
     />
     <div class="second">
       <div class="form-btn" style="background-color:#fff;">
-        <input type="text" placeholder />
+        <input type="text" placeholder>
         <div class="serach">搜索</div>
       </div>
       <span class="huanyin" style="cursor:default;">欢迎您，{{ huanyingName }}</span>
@@ -51,18 +51,18 @@ export default {
     ...mapState(['userInfo'])
   },
   methods: {
-    toggleSideBar () {
+    toggleSideBar() {
       // console.log('svgxvsghfbyjegfe3g')
       this.$store.dispatch('app/toggleSideBar')
     },
-    async logout () {
+    async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
-    isShowT3 () {
+    isShowT3() {
       this.$emit('isShowTHander')
     },
-    triggerHandler () {
+    triggerHandler() {
       if (this.userInfo.Jurisdiction === 3) {
         return
       } else {

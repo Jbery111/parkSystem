@@ -61,7 +61,7 @@
 border-radius:4px;"
               @focus="cc"
               @keyup.enter="getCheckedKeys"
-            />
+            >
           </el-form-item>
           <p
             v-if="isShowMis"
@@ -92,7 +92,7 @@ border-radius:4px;"
 border-radius:4px;"
               @focus="cc"
               @keyup.enter="getCheckedKeys"
-            />
+            >
           </el-form-item>
           <!-- <p class="mistack-message">提示错误信息2</p> -->
         </div>
@@ -197,7 +197,7 @@ const schema = Joi.object().keys({
 })
 export default {
   components: {},
-  data () {
+  data() {
     return {
       centerDialogVisible2: false,
       hongShow: false,
@@ -253,11 +253,11 @@ export default {
   computed: {
   },
   watch: {
-    '$route' (to, from) {
+    '$route'(to, from) {
       console.log(to, '账号分配的watch')
     }
   },
-  created () {
+  created() {
     // 获取权限按钮时需要传递的参数
     // console.log(this.$route.meta.auth_id, '账号分配')
     this.buttonId = this.$route.meta.auth_id
@@ -327,13 +327,13 @@ export default {
     //   // return 'background-color:#f00;color: green;'
     //   return 'margin: 65px !important;background-color:#f00;'
     // }
-    mouseHandler () {
+    mouseHandler() {
       console.log('mouseHandler')
     },
-    cc () {
+    cc() {
       this.isShowMis = false
     },
-    handleEdit (index, row) {
+    handleEdit(index, row) {
       // console.log(row, 'row111111111111111111111111111111111111111')
       this.title1 = '修改'
       this.mistakeToast = ''
@@ -354,7 +354,7 @@ export default {
       this.updataQuerys.Communityid = Communityid
       // console.log(this.updataQuerys, '191')
     },
-    delteHandler () {
+    delteHandler() {
       // this.handleDelete()
       const poid = this.delePoid
       postDelete({ poid }).then(resp => {
@@ -386,12 +386,12 @@ export default {
         }
       })
     },
-    handleDelete (index, row) {
+    handleDelete(index, row) {
       this.centerDialogVisible3 = true
       this.delePoid = row.poid
     },
     // 分页设置
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.currentPage = val
       const page = val
       const { Communityid, sition } = this.userInfoData
@@ -403,11 +403,11 @@ export default {
         this.tableData = resp.msg.data
       })
     },
-    nextClickHandler (val) {
+    nextClickHandler(val) {
       // console.log(val, '354')
     },
     // 遮罩层一的显示(点击新增权限)
-    isShow1 () {
+    isShow1() {
       this.centerDialogVisible = !this.centerDialogVisible
       // this.$refs.nameInput.focus()
       this.formLabelAlign.name = ''
@@ -416,7 +416,7 @@ export default {
       this.title1 = '创建'
     },
     // （点击下一步）
-    getCheckedKeys () {
+    getCheckedKeys() {
       if (this.formLabelAlign.name) {
         this.isShowMis = false
       }
@@ -500,7 +500,7 @@ export default {
       })
     },
     // 点击完成
-    successAddTo () {
+    successAddTo() {
       console.log('点击完成1')
       // // console.log(rids)
       // var rids = this.$refs.tree1.getHalfCheckedKeys().concat(this.$refs.tree1.getCheckedKeys())

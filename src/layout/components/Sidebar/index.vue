@@ -10,8 +10,9 @@
         :unique-opened="true"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="true"
-        mode="vertical"
+        mode="horizontal"
         :router="true"
+        @select="handleSelect"
       >
         <sidebar-item
           v-for="route in sidebarMenu"
@@ -19,7 +20,6 @@
           :item="route"
           :base-path="route.path"
           :index="route.name"
-          @click="routerHandler(route)"
         />
       </el-menu>
     </el-scrollbar>
@@ -34,15 +34,27 @@ import variables from '@/styles/variables.scss'
 import { eventBus } from '@/main'
 export default {
   components: { SidebarItem, Logo },
+  data() {
+    return {
+      activeIndex: ''
+    }
+  },
   methods: {
     ...mapMutations(['setRouterAsync']),
     routerHandler(item) {
       console.log(item, '我的item')
       eventBus.$emit('firstRouter', item)
+    },
+    handleSelect(index) {
+      // alert('pp')
+      this.activeIndex = index
     }
   },
   watch: {
     '$route'(to, from) {
+      // console.log(to, 'to')
+      this.handleSelect(this.activeIndex)
+      // alert('pp')
       const fullPath = to.fullPath
       const str = fullPath.split('/')
       const strData = str[1]

@@ -2,11 +2,11 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <a v-if="collapse" key="collapse" class="sidebar-logo-link">
-        <img v-if="logo" src="../../../images/txsq.png" class="sidebar-logo" >
+        <img v-if="logo" src="../../../images/txsq.png" class="sidebar-logo">
         <h1 v-else class="sidebar-title">{{ title }}</h1>
       </a>
       <a v-else key="expand" class="sidebar-logo-link">
-        <img v-if="logo" src="../../../images/txsq.png" class="sidebar-logo" >
+        <img v-if="logo" src="../../../images/txsq.png" class="sidebar-logo">
         <h1 class="sidebar-title" style="cursor:default;">{{ title }}</h1>
       </a>
     </transition>

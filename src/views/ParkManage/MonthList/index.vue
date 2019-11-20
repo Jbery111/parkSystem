@@ -6,7 +6,7 @@
 
 export default {
   components: {},
-  data () {
+  data() {
     return {
 
     }
@@ -15,15 +15,15 @@ export default {
   watch: {
 
   },
-  created () {
+  created() {
 
   },
-  mounted () {
+  mounted() {
 
   },
   methods: {
 
-  },
+  }
 }
 </script>
 <style lang='scss' scoped>

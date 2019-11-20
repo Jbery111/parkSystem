@@ -1,23 +1,23 @@
 <template>
   <div class="card-container">
-      <div class="icon">
-        <!-- <img src="" alt=""> -->
-      </div>
-      <div class="txt">
-          <span class="title">15565415</span>
-          <span class="describ">住户认证(待处理)</span>
-      </div>
-      <div class="button">审核</div>
+    <div class="icon">
+      <!-- <img src="" alt=""> -->
+    </div>
+    <div class="txt">
+      <span class="title">15565415</span>
+      <span class="describ">住户认证(待处理)</span>
+    </div>
+    <div class="button">审核</div>
   </div>
 </template>
 
 <script>
 export default {
-    data () {
-        return {
+  data() {
+    return {
 
-        }
     }
+  }
 }
 </script>
 

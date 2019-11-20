@@ -7,7 +7,7 @@ import request from '@/utils/request'
 // }
 
 // 查询查询房主信息
-export function postHouseholdSelect (data) {
+export function postHouseholdSelect(data) {
   return request({
     url: 'http://test.txsqtech.com/index/Household/HouseholdSelect',
     method: 'post',
@@ -15,7 +15,7 @@ export function postHouseholdSelect (data) {
   })
 }
 // 添加
-export function postHouseholdInsert (data) {
+export function postHouseholdInsert(data) {
   return request({
     url: 'http://test.txsqtech.com/index/Household/HouseholdInsert',
     method: 'post',
@@ -23,7 +23,7 @@ export function postHouseholdInsert (data) {
   })
 }
 // 查询Excel类容
-export function postHouseExcel (data) {
+export function postHouseExcel(data) {
   return request({
     url: 'http://test.txsqtech.com/index/Household/excel',
     method: 'post',
@@ -32,7 +32,7 @@ export function postHouseExcel (data) {
 }
 // 确认导入
 
-export function postExcelImport (data) {
+export function postExcelImport(data) {
   return request({
     url: 'http://test.txsqtech.com/index/Household/excelImport',
     method: 'post',
@@ -41,7 +41,7 @@ export function postExcelImport (data) {
 }
 // 上传人脸
 
-export function postFace (data) {
+export function postFace(data) {
   console.log(data, '上传人脸参数')
   return request({
     url: 'http://test.txsqtech.com/index/Household/Face',
@@ -50,7 +50,7 @@ export function postFace (data) {
   })
 }
 // 历史住户
-export function postHistory (data) {
+export function postHistory(data) {
   console.log(data, '上传人脸参数')
   return request({
     url: 'http://test.txsqtech.com/index/Household/history',
@@ -59,7 +59,7 @@ export function postHistory (data) {
   })
 }
 // 变更
-export function postChange (data) {
+export function postChange(data) {
   // console.log(data, '上传人脸参数')
   return request({
     url: 'http://test.txsqtech.com/index/Household/change',
@@ -68,7 +68,7 @@ export function postChange (data) {
   })
 }
 // 查看人脸是否上传成功
-export function postSelect (data) {
+export function postSelect(data) {
   console.log(data, '上传人脸参数')
   return request({
     url: 'http://test.txsqtech.com/index/Household/Select',
@@ -77,7 +77,7 @@ export function postSelect (data) {
   })
 }
 // 修改住户
-export function postUpdete (data) {
+export function postUpdete(data) {
   console.log(data, '修改住户参数')
   return request({
     url: 'http://test.txsqtech.com/index/Household/updete',
@@ -85,9 +85,9 @@ export function postUpdete (data) {
     data
   })
 }
-//修改人脸
+// 修改人脸
 
-export function postFaces (data) {
+export function postFaces(data) {
   console.log(data, '修改住户参数')
   return request({
     url: 'http://test.txsqtech.com/index/Household/Faces',

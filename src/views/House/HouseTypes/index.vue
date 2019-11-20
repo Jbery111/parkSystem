@@ -1,7 +1,7 @@
 
 <template>
   <div id="HouseType">
-    <span v-show="showDot" class="dot"></span>
+    <span v-show="showDot" class="dot" />
     <!-- 三级菜单出口 -->
     <!-- <router-view /> -->
     <!--
@@ -50,7 +50,7 @@
       :append-to-body="true"
       :visible.sync="RecordialogFormVisible"
       custom-class="myRecordForm"
-      >
+    >
       <el-form :model="recordData">
         <el-form-item label="上次操作员:" :label-width="formLabelWidth">
           <el-input v-model="recordData.uname" :disabled="true" autocomplete="off" />
@@ -73,9 +73,8 @@
       :append-to-body="true"
       :visible.sync="AdddialogVisible"
       :before-close="handleAddClose"
-      
-        >
-      <el-form ref="form" :model="addData" label-width="80px" >
+    >
+      <el-form ref="form" :model="addData" label-width="80px">
         <el-form-item label="房屋类型:">
           <el-input v-model.trim="addData.typename" @input="addData.typeTip.isExist=false" />
           <!-- <span class="tips" >{{addData.typename?'':'请填写房屋类型'}}</span> -->
@@ -98,7 +97,7 @@
       :append-to-body="true"
       :visible.sync="ModifydialogVisible"
       :before-close="handleAddClose1"
-      >
+    >
       <el-form ref="form" :model="modifyData" label-width="80px">
         <el-form-item label="房屋类型:">
           <el-input v-model.trim="modifyData.typename" @input="modifyData.typeTip.isExist=false" />
@@ -121,7 +120,7 @@
         row-class-name="myRow"
         cell-class-name="myCell"
         style="width: 100%; height:100%;"
-        >
+      >
         <el-table-column prop="typea" label="房屋类型" min-width="300" />
         <el-table-column prop="pacic" label="物业费单价(元)" min-width="300" />
         <el-table-column
@@ -140,7 +139,8 @@
               type="text"
               size="small"
               class="operateBtn btn-record"
-              @click="handleRecordClick(scope.row)" style="width:72px;"
+              style="width:72px;"
+              @click="handleRecordClick(scope.row)"
             >操作记录</el-button>
           </template>
         </el-table-column>
@@ -257,20 +257,20 @@ export default {
     getJudgeList() {
       const { Communityid, token } = this.userInfo
       axios.post('http://test.txsqtech.com/index/Toexamine/examine',
-      {
-        Communityid,
-        page: '1',
-        count: '10'
-      },
-      {
-        headers: {
-          token
-        }   
-      }).then(res => {
-        if(res.data.code === 200) {
-            if(res.data.msg.data.length>0){
-              this.showDot = true
-            }
+        {
+          Communityid,
+          page: '1',
+          count: '10'
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          if (res.data.msg.data.length > 0) {
+            this.showDot = true
+          }
         }
       })
     },
@@ -321,7 +321,7 @@ export default {
       // if (this.existedType.includes(this.addData.typename)) {
       //   this.addData.typeTip.isExist = true // 显示已存在
       // }
-      if ( this.addData.money !== '' && (/^\d+\.?\d{0,2}$/).test(this.addData.money)) {
+      if (this.addData.money !== '' && (/^\d+\.?\d{0,2}$/).test(this.addData.money)) {
         this.sendAddRequest()
       } else {
         // this.$message({
@@ -396,15 +396,15 @@ export default {
             this.pageInfo.listRows = res.data.data.listRows
             this.pageInfo.pageNum = res.data.data.pageNum
             this.tableData = res.data.data.data
-            //console.log(this.tableData)
+            // console.log(this.tableData)
             // if (res.data.data.data.length > 0) {
             //   res.data.data.data.forEach((item) => {
             //     this.existedType.push(item.typea) // 记录已有的房屋类型
             //   })
             // }
-            //console.log(this.existedType)
+            // console.log(this.existedType)
           }
-          if(res.data.code === 10000){
+          if (res.data.code === 10000) {
             this.$router.push('/')
           }
         })
@@ -426,14 +426,14 @@ export default {
               token: this.token
             }
           }).then(res => {
-          if(res.data.code === 10000){
+          if (res.data.code === 10000) {
             this.$router.push('/')
           }
           if (res.data.code === 200) {
             this.isShowTip = false
             // this.pageInfo.page = this.pageInfo.pageNum
             this.getHouseList()
-            //console.log(res)
+            // console.log(res)
 
             this.AdddialogVisible = false // 关闭添加
             setTimeout(() => {
@@ -452,14 +452,13 @@ export default {
               message: '添加成功',
               type: 'success'
             })
-          } else if(res.data.code === 300){
+          } else if (res.data.code === 300) {
             this.addData.typeTip.isExist = true
             // this.$message({
             //   message: '呦呦呦呦了',
             //   type: 'warning'
             // })
-          }
-           else if (res.data.code === 401) {
+          } else if (res.data.code === 401) {
             this.$message({
               message: '添加失败',
               type: 'error'
@@ -553,7 +552,7 @@ export default {
   /deep/.el-table__body tr:hover>td{
     background-color: #EFF2F5!important;
   }
- 
+
   /deep/.el-table__body tr.current-row>td{
     background-color: #EFF2F5!important;
   }
@@ -621,7 +620,7 @@ export default {
       .el-form-item__label{ //lable
         color: #666666;
       font-size: 16px;
-        
+
       }
       .el-form-item__content{ //content
         border: 1px solid #D2D2D2;
@@ -646,7 +645,7 @@ export default {
     .el-dialog__header{
       padding: 14px 0 10px 20px;
       border-bottom: 1px solid #eff2f5;
-      
+
     }
      .el-dialog__body{
         padding: 24px 60px;

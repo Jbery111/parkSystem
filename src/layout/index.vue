@@ -31,8 +31,8 @@
           :close-on-click-modal="false"
         >
           <span @click="isCover1">我知道了</span>
-          <br >
-          <br >
+          <br />
+          <br />
         </el-dialog>
         <div v-if="type===2" class="outClass" @click="exitHandler()">直接退出</div>
       </div>
@@ -48,8 +48,8 @@
         :close-on-click-modal="false"
       >
         <span class="exit" @click="isCover2">{{ countdown + 's' }}秒后自动退出</span>
-        <br >
-        <br >
+        <br />
+        <br />
       </el-dialog>
       <!-- 遮罩三 -->
       <el-dialog
@@ -101,7 +101,7 @@ export default {
     AppMain
   },
   mixins: [ResizeMixin],
-  data() {
+  data () {
     return {
       dialogVisible1: true,
       dialogVisible2: true,
@@ -116,16 +116,16 @@ export default {
   },
   computed: {
     ...mapState(['dueToTheTime', 'userInfo']),
-    sidebar() {
+    sidebar () {
       return this.$store.state.app.sidebar
     },
-    device() {
+    device () {
       return this.$store.state.app.device
     },
-    fixedHeader() {
+    fixedHeader () {
       return this.$store.state.settings.fixedHeader
     },
-    classObj() {
+    classObj () {
       return {
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
@@ -136,7 +136,7 @@ export default {
   },
   watch: {
     // 如果 `question` 发生改变，这个函数就会运行
-    countdown: function(newVal, oldVal) {
+    countdown: function (newVal, oldVal) {
       // this.answer = 'Waiting for you to stop typing...'
       if (newVal === 1) {
         // const Jurisd = JSON.parse(localStorage.getItem('userInfo')).Jurisdiction
@@ -161,7 +161,7 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.dialogVisible = this.hasWyCover1
     // console.log(this.type)
     // console.log(this.$route)
@@ -200,22 +200,22 @@ export default {
   },
   methods: {
     ...mapActions(['logout']),
-    handleClickOutside() {
+    handleClickOutside () {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     },
-    isCover1() {
+    isCover1 () {
       this.dialogVisible1 = !this.dialogVisible1
       // this.type === ''
       console.log(this.dialogVisible1, this.hasWyCover1, '这里是dialogVisible')
     },
-    isCover2() {
+    isCover2 () {
       // this.dialogVisible2 = !this.dialogVisible1
       // this.$nextTick(this.type === '')
       // this.type === ''
       // console.log(this.dialogVisible2, this.hasWyCover1, '这里是dialogVisible')
     },
     // 退出登录
-    exitHandler() {
+    exitHandler () {
       // console.log('退出登录')
       // console.log(JSON.parse(localStorage.getItem('userInfo')))
       const userInfoData = JSON.parse(localStorage.getItem('userInfo'))
@@ -234,19 +234,19 @@ export default {
         this.$router.push('/community')
       }
     },
-    isShowT3Hander() {
+    isShowT3Hander () {
       this.centerDialogVisible = !this.centerDialogVisible
     },
-    isShowT4Hander() {
+    isShowT4Hander () {
       this.centerDialogVisible2 = !this.centerDialogVisible2
     },
     // nav退出登录
-    logoutHandler() {
+    logoutHandler () {
       // const userInfoData = JSON.parse(localStorage.getItem('userInfo'))
       // console.log(userInfoData)
       this.logout(this.userInfo)
     },
-    qiehuanHandler() {
+    qiehuanHandler () {
       this.$router.push('/community')
     }
   }
@@ -262,6 +262,8 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
+  background: none;
+  box-shadow: none;
   transform: translate(-50%, -50%);
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);

@@ -1,59 +1,59 @@
 <template>
   <!-- 分页 -->
-    <div class="block">
-      <p
-        class="record-data"
-      >共{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页&nbsp;{{ pageInfo.total }}条</p>
-      <el-pagination
-        background
-        :page-size="pageInfo.listRows"
-        layout="prev, pager, next, jumper"
-        :total="pageInfo.total"
-        :current-page="pageInfo.page"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        @next-click="nextClickHandler"
-      />
-    </div>
+  <div class="block">
+    <p
+      class="record-data"
+    >共{{ Math.ceil(pageInfo.total/pageInfo.listRows) }}页&nbsp;{{ pageInfo.total }}条</p>
+    <el-pagination
+      background
+      :page-size="pageInfo.listRows"
+      layout="prev, pager, next, jumper"
+      :total="pageInfo.total"
+      :current-page="pageInfo.page"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      @next-click="nextClickHandler"
+    />
+  </div>
 </template>
 
 <script>
 export default {
-    name: "Pages",
-    props: ['pageInfo'],
-    data () {
-        return {
+  name: 'Pages',
+  props: ['pageInfo'],
+  data() {
+    return {
 
-        }
-    },
-//     watch: {
-//       'pageInfo.total':{
-//         handler: function(){
-//           console.log('uhhuhuhuhuh')
-//         },
-//         deep: true
-// 　
-          
-// 　　　　
-//       },
-//     },
-    mounted() {
-      console.log('mounted')
-    },
-    created() {
-        // alert(this.pageInfo.total)
-    },
-    methods: {
-        handleSizeChange() {
-            this.$emit("handleSizeChange")
-        },
-        handleCurrentChange() {
-            this.$emit("handleCurrentChange")
-        },
-        nextClickHandler() {
-            this.$emit("nextClickHandler")
-        }
     }
+  },
+  //     watch: {
+  //       'pageInfo.total':{
+  //         handler: function(){
+  //           console.log('uhhuhuhuhuh')
+  //         },
+  //         deep: true
+  //
+
+  //
+  //       },
+  //     },
+  mounted() {
+    console.log('mounted')
+  },
+  created() {
+    // alert(this.pageInfo.total)
+  },
+  methods: {
+    handleSizeChange() {
+      this.$emit('handleSizeChange')
+    },
+    handleCurrentChange() {
+      this.$emit('handleCurrentChange')
+    },
+    nextClickHandler() {
+      this.$emit('nextClickHandler')
+    }
+  }
 }
 </script>
 

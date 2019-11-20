@@ -1,16 +1,32 @@
 <template>
   <div id="audit-changes">
-    <span v-show="showDot" class="dot"></span>
+    <span v-show="showDot" class="dot" />
     <!-- 审核修改1 <button @click="change">切换</button> -->
 
     <!-- 表格 -->
-    <Table :data="judgeList" :isShowDetail="isShowDetail" @bridge="getMesFromChild" 
-      @fun1="handleDetailClick" @fun2="handleJudgeClick" @fun3="handleModifyClick" @fun4="handleUserClick"
-      @fun5="handleCarClick" @fun6="handleRecordClick" @back="back" />
+    <Table
+      :data="judgeList"
+      :is-show-detail="isShowDetail"
+      @bridge="getMesFromChild"
+      @fun1="handleDetailClick"
+      @fun2="handleJudgeClick"
+      @fun3="handleModifyClick"
+      @fun4="handleUserClick"
+      @fun5="handleCarClick"
+      @fun6="handleRecordClick"
+      @back="back"
+    />
 
     <!-- 页码 -->
-    <Pages v-show="isShowPage" v-if="pageInfo.page" :ff="pageInfo" :pageInfo="pageInfo" @handleSizeChange="handleSizeChange" 
-      @handleCurrentChange="handleCurrentChange" @nextClickHandler="nextClickHandler"/>
+    <Pages
+      v-show="isShowPage"
+      v-if="pageInfo.page"
+      :ff="pageInfo"
+      :page-info="pageInfo"
+      @handleSizeChange="handleSizeChange"
+      @handleCurrentChange="handleCurrentChange"
+      @nextClickHandler="nextClickHandler"
+    />
 
     <!-- 申请修改详情弹窗 -->
     <!-- <DetailDialog :detailData='detailData' @agreen="agreen" @refuse="refuse"/> -->
@@ -23,45 +39,45 @@
       :visible.sync="detailFormVisible"
       :close-on-click-modal="false"
       :before-close="handleDetailClose"
-      >
+    >
       <el-form label-width="380px">
 
         <div v-if="!isShowDelete">
           <div class="row">
             <span class="t1">房屋类型:</span>
-            <span class="t2">{{detailData.data.typeName}}</span>
+            <span class="t2">{{ detailData.data.typeName }}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.typeNames}}</span>
+            <span class="t4">{{ detailData.data.typeNames }}</span>
           </div>
           <div class="row">
             <span class="t1">楼栋:</span>
-            <span class="t2">{{detailData.data.userHouseBuilding}}</span>
+            <span class="t2">{{ detailData.data.userHouseBuilding }}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.userHouseBuildings=='0'?'':detailData.data.userHouseBuildings}}</span>
+            <span class="t4">{{ detailData.data.userHouseBuildings=='0'?'':detailData.data.userHouseBuildings }}</span>
           </div>
           <div class="row">
             <span class="t1">单元:</span>
-            <span class="t2">{{detailData.data.userHouseUnit}}</span>
+            <span class="t2">{{ detailData.data.userHouseUnit }}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.userHouseUnits=='0'?'':detailData.data.userHouseUnits}}</span>
+            <span class="t4">{{ detailData.data.userHouseUnits=='0'?'':detailData.data.userHouseUnits }}</span>
           </div>
           <div class="row">
             <span class="t1">门牌号:</span>
-            <span class="t2">{{detailData.data.userHouseNumber}}</span>
+            <span class="t2">{{ detailData.data.userHouseNumber }}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.userHouseNumbers=='0'?'':detailData.data.userHouseNumbers}}</span>
+            <span class="t4">{{ detailData.data.userHouseNumbers=='0'?'':detailData.data.userHouseNumbers }}</span>
           </div>
           <div class="row">
             <span class="t1">房屋面积:</span>
-            <span class="t2">{{detailData.data.Housingarea}}</span>
+            <span class="t2">{{ detailData.data.Housingarea }}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.Housingareas=='0'?'':detailData.data.Housingareas}}</span>
+            <span class="t4">{{ detailData.data.Housingareas=='0'?'':detailData.data.Housingareas }}</span>
           </div>
           <div class="row">
             <span class="t1">物业费单价:</span>
-            <span class="t2">{{detailData.data.Price}}</span>
+            <span class="t2">{{ detailData.data.Price }}</span>
             <span class="t3">修改为:</span>
-            <span class="t4">{{detailData.data.Prices=='0'?'':detailData.data.Prices}}</span>
+            <span class="t4">{{ detailData.data.Prices=='0'?'':detailData.data.Prices }}</span>
           </div>
           <div class="row" style="position:relative; height:100px;">
             <span style="position:absolute;left:0">*申请理由:</span>
@@ -77,10 +93,9 @@
           </div>
         </div>
         <div v-if="isShowDelete" style="height:80px;padding-top:20px;">
-          <p style="color:#FE3D3D;font-size:14px;text-align:center">{{detailData.test}}</p>
+          <p style="color:#FE3D3D;font-size:14px;text-align:center">{{ detailData.test }}</p>
         </div>
 
-        
         <div class="btn agreen" style="cursor:pointer" @click="agreen">同意</div>
         <div class="btn refuse" style="cursor:pointer" @click="refuse">拒绝</div>
       </el-form>
@@ -96,7 +111,7 @@
       :visible.sync="RecordialogFormVisible"
       :close-on-click-modal="false"
       custom-class="myRecordForm"
-      >
+    >
       <el-form>
         <el-form-item v-if="recordData.data.uname" label="上次操作员:" :label-width="formLabelWidth">
           <el-input v-model="recordData.data.uname" :disabled="true" autocomplete="off" />
@@ -128,21 +143,21 @@
       :visible.sync="refuseFormVisible"
       :close-on-click-modal="false"
       :before-close="handleRefuseClose"
-      >
+    >
       <el-form label-width="380px">
         <div class="row" style="position:relative; height:100px;">
-            <span style="position:absolute;left:0">*拒绝理由:</span>
-            <textarea
-              v-model="refuseReason.centnsa"
-              rows="1"
-              cols="40"
-              style="border-radius:4px;position:absolute;width:228px;right:0;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
-              onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
-              onblur="clearInterval(this.clock);"
-            />
-            <p v-if="tips.reason" class="tips" style="position:absolute;top:27px;left:102px;font-size:12px;color:#f44;">必填</p>
-          </div>
-          <div class="btn confirm" style="cursor:pointer" @click="didRefuse">确认</div>
+          <span style="position:absolute;left:0">*拒绝理由:</span>
+          <textarea
+            v-model="refuseReason.centnsa"
+            rows="1"
+            cols="40"
+            style="border-radius:4px;position:absolute;width:228px;right:0;resize:none;max-height:100px;padding:5px;overflow:scroll;overflow-y:hidden;overflow-x:hidden"
+            onfocus="window.activeobj=this;this.clock=setInterval(function(){activeobj.style.height=activeobj.scrollHeight+'px';},10);"
+            onblur="clearInterval(this.clock);"
+          />
+          <p v-if="tips.reason" class="tips" style="position:absolute;top:27px;left:102px;font-size:12px;color:#f44;">必填</p>
+        </div>
+        <div class="btn confirm" style="cursor:pointer" @click="didRefuse">确认</div>
       </el-form>
     </el-dialog>
   </div>
@@ -155,7 +170,12 @@ import Pages from '../Pages'
 // import DetailDialog from './DetailDialog'
 export default {
   name: 'AuditChanges',
-  data () {
+  components: {
+    Table,
+    Pages
+    // DetailDialog
+  },
+  data() {
     return {
       ff: 'fff',
       isShowDelete: false, // 是删除还是详情
@@ -164,31 +184,26 @@ export default {
       formLabelWidth: '120px', // 记录表格宽度
       RecordialogFormVisible: false,
       tips: {
-        reason: false, // 拒绝理由是否填写
+        reason: false // 拒绝理由是否填写
       },
       refuseReason: {
-        centnsa: ""
+        centnsa: ''
       },
       refuseFormVisible: false,
       detailFormVisible: false,
       isShowPage: true,
       isShowDetail: false,
       userInfo: { // 用户信息
-      }, 
+      },
       recordData: {
       },
-      judgeList: [], //审核列表
+      judgeList: [], // 审核列表
       judgeListC: [],
       detailData: {},
       pageInfo: { // 分页信息
         listRows: 10
       }
     }
-  },
-  components: {
-    Table,
-    Pages,
-    // DetailDialog
   },
   // watch: {
   //   'pageInfo.total': {
@@ -206,7 +221,7 @@ export default {
   },
   methods: {
     handleDetailClose() {
-      this.detailFormVisible = false;
+      this.detailFormVisible = false
     },
     change() {
       this.isShowDetail = !this.isShowDetail
@@ -223,23 +238,23 @@ export default {
         this.pageInfo.page = val
         this.sendSearchRequest()
       }
-      //console.log(val)
+      // console.log(val)
     },
     nextClickHandler(val) {
-      //console.log(val, '354')
+      // console.log(val, '354')
     },
     // 点击详情
-    handleDetailClick(v) { 
+    handleDetailClick(v) {
       console.log(v.data.centn)
-      v.data.checktime = v.data.checktime.slice(0,-9)
-      v.data.wuye_price = v.data.wuye_price.slice(0,-9)
-      let d = []
+      v.data.checktime = v.data.checktime.slice(0, -9)
+      v.data.wuye_price = v.data.wuye_price.slice(0, -9)
+      const d = []
       d.push(v)
       this.isShowPage = false
       this.isShowDetail = true
       this.judgeListC = this.judgeList
       this.judgeList = d
-      console.log(d,'22')
+      console.log(d, '22')
     },
     // 点击返回
     back() {
@@ -248,28 +263,28 @@ export default {
       this.judgeList = this.judgeListC
     },
     // 点击审核
-    handleJudgeClick(v) { 
-        this.detailFormVisible = true
-        this.detailData = v
-        if(this.detailData.test.slice(0,2) === '删除'){
-          this.isShowDelete = true
-        } else {
-          this.isShowDelete = false
-        }
-      
+    handleJudgeClick(v) {
+      this.detailFormVisible = true
+      this.detailData = v
+      if (this.detailData.test.slice(0, 2) === '删除') {
+        this.isShowDelete = true
+      } else {
+        this.isShowDelete = false
+      }
+
       console.log(v)
-      //显示审核表格
+      // 显示审核表格
     },
     agreen() {
       // alert("同意")
-      if(this.isShowDelete){
+      if (this.isShowDelete) {
         this.sendAgreenRequest1() // 同意删除
       } else {
         this.sendAgreenRequest() // 同意修改
-      }  
+      }
     },
     refuse() {
-      // alert("拒绝") 
+      // alert("拒绝")
       this.detailFormVisible = false
       this.refuseFormVisible = true
     },
@@ -279,125 +294,123 @@ export default {
       this.detailFormVisible = true
     },
     didRefuse() {
-      if(this.refuseReason.centnsa){
-        if(this.isShowDelete){
-          this.sendRefuseRequest1() 
+      if (this.refuseReason.centnsa) {
+        if (this.isShowDelete) {
+          this.sendRefuseRequest1()
         } else {
-          this.sendRefuseRequest() 
+          this.sendRefuseRequest()
         }
-        
       } else {
         this.tips.reason = true
         setTimeout(() => {
           this.tips.reason = false
-        }, 3000);
+        }, 3000)
       }
-      
     },
-    //同意修改
+    // 同意修改
     sendAgreenRequest() {
       const { userHouseId } = this.detailData
-      const{ token,uname } = this.userInfo
-      axios.post("http://test.txsqtech.com/index/Toexamine/agree",
-      {
-        userHouseId,
-        usname: uname
-      },
-      {
-        headers: {
-          token
+      const { token, uname } = this.userInfo
+      axios.post('http://test.txsqtech.com/index/Toexamine/agree',
+        {
+          userHouseId,
+          usname: uname
+        },
+        {
+          headers: {
+            token
+          }
         }
-      }
       ).then(res => {
-        if(res.data.code === 200){
+        if (res.data.code === 200) {
           this.getJudgeList()
           this.detailFormVisible = false
           this.$message({
-            message: "已同意修改",
-            type: "success"
+            message: '已同意修改',
+            type: 'success'
           })
         }
         console.log(res)
       })
     },
-    //同意删除
+    // 同意删除
     sendAgreenRequest1() {
       const { userHouseId } = this.detailData
-      const{ token} = this.userInfo
-      axios.post("http://test.txsqtech.com/index/Toexamine/datele",
-      {
-        userHouseId,
-      },
-      {
-        headers: {
-          token
+      const { token } = this.userInfo
+      axios.post('http://test.txsqtech.com/index/Toexamine/datele',
+        {
+          userHouseId
+        },
+        {
+          headers: {
+            token
+          }
         }
-      }
       ).then(res => {
-        if(res.data.code === 200){
+        if (res.data.code === 200) {
           this.getJudgeList()
           this.detailFormVisible = false
           this.$message({
-            message: "已同意删除",
-            type: "success"
+            message: '已同意删除',
+            type: 'success'
           })
         }
         console.log(res)
       })
     },
-    //修改拒绝
+    // 修改拒绝
     sendRefuseRequest() {
       const { userHouseId } = this.detailData
       const { token, uname } = this.userInfo
       const { centnsa } = this.refuseReason
-      axios.post("http://test.txsqtech.com/index/Toexamine/refuse",
-      {
-        userHouseId,
-        usname: uname,
-        centnsa
-      },
-      {
-        headers: {
-          token
+      axios.post('http://test.txsqtech.com/index/Toexamine/refuse',
+        {
+          userHouseId,
+          usname: uname,
+          centnsa
+        },
+        {
+          headers: {
+            token
+          }
         }
-      }
       ).then(res => {
-        if(res.data.code === 200){
+        if (res.data.code === 200) {
           this.getJudgeList()
           this.refuseFormVisible = false
           this.refuseReason.centnsa = ''
           this.$message({
-            message: "已拒绝该修改请求",
-            type: "success"
+            message: '已拒绝该修改请求',
+            type: 'success'
           })
         }
         console.log(res)
       })
     },
-    //删除拒绝
+    // 删除拒绝
     sendRefuseRequest1() {
       const { userHouseId } = this.detailData
       const { token, uname } = this.userInfo
       const { centnsa } = this.refuseReason
-      axios.post("http://test.txsqtech.com/index/Toexamine/deirte",
-      {
-        userHouseId,
-        usname: uname,
-        centnsa
-      },
-      {
-        headers: {
-          token
+      axios.post('http://test.txsqtech.com/index/Toexamine/deirte',
+        {
+          userHouseId,
+          usname: uname,
+          centnsa
+        },
+        {
+          headers: {
+            token
+          }
         }
-      }
       ).then(res => {
-        if(res.data.code === 200){
+        if (res.data.code === 200) {
           this.getJudgeList()
           this.refuseFormVisible = false
           this.refuseReason.centnsa = ''
           this.$message({
-            message: "已拒绝该删除请求",
-            type: "success"
+            message: '已拒绝该删除请求',
+            type: 'success'
           })
         }
         console.log(res)
@@ -423,44 +436,44 @@ export default {
       console.log(v)
       // alert("record")
     },
-    getMesFromChild(v) { //获取子组件传递过来的值
-      console.log(v,'22222222222')
+    getMesFromChild(v) { // 获取子组件传递过来的值
+      console.log(v, '22222222222')
     },
-    //从本地获取登录用户信息
+    // 从本地获取登录用户信息
     getUserInfo() {
       const local = JSON.parse(localStorage.getItem('userInfo'))
       this.userInfo.token = local.token
       this.userInfo.Communityid = local.data.Communityid
       this.userInfo.uname = local.data.uname
     },
-    //获取审核列表
+    // 获取审核列表
     getJudgeList() {
       const { Communityid, token } = this.userInfo
       axios.post('http://test.txsqtech.com/index/Toexamine/examine',
-      {
-        Communityid,
-        page: '1',
-        count: '10'
-      },
-      {
-        headers: {
-          token
-        }   
-      }).then(res => {
-        if(res.data.code === 200) {
-            if(res.data.msg.data.length>0){
-              this.showDot = true
-            }
-            this.judgeList = res.data.msg.data
-            this.pageInfo.page = Number(res.data.msg.page)
-            this.pageInfo.pageNum = res.data.msg.pageNum
-            this.pageInfo.total = res.data.msg.total
+        {
+          Communityid,
+          page: '1',
+          count: '10'
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          if (res.data.msg.data.length > 0) {
+            this.showDot = true
+          }
+          this.judgeList = res.data.msg.data
+          this.pageInfo.page = Number(res.data.msg.page)
+          this.pageInfo.pageNum = res.data.msg.pageNum
+          this.pageInfo.total = res.data.msg.total
         }
-        console.log(this.judgeList, this.pageInfo,'审核列表')
+        console.log(this.judgeList, this.pageInfo, '审核列表')
       })
     }
   }
-  
+
 }
 </script>
 <style lang="scss" scoped>
@@ -470,7 +483,7 @@ export default {
   /deep/.el-table__body tr:hover>td{
     background-color: #EFF2F5!important;
   }
- 
+
   /deep/.el-table__body tr.current-row>td{
     background-color: #EFF2F5!important;
   }
@@ -537,7 +550,7 @@ export default {
     }
   }
   /deep/.myDetailForm{
-    
+
     width: 400px;
     .el-dialog__header{
       height: 30px;
@@ -549,7 +562,7 @@ export default {
       }
     }
     .el-dialog__body{
-      padding: 15px 35px; 
+      padding: 15px 35px;
       .el-form{
         padding-bottom: 30px;
         position:relative;

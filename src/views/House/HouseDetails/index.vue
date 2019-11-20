@@ -1,75 +1,76 @@
 
 <template>
   <div id="house-details">
-    <span v-show="showDot" class="dot"></span>
-  <div v-if="houseDetailShow">
-    <!-- <router-view /> -->
-    <!--搜索栏-->
-    <div slot="header" class="clearfix">
-      <div v-if="isMainBox" class="box-header">
-        <span v-show="!isShowExcel" class="load-btn" @click="clickDownLoad">下载房屋模板</span>
-        <!-- <a class="load-btn" target="_black" :href="dUrl">下载</a> -->
-        <span v-show="!isShowExcel" class="add-btn" @click="clickAddHouse">添加房屋</span>
+    <span v-show="showDot" class="dot" />
+    <div v-if="houseDetailShow">
+      <!-- <router-view /> -->
+      <!--搜索栏-->
+      <div slot="header" class="clearfix">
+        <div v-if="isMainBox" class="box-header">
+          <span v-show="!isShowExcel" class="load-btn" @click="clickDownLoad">下载房屋模板</span>
+          <!-- <a class="load-btn" target="_black" :href="dUrl">下载</a> -->
+          <span v-show="!isShowExcel" class="add-btn" @click="clickAddHouse">添加房屋</span>
 
-        <span v-if="!isError" v-show="isShowExcel" class="add-btn" @click="backToLastPage">返回上一级</span>
-        <span v-if="!isError" v-show="isShowExcel" class="add-btn1" style="margin-left:14px;" @click="excelImport">确认导入</span>
-        <span v-if="isError" style="background:#F8AC59" v-show="isShowExcel" class="add-btn" @click="ok">确认</span>
-        <span v-if="isError" style="position:absolute;left:72px;top:5px;color:#f44; font-size:14px;">提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
-        <el-upload
-          v-show="!isShowExcel"
-          action="#"
-          multiple
-          :before-upload="beforeUpload"
-          :limit="1"
-        >
-          <el-button size="small" type="primary" class="add-btn1" @click="uploadFile">导入房屋</el-button>
-        </el-upload>
-
-        <span v-show="!isShowExcel" class="search-btn" @click="handleSearch"><svg-icon icon-class="search1" /></span>
-        <el-input
-          v-show="!isShowExcel"
-          v-model="searchData"
-          class="sreach-box"
-          clearable
-          placeholder="请输入搜索内容"
-          @keyup.enter.native="handleSearch"
-        />
-      </div>
-
-      <div v-if="!isMainBox" class="box-header">
-        <span class="add-btn" @click="backToLastPage" style="background:#25BAD9;">返回上一页</span>
-      </div>
-    </div>
-    <!-- 房屋列表  -->
-    <div v-if="!isShowExcel" class="table-box">
-      <el-table
-        empty-text="暂无数据"
-        :data="tableData"
-        row-class-name="myRow"
-        cell-class-name="myCell"
-        style="width: 100%; height:100%;"
-        >
-        <el-table-column prop="userHouseBuilding" label="楼栋" min-width="50" />
-        <el-table-column prop="userHouseUnit" label="单元" min-width="50" />
-        <el-table-column prop="userHouseNumber" label="门牌号" min-width="65" />
-        <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="100" />
-        <el-table-column prop="typeName" label="房屋类型" min-width="80" />
-        <el-table-column prop="Price" label="物业费单价(元)" min-width="120" />
-        <el-table-column 
-          label="房屋状态" 
-          min-width="90" 
+          <span v-if="!isError" v-show="isShowExcel" class="add-btn" @click="backToLastPage">返回上一级</span>
+          <span v-if="!isError" v-show="isShowExcel" class="add-btn1" style="margin-left:14px;" @click="excelImport">确认导入</span>
+          <span v-if="isError" v-show="isShowExcel" style="background:#F8AC59" class="add-btn" @click="ok">确认</span>
+          <span v-if="isError" style="position:absolute;left:72px;top:5px;color:#f44; font-size:14px;">提示: 您有数据未导入成功,请记录并修改后再次重新导入</span>
+          <el-upload
+            v-show="!isShowExcel"
+            action="#"
+            multiple
+            :before-upload="beforeUpload"
+            :limit="1"
           >
-          <template slot-scope="scope1">
-            <p>
-              {{scope1.row.state}}
-            </p>
-            <p
-            :class="scope1.row.zx_tapy==='装修未办理'?'red':''"
-              style="font-size:12px;">
-              ({{ scope1.row.zx_tapy}})
-            </p>
-            
-          </template>
+            <el-button size="small" type="primary" class="add-btn1" @click="uploadFile">导入房屋</el-button>
+          </el-upload>
+
+          <span v-show="!isShowExcel" class="search-btn" @click="handleSearch"><svg-icon icon-class="search1" /></span>
+          <el-input
+            v-show="!isShowExcel"
+            v-model="searchData"
+            class="sreach-box"
+            clearable
+            placeholder="请输入搜索内容"
+            @keyup.enter.native="handleSearch"
+          />
+        </div>
+
+        <div v-if="!isMainBox" class="box-header">
+          <span class="add-btn" style="background:#25BAD9;" @click="backToLastPage">返回上一页</span>
+        </div>
+      </div>
+      <!-- 房屋列表  -->
+      <div v-if="!isShowExcel" class="table-box">
+        <el-table
+          empty-text="暂无数据"
+          :data="tableData"
+          row-class-name="myRow"
+          cell-class-name="myCell"
+          style="width: 100%; height:100%;"
+        >
+          <el-table-column prop="userHouseBuilding" label="楼栋" min-width="50" />
+          <el-table-column prop="userHouseUnit" label="单元" min-width="50" />
+          <el-table-column prop="userHouseNumber" label="门牌号" min-width="65" />
+          <el-table-column prop="Housingarea" label="房屋面积(m)" min-width="100" />
+          <el-table-column prop="typeName" label="房屋类型" min-width="80" />
+          <el-table-column prop="Price" label="物业费单价(元)" min-width="120" />
+          <el-table-column
+            label="房屋状态"
+            min-width="90"
+          >
+            <template slot-scope="scope1">
+              <p>
+                {{ scope1.row.state }}
+              </p>
+              <p
+                :class="scope1.row.zx_tapy==='装修未办理'?'red':''"
+                style="font-size:12px;"
+              >
+                ({{ scope1.row.zx_tapy }})
+              </p>
+
+            </template slot-scope="scope1"></el-table-column></el-table></div></div></div></template>
         </el-table-column>
         <el-table-column prop="checktime" label="交房时间" min-width="100" />
         <el-table-column prop="wuye_price" label="物业费到期时间" min-width="120" />
@@ -406,12 +407,12 @@ export default {
       tips: {
         checktime: false, // 交房时间是否为空
         isExist: false, // 要修改的房屋是否已存在
-        reason: false, // 是否填写申请理由
+        reason: false // 是否填写申请理由
       },
       housenumber: '',
       houseid: null,
       houseDetailShow: true,
-      prop: ['1','2','3','4','5','6','7'],
+      prop: ['1', '2', '3', '4', '5', '6', '7'],
       isShowTip: false,
       isError: false,
       dr_nameId: '', // 点击确认导入传给后台
@@ -571,26 +572,25 @@ export default {
     this.getJudgeList()
     this.getHouseType()
     this.getHouseList()
-    
   },
   methods: {
     getJudgeList() {
       const { Communityid, token } = this.userInfo
       axios.post('http://test.txsqtech.com/index/Toexamine/examine',
-      {
-        Communityid,
-        page: '1',
-        count: '10'
-      },
-      {
-        headers: {
-          token
-        }   
-      }).then(res => {
-        if(res.data.code === 200) {
-            if(res.data.msg.data.length>0){
-              this.showDot = true
-            }
+        {
+          Communityid,
+          page: '1',
+          count: '10'
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
+        if (res.data.code === 200) {
+          if (res.data.msg.data.length > 0) {
+            this.showDot = true
+          }
         }
       })
     },
@@ -616,17 +616,16 @@ export default {
           console.log(res.data.msg.data, '本地的excel')
           this.excelData = res.data.msg.data
           this.dr_nameId = res.data.msg.dr_nameId
-          this.prop = ['1','2','3','4','5','6','7']
+          this.prop = ['1', '2', '3', '4', '5', '6', '7']
           this.isShowExcel = true
           this.amazing = false
           setTimeout(() => {
             this.amazing = true
-          }, 1);
-        }
-        else if (res.data.code === 10000) {
+          }, 1)
+        } else if (res.data.code === 10000) {
           this.$router.push('/')
         }
-        console.log(this.dr_nameId,'aaaaaaa')
+        console.log(this.dr_nameId, 'aaaaaaa')
       })
       return false // 返回false不会自动上传
     },
@@ -634,52 +633,51 @@ export default {
     // Excel导入数据库
     excelImport() {
       this.$confirm('确认导入以下房屋?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          const { uname, Communityid, token } = this.userInfo
-          const  dr_nameId = this.dr_nameId
-          console.log(dr_nameId,'idididid')
-          axios.post('http://test.txsqtech.com/index/House/excelImport',
-            {
-              uname, Communityid, dr_nameId
-            },
-            {
-              headers: {
-                token
-              }
-            }).then(res => {
-              if(res.data.code === 200){
-                if(res.data.data.length > 0){
-                  // 提示导入数据失败
-                  this.isError = true
-                }
-                if(res.data.data.length === 0){
-                  this.$message({
-                    message: '导入成功',
-                    type: 'success'
-                  })
-                  this.isShowExcel = false
-                  this.getHouseList()
-                }
-                console.log(res.data.data, '回来的excel')
-                this.prop = ['userHouseBuilding','userHouseUnit','userHouseNumber','Housingarea','cid','checktime','wuye_price','Reason']
-                this.excelData = res.data.data
-              }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消导入'
-          });          
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const { uname, Communityid, token } = this.userInfo
+        const dr_nameId = this.dr_nameId
+        console.log(dr_nameId, 'idididid')
+        axios.post('http://test.txsqtech.com/index/House/excelImport',
+          {
+            uname, Communityid, dr_nameId
+          },
+          {
+            headers: {
+              token
+            }
+          }).then(res => {
+          if (res.data.code === 200) {
+            if (res.data.data.length > 0) {
+              // 提示导入数据失败
+              this.isError = true
+            }
+            if (res.data.data.length === 0) {
+              this.$message({
+                message: '导入成功',
+                type: 'success'
+              })
+              this.isShowExcel = false
+              this.getHouseList()
+            }
+            console.log(res.data.data, '回来的excel')
+            this.prop = ['userHouseBuilding', 'userHouseUnit', 'userHouseNumber', 'Housingarea', 'cid', 'checktime', 'wuye_price', 'Reason']
+            this.excelData = res.data.data
+          }
         })
-      
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消导入'
+        })
+      })
     },
     uploadFile() {
       // this.isShowExcel = true
     },
-    //返回上一页
+    // 返回上一页
     backToLastPage() {
       this.searchData = ''
       this.isMainBox = true
@@ -688,34 +686,34 @@ export default {
       // this.pageInfo.pageNum = this.pn
       this.getHouseList()
     },
-    //返回上一级
+    // 返回上一级
     backToLastPage1() {
-      
+
     },
-    //下载模板
-    clickDownLoad () {
-        const { token } = this.userInfo
-        let url = 'http://test.txsqtech.com/index/House/downloadFile'
-        axios.get(url, {
-            headers:{
-                token
-            },
-            responseType: 'blob', //二进制流
-        }).then(function (res) {
-            if(!res) return
-            let blob = new Blob([res.data], {type: 'application/vnd.ms-excel;charset=utf-8'})
-            let url = window.URL.createObjectURL(blob);
-            let aLink = document.createElement("a");
-            aLink.style.display = "none";
-            aLink.href = url;
-            aLink.setAttribute("download", "房屋模板.xls");
-            document.body.appendChild(aLink);
-            aLink.click();
-            document.body.removeChild(aLink); 
-            window.URL.revokeObjectURL(url); 
-        }).catch(function (error) {
-            console.log(error)
-        });
+    // 下载模板
+    clickDownLoad() {
+      const { token } = this.userInfo
+      const url = 'http://test.txsqtech.com/index/House/downloadFile'
+      axios.get(url, {
+        headers: {
+          token
+        },
+        responseType: 'blob' // 二进制流
+      }).then(function(res) {
+        if (!res) return
+        const blob = new Blob([res.data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+        const url = window.URL.createObjectURL(blob)
+        const aLink = document.createElement('a')
+        aLink.style.display = 'none'
+        aLink.href = url
+        aLink.setAttribute('download', '房屋模板.xls')
+        document.body.appendChild(aLink)
+        aLink.click()
+        document.body.removeChild(aLink)
+        window.URL.revokeObjectURL(url)
+      }).catch(function(error) {
+        console.log(error)
+      })
     },
     getHouseType() {
       const { Communityid, token } = this.userInfo
@@ -734,15 +732,15 @@ export default {
       return JSON.parse(localStorage.getItem('userInfo')).data
     },
     // 格式化时间
-  //   formatDate(now) {
-  //     var year = now.getFullYear()
-  //     var month = now.getMonth() + 1
-  //     var date = now.getDate()
-  //     var hour = now.getHours()
-  //     var minute = now.getMinutes()
-  //     var second = now.getSeconds()
-  //     return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
-  //   },
+    //   formatDate(now) {
+    //     var year = now.getFullYear()
+    //     var month = now.getMonth() + 1
+    //     var date = now.getDate()
+    //     var hour = now.getHours()
+    //     var minute = now.getMinutes()
+    //     var second = now.getSeconds()
+    //     return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
+    //   },
     handleUserInfoClick(v) {
       console.log(v, '639')
       this.houseid = v.userHouseId
@@ -753,7 +751,7 @@ export default {
       // alert('车位信息')
     },
     handleRecordClick(v) {
-      console.log(v,'r')
+      console.log(v, 'r')
       // var d = new Date(v.time * 1000) // 创建一个指定的日期对象
       this.RecordialogFormVisible = true
       // this.recordData.ip = v.ip // ip
@@ -798,7 +796,7 @@ export default {
     // 确认修改
     clickConfirmModify() {
       // this.modifyData.checktime = this.originData.checktime
-      //this.modifyData.centn = this.originData.centn
+      // this.modifyData.centn = this.originData.centn
       const { userHouseId } = this.originData
       const { uname } = this.userInfo
       const { centn, checktime } = this.modifyData
@@ -808,15 +806,14 @@ export default {
         this.sendModifyRequest(uname, userHouseId, centn)
       } else { // 未交房 修改时间和备注
         // alert('未交房 修改时间和备注')
-        if(checktime){
+        if (checktime) {
           this.sendModifyRequest1(uname, userHouseId, centn, checktime)
         } else {
           this.tips.checktime = true
-          setTimeout(()=>{
+          setTimeout(() => {
             this.tips.checktime = false
-          },3000)
+          }, 3000)
         }
-        
       }
 
       // else { //修改房屋详情
@@ -839,59 +836,55 @@ export default {
         userHouseUnit, userHouseNumber, centns } = this.modifyData
       console.log(this.modifyData, '提交修改的数据')
       // 修改房屋详情
-      if(centns){
+      if (centns) {
         this.sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid)
       } else {
         this.tips.reason = true
         setTimeout(() => {
           this.tips.reason = false
-        }, 3000);
+        }, 3000)
       }
-      
     },
     // 确认删除
     clickConfirmModify2() {
-      if(this.modifyData.centns){
+      if (this.modifyData.centns) {
         this.sendDeleteRequest()
-      } else{
+      } else {
         this.tips.reason = true
         setTimeout(() => {
           this.tips.reason = false
-        },3000)
+        }, 3000)
       }
     },
     sendDeleteRequest() {
       const { uname, token } = this.userInfo
       const { userHouseId } = this.originData
       const centns = this.modifyData.centns
-      axios.post("http://test.txsqtech.com/index/House/houseDetele",
-      {
-        uname, userHouseId, centns
-      },
-      {
-        headers: {
-          token
-        }
-      }).then(res => {
+      axios.post('http://test.txsqtech.com/index/House/houseDetele',
+        {
+          uname, userHouseId, centns
+        },
+        {
+          headers: {
+            token
+          }
+        }).then(res => {
         console.log(res)
-        if(res.data.code === 200){
-          
+        if (res.data.code === 200) {
           this.detailFormVisible = false
           this.isDeleteHouse = false
           this.getHouseList()
           this.clearModifyData()
           this.$message({
-            message: "申请删除房屋成功22",
-            type: "success"
+            message: '申请删除房屋成功22',
+            type: 'success'
           })
-        }
-        else if(res.data.code === 10000){
+        } else if (res.data.code === 10000) {
           this.$router.push('/')
-        }
-         else {
+        } else {
           this.$message({
             message: res.data.msg,
-            type: "error"
+            type: 'error'
           })
         }
       })
@@ -903,7 +896,7 @@ export default {
       console.log(this.addData, '添加的数据')
       this.varifyData(this.addData) // 验证数据
       if (!this.n1 && !this.n2 && !this.n3 && !this.n4 && !this.n5) {
-        if(!this.addData.checktime) {
+        if (!this.addData.checktime) {
           this.addData.wuye_price = null
         }
         this.sendAddRequest()
@@ -915,7 +908,7 @@ export default {
       this.isShowTip = true
       setTimeout(() => {
         this.isShowTip = false
-      }, 4000);
+      }, 4000)
       if (d.oid === '') this.n1 = true
       else this.n1 = false
       if (d.userHouseBuilding === '') this.n2 = true
@@ -972,9 +965,9 @@ export default {
             type: 'error'
           })
         } else if (res.data.code === 10000) {
-            this.e = false
-            this.$router.push('/')
-          }
+          this.e = false
+          this.$router.push('/')
+        }
         console.log(res)
       })
     },
@@ -996,9 +989,9 @@ export default {
         if (res.data.code === 200) {
           console.log(res.data.msg.data)
           res.data.msg.data.forEach((item) => {
-              item.checktime = item.checktime.slice(0,-9)
-              item.wuye_price = item.wuye_price.slice(0,-9)
-            })
+            item.checktime = item.checktime.slice(0, -9)
+            item.wuye_price = item.wuye_price.slice(0, -9)
+          })
           this.tableData = res.data.msg.data
           this.pageInfo.pageNum = res.data.msg.pageNum
           this.pageInfo.total = res.data.msg.total
@@ -1077,7 +1070,6 @@ export default {
       }
     },
     sendSearchRequest() {
-      
       const { Communityid, token } = this.userInfo
       axios.post(`http://test.txsqtech.com/index/House/searchSelect`,
         {
@@ -1094,9 +1086,9 @@ export default {
         if (res.data.code === 200) {
           this.isMainBox = false
           res.data.msg.data.forEach((item) => {
-              item.checktime = item.checktime.slice(0,-9)
-              item.wuye_price = item.wuye_price.slice(0,-9)
-            })
+            item.checktime = item.checktime.slice(0, -9)
+            item.wuye_price = item.wuye_price.slice(0, -9)
+          })
           this.tableData = res.data.msg.data
           // this.pt = this.pageInfo.total // 总条数
           this.pageInfo.total = res.data.msg.total
@@ -1115,7 +1107,7 @@ export default {
         console.log(res)
       })
     },
-    
+
     // 页码相关事件
     handleSizeChange() {
       console.log(11)
@@ -1128,10 +1120,10 @@ export default {
         this.pageInfo.page = val
         this.sendSearchRequest()
       }
-      //console.log(val)
+      // console.log(val)
     },
     nextClickHandler(val) {
-      //console.log(val, '354')
+      // console.log(val, '354')
     },
     // 请求列表
     getHouseList() {
@@ -1151,8 +1143,8 @@ export default {
             // console.log(res.data.msg)
             // console.log(res.data.msg.data)
             res.data.msg.data.forEach((item) => {
-              item.checktime = item.checktime.slice(0,-9)
-              item.wuye_price = item.wuye_price.slice(0,-9)
+              item.checktime = item.checktime.slice(0, -9)
+              item.wuye_price = item.wuye_price.slice(0, -9)
             })
             this.tableData = res.data.msg.data
           } else if (res.data.code === 10000) {
@@ -1163,7 +1155,7 @@ export default {
     },
 
     /* 修改请求 */
-    //修改备注
+    // 修改备注
     sendModifyRequest(uname, userHouseId, centn) {
       // console.log('修改的请求数据', this.modifyData)
       // const { oid, typename, money } = this.modifyData
@@ -1177,7 +1169,7 @@ export default {
             token: this.token
           }
         }).then(res => {
-          this.clearModifyData()
+        this.clearModifyData()
         if (res.data.code === 200) {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
@@ -1198,7 +1190,7 @@ export default {
         }
       })
     },
-    //修改交房时间和备注
+    // 修改交房时间和备注
     sendModifyRequest1(uname, userHouseId, centn, checktime) {
       // console.log('修改的请求数据', this.modifyData)
       // const { oid, typename, money } = this.modifyData
@@ -1212,7 +1204,7 @@ export default {
             token: this.token
           }
         }).then(res => {
-          this.clearModifyData()
+        this.clearModifyData()
         if (res.data.code === 200) {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
@@ -1228,7 +1220,7 @@ export default {
         }
       })
     },
-    //修改详情
+    // 修改详情
     sendModifyRequest2(uname, userHouseId, centns, userHouseNumber, userHouseUnit, userHouseBuilding, Price, Housingarea, cid, Communityid) {
       // console.log('修改的请求数据', this.modifyData)
       // const { oid, typename, money } = this.modifyData
@@ -1245,7 +1237,7 @@ export default {
             token: this.token
           }
         }).then(res => {
-          this.clearModifyData()
+        this.clearModifyData()
         if (res.data.code === 200) {
           this.getHouseList()
           this.ModifydialogVisible = false // 关闭添加
@@ -1254,22 +1246,20 @@ export default {
             message: res.data.msg,
             type: 'success'
           })
-        } else if(res.data.code === 402) {
+        } else if (res.data.code === 402) {
           this.tips.isExist = true
           setTimeout(() => {
             this.tips.isExist = false
-          }, 3000);
-
+          }, 3000)
         } else {
           this.$message({
             message: res.data.msg,
             type: 'warning'
           })
         }
-         
       })
     }
-  },
+  }
   // filters: {
   //   dateFormat(time){
   //     console.log(time)
@@ -1283,7 +1273,6 @@ export default {
 }
 </script>
 
- 
 <style lang="scss" scoped>
 
 .dot{
@@ -1328,16 +1317,16 @@ export default {
     .el-input__inner::-webkit-outer-spin-button,
     .el-input__inner::-webkit-inner-spin-button {
         -webkit-appearance: none;
-        appearance: none; 
-        margin: 0; 
+        appearance: none;
+        margin: 0;
     }
     /* 火狐 */
     /* 谷歌 */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
-        appearance: none; 
-        margin: 0; 
+        appearance: none;
+        margin: 0;
     }
     /* 火狐 */
     input{
@@ -1389,7 +1378,7 @@ export default {
               display: inline-block;
             }
             .t1{
-              
+
               width: 100px;
             }
             .t2{
@@ -1494,7 +1483,7 @@ export default {
       .el-dialog__headerbtn {
         top: 12px;
       }
-      
+
     }
     .el-form-item__label{
         height: 30px;
@@ -1596,7 +1585,7 @@ export default {
         width: 100% !important;
       }
       /deep/.el-table__body{
-       
+
       }
       /deep/.myRow {
         height: 30px;
@@ -1606,7 +1595,7 @@ export default {
         padding: 7px 0;
       }
       /deep/.myCell {
-        border-collapse: collapse;  
+        border-collapse: collapse;
         }
       /deep/.note{
         position: relative;
@@ -1617,12 +1606,11 @@ export default {
         }
         // .cell:hover{
         //     background: #fff;
-            
+
         //     white-space: normal;
         //     overflow: auto;
         // }
 
-        
       }
     }
     .page-box{

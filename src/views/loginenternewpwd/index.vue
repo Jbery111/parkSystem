@@ -71,7 +71,7 @@
       <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
       <div
         style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;"
-      ></div>
+      />
       <a
         href="http://www.miibeian.gov.cn/"
         target="_blank"

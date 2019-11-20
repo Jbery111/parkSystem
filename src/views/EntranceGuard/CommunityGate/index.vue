@@ -2,16 +2,17 @@
   <div>
     <!--   -->
     <el-card class="box-card">
-      <span v-if="isShowAddto" id="newadd" @click="isShow1">新增小区门</span>
+      <span v-if="isShowAddto" v-show="ishowAdd" id="newadd" @click="isShow1">新增小区门</span>
       <span v-else class="newAdd" @click="exitBefore">返回上一级</span>
       <!-- 搜索框 -->
       <div v-if="isShowAddto" class="serach-box">
         <input
+          style="color:#666;"
           v-model="serachContent"
           type="text"
           placeholder="请输入搜索内容"
           @keyup.enter="serachHandler"
-        >
+        />
         <div class="serach" @click="serachHandler">
           <svg-icon icon-class="search1" />
         </div>
@@ -72,12 +73,14 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
+              v-if="isShowEdit"
               size="mini"
               style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
             border-color:#25BAD9; padding:5px;"
               @click="handleEdit(scope.$index, scope.row)"
             >修改</el-button>
             <el-button
+              v-if="isShowDelte"
               class="el-btn2"
               size="mini"
               type="danger"
@@ -263,7 +266,7 @@
       title="修改小区门"
       :append-to-body="true"
       :close-on-click-modal="false"
-      class="add-class"
+      class="add-class modify-class"
       @close="closeEntryHandler"
     >
       <el-form
@@ -298,7 +301,7 @@
           <!-- 入口人脸设备: -->
           <div class="flexBox">
             <ul v-if="isEntryFcShow">
-              <div>入口人脸设备:</div>
+              <div style="color:#A6ACC3">入口人脸设备:</div>
               <el-form-item label="设备名称:" prop="pass">
                 <el-input v-model="ruleFrom1.equipmentnameRl" />
               </el-form-item>
@@ -311,7 +314,7 @@
             </ul>
             <!-- 入口蓝牙设备: -->
             <ul v-if="isEntryBlShow">
-              <div>入口蓝牙设备:</div>
+              <div style="color:#A6ACC3">入口蓝牙设备:</div>
               <el-form-item label="设备名称:" prop="pass">
                 <el-input v-model="ruleFrom1.equipmentnameLy" />
               </el-form-item>
@@ -324,7 +327,7 @@
             </ul>
             <!-- 入口二维码设备: -->
             <ul v-if="isEntryErShow">
-              <div>入口二维码设备:</div>
+              <div style="color:#A6ACC3">入口二维码设备:</div>
               <el-form-item label="设备名称:" prop="pass">
                 <el-input v-model="ruleFrom1.equipmentnameEw" />
               </el-form-item>
@@ -351,7 +354,7 @@
       title="修改小区门"
       :append-to-body="true"
       :close-on-click-modal="false"
-      class="add-class"
+      class="add-class modify-class"
       @close="closeEntryHandler"
     >
       <el-form
@@ -439,14 +442,14 @@
       :append-to-body="true"
       center
       class="chen"
-      top="40vh"
+      top="35vh"
       :close-on-click-modal="false"
     >
       <!-- <p>提示</p> -->
-      <div>是否删除该条数据?</div>
+      <div style="font-size:16px;">是否删除该条数据?</div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="quxiao1" @click="centerDialogVisible3 = false">取 消</el-button>
-        <el-button type="primary" @click="deleteQuerenHandler">确 认</el-button>
+        <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible3 = false">取 消</el-button>
+        <el-button type="primary" style="font-size:14px;" @click="deleteQuerenHandler">确 认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -456,11 +459,16 @@
 import { Message } from 'element-ui'
 import { postGateSelect, postGateInsert, postGateDelete, postGateSearch, postGateUpdate } from '@/api/entranceGuard'
 import { getInfo } from '@/utils/auth'
+import { postButton } from '@/api/Jurisdiction'
 export default {
   name: 'AccountAudit',
   // data数据
-  data() {
+  data () {
     return {
+      isShowDelte: false,
+      isShowEdit: false,
+      ishowAdd: false,
+      buttonId: null,
       serachContent1: '',
       isShowAddto: true,
       serachContent: '',
@@ -527,7 +535,8 @@ export default {
       ruleFrom2: {}
     }
   },
-  created() {
+  created () {
+    console.log(this.isShowAddto, this.ishowAdd, 'ishowAdd')
     const userInfo = JSON.parse(getInfo())
     this.userInfo = userInfo
     const Communityid = this.userInfo.data.Communityid
@@ -571,9 +580,34 @@ export default {
         this.isExportFcShow = false
       }
     })
+    // 请求按钮权限
+    this.buttonId = this.$route.meta.auth_id
+    const auth_id = this.buttonId
+    const uid = this.userInfo.data.uid
+    const Jurisdiction = this.userInfo.Jurisdiction
+    postButton({ Communityid, uid, auth_id, Jurisdiction }).then(resp => {
+      console.log(resp, 'postbottom的数据')
+      if (resp.code === 200) {
+        this.buttonLists = resp.data
+        var btnList = this.buttonLists
+      }
+      // console.log(this.buttonLists, '182182')
+      btnList.forEach(list => {
+        if (list.auth_name === '删除') {
+          this.isShowDelte = true
+        }
+        if (list.auth_name === '修改') {
+          this.isShowEdit = true
+        }
+        if (list.auth_name === '新增小区门') {
+          this.ishowAdd = true
+        }
+        console.log(this.isShowDelte, this.isShowEdit, this.ishowAdd, 'kakakak343')
+      })
+    })
   },
   methods: {
-    exitBefore() {
+    exitBefore () {
       console.log('点击上记忆')
       this.isShowAddto = true
       this.serachContent = ''
@@ -587,7 +621,7 @@ export default {
         this.currentPage = Number(resp.msg.page)
       })
     },
-    isShow1() {
+    isShow1 () {
       if (this.device === 1) {
         Message('您暂未开通门禁管理,请联系17716136776')
         return
@@ -598,7 +632,7 @@ export default {
         this.centerDialogVisible = !this.centerDialogVisible
       }
     },
-    handleEdit(index, row) {
+    handleEdit (index, row) {
       console.log(row, '修改')
       this.gateToast = ''
       this.mistakeToast = ''
@@ -622,7 +656,7 @@ export default {
         }
       }
     },
-    handleDelete(index, row) {
+    handleDelete (index, row) {
       console.log(row, '578')
       if (this.device === 1) {
         Message('您暂未开通门禁管理,请联系17716136776')
@@ -632,10 +666,10 @@ export default {
         this.centerDialogVisible3 = !this.centerDialogVisible3
       }
     },
-    gateFocusHandler() {
+    gateFocusHandler () {
       this.gateToast = ''
     },
-    submitHandler() {
+    submitHandler () {
       this.ruleFrom1.Communityid = this.userInfo.data.Communityid
       this.ruleFrom1.uname = this.userInfo.data.uname
       console.log(this.ruleFrom1, '添加的参数')
@@ -681,7 +715,7 @@ export default {
       })
     },
     // 分页设置
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.currentPage = val
       const page = val
       const Communityid = this.userInfo.data.Communityid
@@ -710,7 +744,7 @@ export default {
       }
     },
     // 弹框里面的确认删除操作
-    deleteQuerenHandler() {
+    deleteQuerenHandler () {
       const gateId = this.gateId
       postGateDelete({ gateId }).then(resp => {
         console.log(resp)
@@ -739,12 +773,11 @@ export default {
       })
     },
     // 搜索
-    serachHandler() {
+    serachHandler () {
       if (this.device === 1) {
         Message('您暂未开通门禁管理,请联系17716136776')
         return
       } else {
-        this.isShowAddto = false
         const Communityid = this.userInfo.data.Communityid
         const name = this.serachContent
         this.serachContent1 = this.serachContent
@@ -753,6 +786,7 @@ export default {
           if (resp.code === 401) {
             Message(resp.msg)
           } else {
+            this.isShowAddto = false
             // 查询成功
             this.tableData = resp.msg.data
             this.totalPage = resp.msg.total
@@ -763,7 +797,7 @@ export default {
         this.serachContent = ''
       }
     },
-    exportEditHandler() {
+    exportEditHandler () {
       console.log('出口修改')
       this.gateToast = ''
       this.mistakeToast = ''
@@ -797,7 +831,7 @@ export default {
         }
       })
     },
-    entryEditHandler() {
+    entryEditHandler () {
       // console.log('入口修改')
       this.gateToast = ''
       this.mistakeToast = ''
@@ -831,7 +865,7 @@ export default {
         }
       })
     },
-    closeEntryHandler() {
+    closeEntryHandler () {
       const Communityid = this.userInfo.data.Communityid
       const page = this.currentPage
       postGateSelect({ Communityid, page }).then(resp => {
@@ -1153,13 +1187,13 @@ export default {
       min-width: 220px;
       height: 21px;
       border: 1px solid rgba(210, 210, 210, 1) !important;
-      border-radius: 3px;
+      border-radius: 4px;
     }
   }
   .submit-class {
     button {
       background: rgba(248, 172, 89, 1);
-      border-radius: 2px;
+      border-radius: 4px;
       border-color: rgba(248, 172, 89, 1);
       width: 51px;
       height: 25px;
@@ -1190,17 +1224,21 @@ export default {
       color: rgba(51, 51, 51, 1);
       .el-dialog__title {
         text-align: left;
-        font-size: 18px;
+        font-size: 16px;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: rgba(51, 51, 51, 1);
       }
-      /deep/.el-dialog__headerbtn {
-        top: 17px !important;
-      }
+      // /deep/.el-dialog__headerbtn {
+      //   top: 17px !important;
+      // }
       button {
         position: absolute;
-        top: 1.4vh;
+        top: 10px;
+        .el-dialog__close {
+          // background: #f00;
+          top: 5px !important;
+        }
       }
     }
     .el-dialog--center {
@@ -1353,8 +1391,17 @@ export default {
     border-radius: 4px;
     transform: translateX(-50%) translateY(-50%);
     display: inline-block;
-    min-width: 927px;
+    max-width: 1150px;
+    height: 665px;
     width: auto;
+    .el-dialog__title {
+      font-size: 16px;
+    }
+    /deep/ .el-input__inner {
+      // background-color: #f00 !important;
+      height: 32px !important;
+      border-radius: 4px !important;
+    }
   }
 }
 /deep/.el-dialog__header {
@@ -1400,9 +1447,24 @@ export default {
   background: #f8ac59;
   border-color: #f8ac59;
   min-width: 72px;
-  font-size: 16px;
-  height: 35px;
+  font-size: 14px;
+  height: 30px;
   line-height: 0px;
   transform: translateX(-50%);
+}
+/deep/.el-dialog__close {
+  color: #909399;
+  position: absolute;
+  top: -7px;
+  right: 0px;
+}
+/deep/.el-dialog__title {
+  cursor: default;
+}
+.modify-class {
+  /deep/.el-dialog {
+    // background-color: #f00 !important;
+    height: 420px;
+  }
 }
 </style>

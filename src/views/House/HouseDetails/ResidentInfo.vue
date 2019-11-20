@@ -380,9 +380,9 @@
           <span>上传身份证（正面）:</span>
           <div class="up-img">
             <el-upload
+              v-show="uploadIdenty"
               ref="upload"
               :limit="1"
-              v-show="uploadIdenty"
               action="#"
               :on-remove="handleRemove"
               :on-preview="handlePictureCardPreview"
@@ -393,7 +393,7 @@
             >
               <i slot="default" class="el-icon-plus" />
               <div slot="file" slot-scope="{file}">
-                <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
+                <img class="el-upload-list__item-thumbnail" :src="file.url" alt>
                 <span class="el-upload-list__item-actions">
                   <span
                     class="el-upload-list__item-preview"
@@ -415,7 +415,7 @@
               :fullscreen="true"
               :close-on-click-modal="false"
             >
-              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt>
             </el-dialog>
           </div>
           <span ref="identiToast1" class="tips">请上传身份证正面</span>
@@ -437,7 +437,7 @@
             >
               <i slot="default" class="el-icon-plus" />
               <div slot="file" slot-scope="{file}">
-                <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
+                <img class="el-upload-list__item-thumbnail" :src="file.url" alt>
                 <span class="el-upload-list__item-actions">
                   <span
                     class="el-upload-list__item-preview"
@@ -465,7 +465,7 @@
               :fullscreen="true"
               :close-on-click-modal="false"
             >
-              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt>
             </el-dialog>
           </div>
           <span ref="faceToast1" class="tips">请上传人脸图片</span>
@@ -532,7 +532,7 @@
               :fullscreen="true"
               :close-on-click-modal="false"
             >
-              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt>
             </el-dialog>
           </div>
           <span ref="identiToast" class="tips">请上传身份证正面</span>
@@ -554,7 +554,7 @@
             >
               <svg-icon icon-class="upload" />
               <div slot="file" slot-scope="{file}">
-                <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
+                <img class="el-upload-list__item-thumbnail" :src="file.url" alt>
                 <!-- <span class="el-upload-list__item-actions">
                   <span
                     class="el-upload-list__item-preview"
@@ -582,7 +582,7 @@
               :fullscreen="true"
               :close-on-click-modal="false"
             >
-              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
+              <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt>
             </el-dialog>
           </div>
           <span ref="faceToast" class="tips">请上传人脸图片</span>
@@ -760,7 +760,7 @@ export default {
   name: 'ResidentInfo',
   props: ['houseid', 'housenumber'],
   // data数据
-  data () {
+  data() {
     return {
       hideUpload1: false,
       hideUpload: false,
@@ -879,7 +879,7 @@ export default {
   //     this.debouncedGetAnswer()
   //   }
   // },
-  created () {
+  created() {
     console.log(this.houseid, this.housenumber, 'housei222d')
     console.log('2224422')
     // 拉取用户信息
@@ -901,7 +901,7 @@ export default {
   },
   methods: {
     // 请求渲染数据列表
-    getHouseuserLists (page = 1, Houseid, Communityid) {
+    getHouseuserLists(page = 1, Houseid, Communityid) {
       postHouseholdSelect({ page, Houseid, Communityid }).then(resp => {
         console.log(resp, 'tabledata')
         this.tableData = resp.msg.data
@@ -913,7 +913,7 @@ export default {
       })
     },
     // 事件EXCEL下载住户模板
-    clickDownLoad () {
+    clickDownLoad() {
       const { token } = this.userInfoData
       const url = 'http://test.txsqtech.com/index/Household/downloadFile'
       axios.get(url, {
@@ -921,7 +921,7 @@ export default {
           token
         },
         responseType: 'blob' // 二进制流
-      }).then(function (res) {
+      }).then(function(res) {
         if (!res) return
         const blob = new Blob([res.data], { type: 'application/vnd.ms-excel;charset=utf-8' })
         const url = window.URL.createObjectURL(blob)
@@ -933,12 +933,12 @@ export default {
         aLink.click()
         document.body.removeChild(aLink)
         window.URL.revokeObjectURL(url)
-      }).catch(function (error) {
+      }).catch(function(error) {
         console.log(error)
       })
     },
     // 导入住户
-    beforeUpload (file) {
+    beforeUpload(file) {
       const { Communityid } = this.userInfoData
       var fd = new window.FormData()
       fd.append('excel', file)
@@ -960,17 +960,17 @@ export default {
       })
     },
     // 导入住户返回上一级
-    exitHandler () {
+    exitHandler() {
       this.isShowExcel = false
     },
     // 确认导入
-    querenUpload () {
+    querenUpload() {
       // postExcelImport
       // this.isError = true
       this.centerDialogVisible3 = true
       console.log('确认导入')
     },
-    deleteQuerenHandler () {
+    deleteQuerenHandler() {
       console.log('确认哈哈')
       const { uname, Communityid } = this.userInfoData
       const dr_nameId = this.dr_nameId
@@ -994,33 +994,33 @@ export default {
       })
     },
     // 确认重新导入
-    querenHandler () {
+    querenHandler() {
       this.isError = false
       this.isShowExcel = false
     },
     // 图片事件
-    handleRemove (file, fileList) {
+    handleRemove(file, fileList) {
       console.log(fileList, 636)
       this.fileLists = fileList
       this.hideUpload = fileList.length >= this.limitCount
     },
-    handleRemove1 (file, fileList) {
+    handleRemove1(file, fileList) {
       this.fileLists1 = fileList
       this.hideUpload1 = fileList.length >= this.limitCount
     },
-    handleRemove3 (file, fileList) {
+    handleRemove3(file, fileList) {
       this.fileLists3 = fileList
     },
-    handleRemove4 (file, fileList) {
+    handleRemove4(file, fileList) {
       this.fileLists4 = fileList
     },
-    handlePictureCardPreview (file) {
+    handlePictureCardPreview(file) {
       this.ImgDiaLog.addSrc = file.url
       this.ImgDiaLog.add = true // 添加预览
       console.log(123)
     },
     // 本地选中的图片变化
-    handleChange (file, fileList) {
+    handleChange(file, fileList) {
       console.log(file, fileList, '图片事件')
       if (fileList.length < 2) { // 允许最多上传三张图片
         this.fileLists = fileList
@@ -1034,7 +1034,7 @@ export default {
       //   Message('上传的图片已达上线')
       // }
     },
-    handleChange1 (file, fileList) {
+    handleChange1(file, fileList) {
       console.log(file, fileList, '图片事件1')
       // if (fileList.length < 2) { // 允许最多上传三张图片
       this.fileLists1 = fileList
@@ -1045,7 +1045,7 @@ export default {
       // }
       this.uploadRl = false
     },
-    handleChange3 (file, fileList) {
+    handleChange3(file, fileList) {
       console.log(file, fileList, '图片事件3')
       // if (fileList.length < 2) { // 允许最多上传三张图片
       this.fileLists3 = fileList
@@ -1056,7 +1056,7 @@ export default {
       //   Message('上传的图片已达上线')
       // }
     },
-    handleChange4 (file, fileList) {
+    handleChange4(file, fileList) {
       console.log(file, fileList, '图片事件4')
       // if (fileList.length < 2) { // 允许最多上传三张图片
       this.fileLists4 = fileList
@@ -1067,7 +1067,7 @@ export default {
       // }
     },
     // 确认上传
-    uploadFaceHandler () {
+    uploadFaceHandler() {
       // console.log(this.fileLists[0].raw, this.fileLists1[0], 'file')
       this.loading = true
       const { Communityid, uname } = this.userInfoData
@@ -1124,7 +1124,7 @@ export default {
       })
     },
     // 分页设置
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.currentPage = val
       const page = val
       const { Communityid } = this.userInfoData
@@ -1148,27 +1148,27 @@ export default {
       }
     },
     // 添加房屋里的添加联系方式
-    addlastitems (index) {
+    addlastitems(index) {
       this.contactData.push('')
     },
-    addlastitems1 (index) {
+    addlastitems1(index) {
       this.contactData1.push('')
     },
     // 添加房屋里的删除联系方式
-    rmlastitems (index) {
+    rmlastitems(index) {
       this.contactData.splice(index, 1)
       this.phoneToast.splice(index, 1)
     },
-    rmlastitems1 (index) {
+    rmlastitems1(index) {
       this.contactData1.splice(index, 1)
       this.phoneToast.splice(index, 1)
     },
     // 返回上一级
-    exitBefore () {
+    exitBefore() {
       this.$emit('isShowHouse')
     },
     // 点击添加住户
-    addUser () {
+    addUser() {
       // this.addData = {}
       this.addData.name = ''
       this.addData.housenumber = this.housenumber
@@ -1184,15 +1184,15 @@ export default {
       this.dialogFormVisible = !this.dialogFormVisible
     },
     // 点击选择类别：
-    radioHandler () {
+    radioHandler() {
       console.log(this.radio, 'this.radio')
     },
     // 点击选择类别：
-    radioHandler1 () {
+    radioHandler1() {
       console.log(this.radio1, 'this.radio')
     },
     // 点击修改
-    handleModifyClick (row) {
+    handleModifyClick(row) {
       console.log(row, '点击修改')
       this.dialogFormVisible2 = true
       this.modifyData.name = row.username
@@ -1210,7 +1210,7 @@ export default {
       this.userId = row.id
     },
     // 修改修改
-    modifyHandler () {
+    modifyHandler() {
       console.log('点击修改44444444444444444444444444444444444444444444')
       if (this.modifyData.name === '') {
         this.$refs.userToast.style.color = 'red'
@@ -1293,11 +1293,11 @@ export default {
         })
       }
     },
-    modifyChange () {
+    modifyChange() {
       console.log('change')
     },
     // 身份证正则验证
-    checkIdentify (item) {
+    checkIdentify(item) {
       if (item) {
         if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {
           return item
@@ -1314,7 +1314,7 @@ export default {
       }
     },
     // 修改
-    checkIdentify1 (item) {
+    checkIdentify1(item) {
       if (item) {
         if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {
           return item
@@ -1330,7 +1330,7 @@ export default {
         return true
       }
     },
-    checkIdentify2 (item) {
+    checkIdentify2(item) {
       if (item) {
         if ((/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(item))) {
           return item
@@ -1347,13 +1347,13 @@ export default {
       }
     },
     // 电话号码正则验证
-    checkContact (item) {
+    checkContact(item) {
       if ((/^1[3456789]\d{9}$/.test(item))) {
         return item
       }
     },
     // 空电话号码赛选
-    filterConcat (item) {
+    filterConcat(item) {
       if (item === '') {
         return
       } else {
@@ -1374,7 +1374,7 @@ export default {
     //     }
     //   }
     // },
-    isRepeat (arr) {
+    isRepeat(arr) {
       this.isRepeatData = null
       var hash = {}
       for (let i = 0; i < arr.length; i++) {
@@ -1393,7 +1393,7 @@ export default {
       // return false
     },
     // 检测数组重复项
-    isRepeat1 (arr) {
+    isRepeat1(arr) {
       const nArr = arr.slice().sort()
       for (let i = 0; i < arr.length; i++) {
         if (nArr[i] === nArr[i + 1]) {
@@ -1405,7 +1405,7 @@ export default {
       }
     },
     // 修改时的isRepeat
-    isRepeat2 (arr) {
+    isRepeat2(arr) {
       this.isRepeatData1 = null
       var hash = {}
       for (let i = 0; i < arr.length; i++) {
@@ -1423,7 +1423,7 @@ export default {
       }
     },
     // 点击查看详情
-    handleDetailClick (row) {
+    handleDetailClick(row) {
       console.log(row, '860')
       this.detailData.Workunit = row.Workunit
       this.detailData.identity = row.identity
@@ -1431,7 +1431,7 @@ export default {
       this.radio2 = row.dang
     },
     // 点击人脸录入或者查看人脸
-    handleFaceClick (row) {
+    handleFaceClick(row) {
       console.log(row, '729')
       if (row.imgtype === 2) {
         this.file = ''
@@ -1455,7 +1455,7 @@ export default {
         // console.log(this.fileLists, this.fileLists1, '1143')
       }
     },
-    onsubmitModify () {
+    onsubmitModify() {
       // alert('修改人脸')
       this.loading1 = true
       const { Communityid, uname } = this.userInfoData
@@ -1514,7 +1514,7 @@ export default {
       })
     },
     // 点击变更
-    handleExchangeClick (row) {
+    handleExchangeClick(row) {
       console.log(row, '点击变更row')
       this.userId = row.id
       if (row.nubers === 1 && row.type === 1) {
@@ -1536,7 +1536,7 @@ export default {
         this.centerDialogVisible4 = true
       }
     },
-    changeQuerenHandler () {
+    changeQuerenHandler() {
       this.xiazai = false
       const id = this.userId
       const uname = this.userInfoData.uname
@@ -1550,7 +1550,7 @@ export default {
         this.historyHandler()
       })
     },
-    historyHandler () {
+    historyHandler() {
       // alert('历史住户')
       this.xiazai = false
       this.isShowHis = false
@@ -1567,7 +1567,7 @@ export default {
         this.currentPage = Number(resp.msg.page)
       })
     },
-    exitHisHandler () {
+    exitHisHandler() {
       this.xiazai = true
       const { Communityid } = this.userInfoData
       const Houseid = this.houseid
@@ -1578,7 +1578,7 @@ export default {
       }, 2000)
     },
     // 点击操作记录
-    handleRecordClick (row) {
+    handleRecordClick(row) {
       // alert('操作记录')
       console.log(row)
       this.recordData.ip = row.ip
@@ -1587,11 +1587,11 @@ export default {
       this.dialogFormVisibleRecord = true
     },
     // 数组去重
-    distinct (arr) {
+    distinct(arr) {
       return Array.from(new Set(arr))
     },
     // 点击添加房屋遮罩层的确认添加
-    submitHandler () {
+    submitHandler() {
       if (this.addData.name === '') {
         this.$refs.userToast.style.color = 'red'
         setTimeout(() => {
@@ -1688,7 +1688,7 @@ export default {
         })
       }
     },
-    submitHandler1 () {
+    submitHandler1() {
       console.log(this.addData, '变更chenge')
       if (this.addData.name === '') {
         this.$refs.userToast.style.color = 'red'
