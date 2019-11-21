@@ -151,7 +151,7 @@ export default {
         // console.log(localStorage.getItem('items'))
         const items1 = JSON.parse(localStorage.getItem('items'))
         if (items1.state_type === 1) {
-          this.$router.push('/SetParams')
+          this.$router.push('/dashboard')
         } else {
           if (resp.code === 200) {
             // 未被替换掉的userINFO

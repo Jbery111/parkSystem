@@ -1,16 +1,32 @@
 <template>
   <div class="hard-setparamClass">
     <div class="setparam-container">
-      <el-card class="box-card">
-        <span id="newadd" @click="addDoor">新增门岗</span>
+      <el-card class="box-card" v-if="isShowCard">
+        <span id="newadd" >新增内场</span>
         <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
-          <el-table-column prop="uname" label="门岗名称" min-width="150" />
-          <el-table-column prop="ucphone" label="摄像头名称" min-width="150" />
-          <el-table-column prop="ucphone" label="当前收费员" min-width="150" />
+          <el-table-column prop="uname" label="内场名称" min-width="150" />
+          <!-- 操作 -->
+          <el-table-column label="操作" min-width="100">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
+            border-color:#25BAD9; padding:5px;"
+                @click="handleEdit(scope.$index, scope.row)"
+              >修改参数</el-button>
+              <el-button
+                size="mini"
+                style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
+            border-color:#25BAD9; padding:5px;"
+                @click="handleBandi(scope.$index, scope.row)"
+              >绑定</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-card>
+<modify-params v-else @isShowCardFunc="isShowCardFunc1"></modify-params>
       <!-- 分页 -->
-      <div class="block">
+      <div class="block" v-if="isShowCard">
         <p class="record-data">共{{ pageNums }}页 共{{ totalPage }}条</p>
         <el-pagination
           background
@@ -22,33 +38,71 @@
         />
       </div>
     </div>
-    <!-- 遮罩三 -->
+    <!-- 绑定遮罩三 -->
     <el-dialog
-      title="提示"
+      title="绑定停车场"
       :visible.sync="centerDialogVisible1"
       :append-to-body="true"
       center
-      class="chen"
       top="35vh"
       :close-on-click-modal="false"
+      class="bangding-class"
     >
       <!-- <p>提示</p> -->
-      <div style="font-size:16px;">是否删除该条数据?</div>
+      <el-form label-position="right" label-width="80px">
+       <div class="form-item">
+          <el-form-item label="职位:" class="region-class">
+            <el-select v-model="poname" placeholder="请选择职位" >
+              <el-option
+                v-for="item in cities"
+                :key="item.poname"
+                :value="item.poname"
+                @change="hanPoid(item.poid)"
+              >
+                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+              </el-option>
+            </el-select>
+            <p class="mistack-message">{{ mistakeToast3 }}</p>
+          </el-form-item>
+          <!-- //选择停车场备选组 -->
+          <el-form-item label="职位:" >
+            <el-checkbox-group v-model="checkList">
+    <el-checkbox label="复选框 A"></el-checkbox>
+    <el-checkbox label="复选框 B"></el-checkbox><br>
+    <el-checkbox label="复选框 C"></el-checkbox>
+  </el-checkbox-group>
+            <p class="mistack-message">{{ mistakeToast3 }}</p>
+          </el-form-item>
+        </div>
+      </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible1 = false">取 消</el-button>
-        <el-button type="primary" style="font-size:14px;" @click="deleteQuerenHandler">确 认</el-button>
+        
+        <el-button type="primary" style="font-size:14px;" >确 认</el-button>
       </span>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
+import ModifyParams from './ModifyParams.vue'
 // data数据
 export default {
-  components: {},
+  components: {
+    ModifyParams
+  },
   data() {
     return {
+      totalPage:10,
+      pageNums:1,
       centerDialogVisible1: false, // 新增门岗
+      isShowCard:true,
+      formAlign:{
+        name:''
+      },
+      poname:'',
+      checkList: ['选中且禁用','复选框 A'],
       tableData: [
        
         {
@@ -77,9 +131,18 @@ export default {
 
   },
   methods: {
-    addDoor() {
+    handleCurrentChange(val) {
+console.log(val)
+    },
+    handleBandi(index,row) {
       // alert('新增门岗')
       this.centerDialogVisible1 = true
+    },
+    handleEdit(index,row) {
+      this.isShowCard =false
+    },
+    isShowCardFunc1(data) {
+      this.isShowCard = data
     }
   }
 }
@@ -392,78 +455,7 @@ export default {
   }
 }
 
-.chen {
-  /deep/.el-dialog {
-    background-color: #fff !important;
-    width: 18.23%;
-    height: 210px;
-    /deep/.el-dialog__header {
-      button {
-        z-index: 19999;
-      }
-    }
-    .el-dialog--center {
-      text-align: left;
-    }
-    .el-dialog__body {
-      background-color: #fff;
-      height: 110px !important;
-      position: relative;
-      div {
-        width: 100%;
-        height: 110px;
-        line-height: 78px;
-        font-size: 16px;
-        text-align: center;
-      }
-    }
-    .el-dialog__footer {
-      position: absolute;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: rgba(153, 153, 153, 1);
-      span {
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-        button {
-          width: 72px;
-          height: 30px;
-          font-size: 14px;
-          border-radius: 3px !important;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          color: rgba(255, 254, 254, 1);
-        }
-      }
-      .quxiao1 {
-        color: rgba(153, 153, 153, 1);
-        background-color: #fff;
-        border: 1px solid rgba(204, 204, 204, 1);
-        border-radius: 3px;
-      }
-    }
-    .el button {
-      color: #999999 !important;
-    }
-    .el-button--primary {
-      color: #ffffff;
-      background-color: #25bad9;
-    }
-  }
-}
-.hongdian {
-  width: 6px;
-  height: 6px;
-  background-color: #f00;
-  border-radius: 5px;
-  position: absolute;
-  top: 26px;
-  left: 240px;
-}
+
 /deep/.el-tree-node {
   font-family: Microsoft YaHei;
   font-weight: 400;
@@ -555,5 +547,14 @@ export default {
 }
 /deep/.el-table .cell{
   height: 30px !important;
+}
+.bangding-class{
+  /deep/.el-dialog{
+    width: 500px;
+    height: 273px !important;
+    .el-dialog__body{
+      height: 200px;;
+    }
+  }
 }
 </style>

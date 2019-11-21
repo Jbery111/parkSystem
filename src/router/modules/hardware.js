@@ -11,7 +11,6 @@ if (userInfoDatas) {
         if (item.zi.length) {
           const ziRoutes = item.zi
           pathR += ziRoutes[2].auth_a
-          console.log(pathR, 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
         }
       }
     })
@@ -49,9 +48,16 @@ const hardwareRouter = {
       path: 'CameraManages',
       hidden: true,
       name: 'CameraManages',
-      component: () => import('@/views/HardWare/CameraManages/index'),
+      component: () => import('@/views/HardWare/InSet/index'),
       meta: { title: '摄像头管理', auth_id: 65 }
-    }
+    },
+    {
+      path: 'InSet',
+      hidden: true,
+      name: 'InSet',
+      component: () => import('@/views/HardWare/InSet/index'),
+      meta: { title: '内场参数设置', auth_id: 67 }
+    },
 
   ]
 }

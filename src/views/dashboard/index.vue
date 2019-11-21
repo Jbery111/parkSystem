@@ -32,6 +32,10 @@ export default {
       centerDialogVisible4: true
     }
   },
+  created() {
+// console.log('00000000000000000000000')
+// localStorage.setItem('dashCreatNumber',1)
+  },
   methods: {
     cc() {
       console.log('vv')

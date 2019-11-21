@@ -29,7 +29,7 @@
                 type="danger"
                 style="background:#FA5C5CFF; color:#fff; font-size:14px;height:30px; width:52px;
             border-color:#FA5C5CFF; padding:5px;"
-                @click="handleDelete(scope.$index, scope.row)"
+                @click="handleJinyong(scope.$index, scope.row)"
               >禁用</el-button>
               <el-button
                 v-else
@@ -38,7 +38,7 @@
                 type="danger"
                 style="background:#46C346FF; color:#fff; font-size:14px;height:30px; width:52px;
             border-color:#46C346FF; padding:5px;"
-                @click="handleDelete(scope.$index, scope.row)"
+                @click="handleQiyong(scope.$index, scope.row)"
               >启用</el-button>
             </template>
           </el-table-column>
@@ -57,7 +57,7 @@
         />
       </div>
     </div>
-    <!-- 遮罩三 -->
+    <!--启用 遮罩三 -->
     <el-dialog
       title="提示"
       :visible.sync="centerDialogVisible1"
@@ -68,49 +68,94 @@
       :close-on-click-modal="false"
     >
       <!-- <p>提示</p> -->
-      <div style="font-size:16px;">是否删除该条数据?</div>
+      <div style="font-size:16px;">是否启用该摄像头?</div>
       <span slot="footer" class="dialog-footer">
         <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible1 = false">取 消</el-button>
         <el-button type="primary" style="font-size:14px;" @click="deleteQuerenHandler">确 认</el-button>
       </span>
     </el-dialog>
-    <!-- 新增摄像头遮罩层 -->
+    <!-- 禁用遮罩 -->
     <el-dialog
-      :visible.sync="centerDialogVisible1"
+      title="提示"
+      :visible.sync="centerDialogVisible4"
+      :append-to-body="true"
+      center
+      class="chen"
+      top="35vh"
+      :close-on-click-modal="false"
+    >
+      <!-- <p>提示</p> -->
+      <div style="font-size:16px;">是否禁用该摄像头?</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible4 = false">取 消</el-button>
+        <el-button type="primary" style="font-size:14px;" @click="deleteQuerenHandler">确 认</el-button>
+      </span>
+    </el-dialog>
+    <!-- 新增摄像头遮罩层 -->
+   <el-dialog
+      :visible.sync="centerDialogVisible2"
       width="400px"
       center
+      class="addCame-class"
       :append-to-body="true"
       :close-on-click-modal="false"
     >
-      <span slot="title">{{ titleName }}</span>
-      <el-form :label-position="labelPosition" label-width="80px">
-        <div class="form-item" style="height:60px">
-          <el-form-item label="姓名:">
-            <input v-model="formAlign.name" type="text" @focus="handlerName" >
-            <p class="mistack-message">{{ mistakeToast1 }}</p>
+      <span slot="title">新增摄像头</span>
+      <el-form :label-position="labelPosition" label-width="120px">
+        <div class="form-item">
+          <el-form-item label="门岗名称:" class="region-class">
+            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
+              <el-option
+                v-for="item in cities"
+                :key="item.poname"
+                :value="item.poname"
+              >
+                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+              </el-option>
+            </el-select>
+            <p class="mistack-message">{{ mistakeToast3 }}</p>
           </el-form-item>
         </div>
+        
         <div class="form-item" style="height:60px">
-          <el-form-item label="账号:">
+          <el-form-item label="设备名称:">
             <input
               ref="nameInput"
-              v-model="formAlign.phone"
+              v-model="formAlign1.phone"
               type="text"
               placeholder="请输入手机号"
               @focus="handlerPhone"
-            >
+            />
             <p class="mistack-message">{{ mistakeToast2 }}</p>
           </el-form-item>
         </div>
-        <div class="form-item">
-          <el-form-item label="职位:" class="region-class1">
-            <!-- <input
+        <div class="form-item" style="height:60px">
+          <el-form-item label="设备序列号:">
+            <input
               ref="nameInput"
+              v-model="formAlign1.phone"
               type="text"
-              v-model="formAlign.region"
-            >-->
-            <el-select v-model="poname" placeholder="请选择职位">
-              <el-option v-for="item in cities" :key="item.poname" :value="item.poname">
+              placeholder="请输入手机号"
+              @focus="handlerPhone"
+            />
+            <p class="mistack-message">{{ mistakeToast2 }}</p>
+          </el-form-item>
+        </div>
+        <div class="form-item" style="height:60px">
+          <el-form-item label="设备IP地址:">
+            <input v-model="formAlign1.name" type="text" @focus="handlerName" />
+            <p class="mistack-message">{{ mistakeToast1 }}</p>
+          </el-form-item>
+        </div>
+        <div class="form-item">
+          <el-form-item label="选择出/入口:" class="region-class">
+            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
+              <el-option
+                v-for="item in cities"
+                :key="item.poname"
+                :value="item.poname"
+              >
                 <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
@@ -120,7 +165,82 @@
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addtoHandler1">确认</el-button>
+        <el-button type="primary" @click="addtoHandler">确认</el-button>
+      </span>
+    </el-dialog>
+    <!-- 修改摄像头 -->
+    <el-dialog
+      :visible.sync="centerDialogVisible3"
+      width="400px"
+      center
+      class="addCame-class"
+      :append-to-body="true"
+      :close-on-click-modal="false"
+    >
+      <span slot="title">修改摄像头</span>
+      <el-form :label-position="labelPosition" label-width="120px">
+        <div class="form-item">
+          <el-form-item label="门岗名称:" class="region-class">
+            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
+              <el-option
+                v-for="item in cities"
+                :key="item.poname"
+                :value="item.poname"
+              >
+                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+              </el-option>
+            </el-select>
+            <p class="mistack-message">{{ mistakeToast3 }}</p>
+          </el-form-item>
+        </div>
+        
+        <div class="form-item" style="height:60px">
+          <el-form-item label="设备名称:">
+            <input
+              ref="nameInput"
+              v-model="formAlign1.phone"
+              type="text"
+              placeholder="请输入手机号"
+            />
+            <p class="mistack-message">{{ mistakeToast2 }}</p>
+          </el-form-item>
+        </div>
+        <div class="form-item" style="height:60px">
+          <el-form-item label="设备序列号:">
+            <input
+              ref="nameInput"
+              v-model="formAlign1.phone"
+              type="text"
+              placeholder="请输入手机号"
+            />
+            <p class="mistack-message">{{ mistakeToast2 }}</p>
+          </el-form-item>
+        </div>
+        <div class="form-item" style="height:60px">
+          <el-form-item label="设备IP地址:">
+            <input v-model="formAlign1.name" type="text" @focus="handlerName" />
+            <p class="mistack-message">{{ mistakeToast1 }}</p>
+          </el-form-item>
+        </div>
+        <div class="form-item">
+          <el-form-item label="选择出/入口:" class="region-class">
+            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
+              <el-option
+                v-for="item in cities"
+                :key="item.poname"
+                :value="item.poname"
+              >
+                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+              </el-option>
+            </el-select>
+            <p class="mistack-message">{{ mistakeToast3 }}</p>
+          </el-form-item>
+        </div>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addtoHandler">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -132,51 +252,24 @@ export default {
   components: {},
   data() {
     return {
-      centerDialogVisible1: false, // 新增门岗
+      centerDialogVisible2:false,//新增摄像头
+      centerDialogVisible3:false,//修改摄像头
+      centerDialogVisible1: false, // 启用
+      centerDialogVisible4:false,// 禁用
       isActived: false,
+      formAlign1:{
+        name:'',
+        phone:''
+      },
+      poname:'',//新增摄像头下拉选择数据
+      mistakeToast1:'',
+      mistakeToast2:'',
       tableData: [
+        
         {
           uname: 'chen',
           ucphone: '45454545',
-          operation: 1
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545',
-          operation: 2
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545',
-          operation: 1
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
+          operation:1
         },
         {
           uname: 'chen',
@@ -202,7 +295,16 @@ export default {
   methods: {
     addDoor() {
       // alert('新增门岗')
+      this.centerDialogVisible2 = true
+    },
+    handleEdit(index,row) {
+      this.centerDialogVisible3 = true
+    },
+    handleQiyong(index,row) {
       this.centerDialogVisible1 = true
+    },
+    handleJinyong(index,row) {
+      this.centerDialogVisible4 = true
     }
   }
 }
@@ -217,12 +319,7 @@ export default {
   width: 90px;
   color: #99a9bf;
 }
-/deep/.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 50%;
-  height: 40px !important;
-}
+
 //卡片的样式
 .text {
   font-size: 14px;
@@ -314,11 +411,7 @@ export default {
     }
   }
 }
-//表格行样式
-.tableRowStyle {
-  color: #f00 !important;
-  background: #f00 !important;
-}
+
 .page {
   position: absolute;
   bottom: 70px;
@@ -433,9 +526,7 @@ export default {
   color: white;
   cursor: pointer;
 }
-/deep/ .demo-table-expand .el-form-item {
-  width: 30% !important;
-}
+
 #newadd {
   display: inline-block;
   display: flex;
@@ -506,11 +597,8 @@ export default {
     padding: 10px 0;
     background-color: #f9fafc;
   }
-  // 新增大门表单样式
-  .el-form-item {
-    margin-bottom: 0;
-    height: 48px !important;
-  }
+
+ 
   .el-input {
     /deep/input {
       min-width: 220px;
@@ -532,9 +620,7 @@ export default {
   /deep/.el-input__suffix {
     display: none;
   }
-  /deep/ .el-form-item__error {
-    top: 83% !important;
-  }
+ 
 }
 .chen {
   /deep/.el-dialog {
@@ -707,9 +793,7 @@ export default {
   width: 260px;
   height: 20px;
 }
-/deep/ .demo-table-expand .el-form-item {
-  width: 100% !important;
-}
+
 
 .add-class {
   /deep/.el-dialog {
@@ -797,7 +881,7 @@ export default {
   }
 }
 .hard-setparamClass {
-  height: 550px;
+  height: 100%;
   overflow: auto;
 }
 .setparam-container {
@@ -805,5 +889,11 @@ export default {
   // background-color: green;
   width: 100%;
   position: relative;
+}
+/deep/.el-table .cell{
+  height: 30px !important;
+}
+.addCame-class{
+
 }
 </style>
