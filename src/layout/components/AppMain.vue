@@ -2,7 +2,8 @@
   <div class="app-main">
     <!-- //二级菜单 -->
     <div class="zhanwei" />
-    <ul v-if="isDash">
+    <div v-if="isShowDash">
+    <ul>
       <router-link
         v-for="item in secondRouterLists.children"
         :key="item.path"
@@ -10,7 +11,6 @@
         class="selectLi"
       >
         <li
-          v-if="isDash"
           :class="{listClass:isDivShow}"
           tabindex="2"
           @click="cc(item)"
@@ -34,6 +34,7 @@
         >{{ list.meta.title }}</router-link>
       </div>
     </ul>
+    </div>
     <router-view :key="key" />
   </div>
 </template>
@@ -45,6 +46,7 @@ export default {
   name: 'AppMain',
   data() {
     return {
+      isShowDash:true,
       isDash: false,
       isThreeMenu: false,
       threeMenuLists: [],
@@ -62,15 +64,17 @@ export default {
   },
   watch: {
     '$route'(to, from) {
+      console.log(to.meta.title,'appmain-watch-创建')
+      console.log(this.isDash,'appmain-创建')
       this.isThreeMenu = false
       this.isDivShow = false
       // 对路由变化作出响应...
-      // console.log(to, '二级二级二级')
-      if (to.path === '/dashboard') {
+      if (to.meta.title === '首页111') {
+        this.isShowDash = false
         this.isDash = false
         this.clearRouterAsync()
-        // console.log(this.secondRouterLists, '909090909090')
       } else {
+        this.isShowDash = true
         this.isDash = true
       }
       const threeMenuItems = this.secondRouterLists.children
@@ -101,12 +105,11 @@ export default {
     }
   },
   created() {
+    // location.reload()
+    // this.isShowDash = false
     this.isThreeMenu = false
-    // history.go(0)
+    // console.log(this.isDash,'appmain-创建')
   },
-  // mounted() {
-  //   history.go(0)
-  // },
   methods: {
     ...mapMutations(['clearRouterAsync']),
     cc(item) {
@@ -140,7 +143,7 @@ export default {
   margin-right: 152px;
   height: 92%;
   // margin: 0 0.3vw;
-  overflow: hidden;
+  overflow: auto;
   background-color: #fff;
   .zhanwei {
     width: 100%;
@@ -148,11 +151,11 @@ export default {
     background-color: #f3f3f3;
   }
   ul {
-    background-color: #f3f3f3;
+    // background-color: #f00;
     // background-color: green;
     display: flex;
     width: 100%;
-    min-height: 28px;
+    // min-height: 28px;
     font-size: 11px;
     font-family: Microsoft YaHei;
     font-weight: 400;
@@ -168,6 +171,7 @@ export default {
         // height: 100%;
         // line-height: 3.9vh;
         // margin-top: 2.1vh;
+        min-height: 28px;
         padding: 6px 13px;
         text-align: center;
         background: rgba(255, 255, 255, 1);

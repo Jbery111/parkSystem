@@ -33,11 +33,15 @@
       :close-on-click-modal="false"
     >
       <!-- <p>提示</p> -->
-      <div style="font-size:16px;">是否删除该条数据?</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible1 = false">取 消</el-button>
-        <el-button type="primary" style="font-size:14px;" @click="deleteQuerenHandler">确 认</el-button>
-      </span>
+      <el-form :label-position="labelPosition" label-width="85px" :model="formLabelAlign" class="el-myclass">
+      <el-form-item label="门岗名称:">
+        <el-input v-model="formLabelAlign.name"></el-input>
+      </el-form-item>
+      
+    </el-form>
+    <div class="footer-class">
+        <span>确认</span>
+    </div>
     </el-dialog>
   </div>
 </template>
@@ -63,7 +67,13 @@ export default {
           uname: 'chen',
           ucphone: '45454545'
         }
-      ]
+      ],
+      labelPosition: 'right',
+        formLabelAlign: {
+          name: '',
+          region: '',
+          type: ''
+        }
     }
   },
   computed: {},
@@ -265,193 +275,112 @@ export default {
     color: rgba(255, 255, 255, 1);
   }
 }
-/deep/ .el-dialog {
-  background-color: #fff;
-  margin-top: 0% !important;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  min-width: 380px;
-  border-radius: 5px;
-  .el-dialog__wrapper {
-    overflow: auto;
-  }
-  .el-dialog__header {
-    padding: 12px 0 10px 16px;
-    text-align: left;
-    border-bottom: 1px solid #eff2f5;
-    font-size: 16px;
-    font-family: Microsoft YaHei;
-    font-weight: 400;
-    color: rgba(51, 51, 51, 1);
-    .el-dialog__title {
-      text-align: left;
-      font-size: 16px;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: rgba(51, 51, 51, 1);
-    }
+// /deep/ .el-dialog {
+//   background-color: #fff;
+//   margin-top: 0% !important;
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   -webkit-transform: translate(-50%, -50%);
+//   -moz-transform: translate(-50%, -50%);
+//   min-width: 380px;
+//   border-radius: 5px;
+//   .el-dialog__wrapper {
+//     overflow: auto;
+//   }
+//   .el-dialog__header {
+//     padding: 12px 0 10px 16px;
+//     text-align: left;
+//     border-bottom: 1px solid #eff2f5;
+//     font-size: 16px;
+//     font-family: Microsoft YaHei;
+//     font-weight: 400;
+//     color: rgba(51, 51, 51, 1);
+//     .el-dialog__title {
+//       text-align: left;
+//       font-size: 16px;
+//       font-family: Microsoft YaHei;
+//       font-weight: 400;
+//       color: rgba(51, 51, 51, 1);
+//     }
 
-    button {
-      position: absolute;
-      top: 14px;
-    }
-  }
-  /deep/.el-dialog__body {
-    overflow: hidden;
-    padding: 20px 50px 6px 48px !important;
-    .form-item {
-      height: 60px;
-      .zhiwei {
-        margin-bottom: 0px;
-        .el-form-item__label {
-          display: inline-block;
-          font-size: 14px;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          padding: 0 !important;
-          white-space: nowrap;
-          color: rgba(102, 102, 102, 1);
-          text-align: right !important;
-        }
-        .el-form-item__content {
-          input {
-            width: 87% !important;
-            border: 1px solid rgba(210, 210, 210, 1);
-            border-radius: 3px;
-            outline: none;
-            color: #333333;
-            padding-left: 8px;
-          }
-        }
-      }
-      .el-form-item {
-        margin-bottom: 0px;
-        margin-top: 1px;
-        text-align: center;
-        &__label {
-          height: 30px;
-          display: inline-block;
-          font-size: 14px;
-          padding: 0 !important;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          color: rgba(102, 102, 102, 1);
-        }
-        &__content {
-          input {
-            position: relative;
-            height: 30px;
-            width: 87% !important;
-            border: 1px solid rgba(210, 210, 210, 1);
-            border-radius: 3px;
-            outline: none;
-            color: #333333;
-            padding-left: 8px;
-          }
-        }
-      }
-
-      .mistack-message {
-        position: relative;
-        top: -13px;
-        text-align: left;
-        margin-left: 5px;
-        box-sizing: border-box;
-        font-size: 14px;
-        transform: scale(0.9);
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(255, 0, 0, 1);
-      }
-    }
-  }
-  .el-dialog__footer {
-    padding-top: 0px;
-    button {
-      width: 62px;
-      height: 30px;
-      line-height: 0;
-      outline: none;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto;
-      background: rgba(248, 172, 89, 1);
-      border-radius: 3px;
-      font-size: 14px;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: rgba(255, 254, 254, 1);
-      margin-bottom: 4px;
-    }
-  }
-}
+//     button {
+//       position: absolute;
+//       top: 14px;
+//     }
+//   }
+//   /deep/.el-dialog__body {
+//     overflow: hidden;
+//     padding: 20px 50px 6px 48px !important;
+   
+//   }
+//   .el-dialog__footer {
+//     padding-top: 0px;
+//     button {
+//       width: 62px;
+//       height: 30px;
+//       line-height: 0;
+//       outline: none;
+//       border: none;
+//       display: flex;
+//       justify-content: center;
+//       align-items: center;
+//       margin: 0 auto;
+//       background: rgba(248, 172, 89, 1);
+//       border-radius: 3px;
+//       font-size: 14px;
+//       font-family: Microsoft YaHei;
+//       font-weight: 400;
+//       color: rgba(255, 254, 254, 1);
+//       margin-bottom: 4px;
+//     }
+//   }
+// }
 
 .chen {
   /deep/.el-dialog {
-    background-color: #fff !important;
-    width: 18.23%;
-    height: 210px;
-    /deep/.el-dialog__header {
-      button {
-        z-index: 19999;
-      }
-    }
-    .el-dialog--center {
+    width: 500px;
+    height: 188px;
+    .el-dialog__header{
       text-align: left;
+      height: 47px !important;
+      border-bottom: 1px solid #EFF2F5;
     }
-    .el-dialog__body {
-      background-color: #fff;
-      height: 110px !important;
-      position: relative;
-      div {
-        width: 100%;
-        height: 110px;
-        line-height: 78px;
-        font-size: 16px;
-        text-align: center;
+    /deep/.el-dialog__body {
+    text-align: initial;
+    padding: 24px 25px 25px 0px;
+    .el-myclass {
+      padding-left: 55px;
+      height: 65px !important;
+      /deep/ .el-form-item__label {
+        padding: 0 24px 0 0;
       }
-    }
-    .el-dialog__footer {
-      position: absolute;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: rgba(153, 153, 153, 1);
-      span {
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-        button {
-          width: 72px;
-          height: 30px;
-          font-size: 14px;
-          border-radius: 3px !important;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          color: rgba(255, 254, 254, 1);
+        /deep/.el-input__inner {
+          // background-color: #f00;
+          width:266px !important;
+          height:32px !important;
+          border:1px solid rgba(210,210,210,1) !important;
+          border-radius:4px !important;
         }
       }
-      .quxiao1 {
-        color: rgba(153, 153, 153, 1);
-        background-color: #fff;
-        border: 1px solid rgba(204, 204, 204, 1);
-        border-radius: 3px;
+    }
+    .footer-class {
+      // background-color: #f00;
+      display: flex;
+      justify-content: center;
+      height: 30px;
+      span {
+        width:72px;
+        height:30px;
+        border-radius:4px;
+        background-color: #FCB048;
+        border-color: #FCB048;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
       }
-    }
-    .el button {
-      color: #999999 !important;
-    }
-    .el-button--primary {
-      color: #ffffff;
-      background-color: #25bad9;
     }
   }
 }
@@ -546,7 +475,6 @@ export default {
 }
 .hard-setparamClass {
   height: 100%;
-  overflow: auto;
 }
 .setparam-container {
   // height: 2000px;
@@ -556,4 +484,5 @@ export default {
 /deep/.el-table .cell{
   height: 30px !important;
 }
+
 </style>

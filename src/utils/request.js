@@ -1,11 +1,12 @@
 import axios from 'axios'
 // import { Message } from 'element-ui'
 import store from '@/store'
+import Vue from 'vue'
 import { getToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
 // axios.defaults.headers.common['token'] = 'eyJ1aWQiOjEsImlwIjoiMjIwLjE2Ni4yMzguMjI5In0'
 const service = axios.create({
-  baseURL: 'http://park.txsqtech.com', // url = base url + request url
+  baseURL: 'http://2761m20f15.zicp.vip/', // url = base url + request url
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
   },
@@ -25,9 +26,37 @@ service.interceptors.request.use(
   // window.history.pushState('forward', null, '')
   // window.history.forward(1)
   config => {
+    // const localItems = JSON.parse(localStorage.getItem('items'))
+    // const id1 = localItems.id
+    console.log(router,'1222222222222222222222222222')
+    // console.log(id1,getToken(),'llllllllllllllllllllloooooocafdfds')
+    if(getToken()) {
+      const localItems = JSON.parse(localStorage.getItem('items'))
+      if(localItems) {
+        const id1 = localItems.id
+        console.log(id1,'+++++++++++++++++++++++++++++++++++')
+        config.headers['token'] = store.getters.token
+        config.headers['park_id'] = id1
+      }else {
+        const LocalInfo = JSON.parse(localStorage.getItem('userInfo'))
+        const id2 = LocalInfo.data.Communityid
+        console.log(id2,'+++++++++++++++++++++++++++++++++++')
+        config.headers['token'] = store.getters.token
+        config.headers['park_id'] = id2
+      }
+    }else {
+      const obj = {}
+      for (const i in config.headers) {
+        if (i !== 'token') {
+          obj[i] = config.headers[i]
+        }
+      } // 这里没用
+      config.headers = obj
+    }
     // if (getToken()) {
     //   console.log(store.getters.token, 'store.getters.token')
     //   config.headers['token'] = store.getters.token
+    //     //  config.header['park_id'] = 
     // } else {
     //   const obj = {}
     //   for (const i in config.headers) {
@@ -37,6 +66,7 @@ service.interceptors.request.use(
     //   } // 这里没用
     //   config.headers = obj
     // }
+    console.log(config,'config')
     return config
   },
   error => {

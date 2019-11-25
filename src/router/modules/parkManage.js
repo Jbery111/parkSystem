@@ -10,7 +10,6 @@ if (userInfoDatas) {
         if (item.zi.length) {
           const ziRoutes = item.zi
           pathR += ziRoutes[0].auth_a
-          console.log(pathR, 'bbbbbbbbbbbb5656bbbbbbbbbbbbbbbbbbb')
         }
       }
     })

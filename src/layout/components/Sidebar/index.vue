@@ -3,16 +3,15 @@
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
-        :default-active="$route.path"
+        :default-active="activeMenu"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :unique-opened="true"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="true"
-        mode="horizontal"
+        mode="vertical"
         :router="true"
-        @select="handleSelect"
       >
         <sidebar-item
           v-for="route in sidebarMenu"
@@ -20,6 +19,7 @@
           :item="route"
           :base-path="route.path"
           :index="route.name"
+          @click="routerHandler(route)"
         />
       </el-menu>
     </el-scrollbar>
@@ -34,27 +34,16 @@ import variables from '@/styles/variables.scss'
 import { eventBus } from '@/main'
 export default {
   components: { SidebarItem, Logo },
-  data() {
-    return {
-      activeIndex: ''
-    }
-  },
   methods: {
     ...mapMutations(['setRouterAsync']),
     routerHandler(item) {
       console.log(item, '我的item')
       eventBus.$emit('firstRouter', item)
-    },
-    handleSelect(index) {
-      // alert('pp')
-      this.activeIndex = index
     }
   },
   watch: {
     '$route'(to, from) {
-      // console.log(to, 'to')
-      this.handleSelect(this.activeIndex)
-      // alert('pp')
+      // console.log(to, 'tototootototototot')
       const fullPath = to.fullPath
       const str = fullPath.split('/')
       const strData = str[1]
@@ -62,7 +51,6 @@ export default {
       const lists = routerOptions.filter(item => item.name === strData)
       if (strData === 'dashboard') {
         // console.log(strData)
-        console.log(lists[0], 'tototootototototot')
       } else {
         this.setRouterAsync(lists[0])
       }
@@ -83,7 +71,10 @@ export default {
       if (meta.activeMenu) {
         return meta.activeMenu
       }
-      return path
+      let newPath = path.split("/")
+      const newPath1 = '/'+newPath[1]
+      // console.log(newPath1,'newdddddddddddddddddddddddddddddddddddddddddddddddddddddddd')
+      return newPath1
     },
     showLogo() {
       return this.$store.state.settings.sidebarLogo
@@ -97,19 +88,24 @@ export default {
   },
 
   created() {
+    console.log(this.sidebarMenu,'this.sidebarMenu')
+    const fullPath = this.$route.fullPath
+      const str = fullPath.split('/')
+      const strData = str[1]
+      const routerOptions = this.sidebarMenu
+      const lists = routerOptions.filter(item => item.name === strData)
+      if (strData === 'dashboard') {
+        // console.log(strData)
+      } else {
+        this.setRouterAsync(lists[0])
+      }
+    console.log(this.$route,'this.$routeSIDERBAR')
     if (localStorage.getItem('isRefresh') === 'true') {
       location.reload()
       localStorage.setItem('isRefresh', false)
     }
 
-    // if (localStorage.getItem('isRefresh') === 'true') {
-    //   localStorage.setItem('isRefresh', false)
-    //   alert(99)
-    // }
-
-    // this.forceHandler()
-    this.$router.push('/dashboard')
-    // console.log(this.sidebarMenu, 'sidebarmenu')
+    // this.$router.push('/dashboard')
   }
 
   // beforeRouteEnter (to, from, next) {

@@ -252,7 +252,7 @@ export default {
 <style lang='scss' scoped>
 .hard-setparamClass {
   height: 100%;
-  overflow: auto;
+  // overflow: auto;
 }
 .setparam-container {
   position: relative;

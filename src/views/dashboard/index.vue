@@ -29,16 +29,21 @@
 export default {
   data() {
     return {
-      centerDialogVisible4: true
+      centerDialogVisible4: false
     }
   },
   created() {
-// console.log('00000000000000000000000')
-// localStorage.setItem('dashCreatNumber',1)
+const dashNumber = localStorage.getItem('dashCreate')
+if(dashNumber === '2'){
+  this.centerDialogVisible4 = false
+}else {
+  this.centerDialogVisible4 = true
+}
   },
   methods: {
     cc() {
       console.log('vv')
+      localStorage.setItem('dashCreate', 2)
       this.centerDialogVisible4 = false
       this.$router.push('/hardware/SetParamss')
     }
