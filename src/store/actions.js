@@ -19,8 +19,10 @@ const actions = {
   login({ commit }, userInfo) {
     console.log(userInfo, 222)
     const { name, password } = userInfo
+    const name1 = Number(name)
+    const password1 = Number(password)
     return new Promise((resolve, reject) => {
-      postLogin({ name: name.trim(), password: password })
+      postLogin({ name: name1, password: password1 })
         .then(response => {
           // 登陆
           console.log(response, '停车场登录')

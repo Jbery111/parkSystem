@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 export function postLogin(data) {
+  console.log(data,'登录的参数参数')
   return request({
     url: '/index/logins/login',
     method: 'post',
@@ -62,7 +63,7 @@ export function postnewPwd(data) {
 // 选择小区
 export function postHighest(data) {
   return request({
-    url: '/index/index/Highest',
+    url: 'http://www.wuye.com/index/index/Highest',
     method: 'post',
     // headers: {  },
     // headers: {

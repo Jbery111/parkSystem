@@ -4,15 +4,21 @@ import store from '@/store'
 import Vue from 'vue'
 import { getToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
+import QS from 'qs' // 引入qs模块，用来序列化post类型的数据
 // axios.defaults.headers.common['token'] = 'eyJ1aWQiOjEsImlwIjoiMjIwLjE2Ni4yMzguMjI5In0'
+
 const service = axios.create({
-  baseURL: 'http://2761m20f15.zicp.vip/', // url = base url + request url
-  headers: {
-    'Content-Type': 'application/json;charset=UTF-8'
-  },
+  baseURL: 'http://park.txsqtech.com', // url = base url + request url
+  // headers: {
+  //   'Content-Type': 'application/x-www-form-urlencoded'
+  // },
+
   timeout: 5000 // request timeout
 })
-
+const _post = (url, params) => {
+  return service.post(url, QS.stringify(params))
+}
+service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // request interceptor
 service.interceptors.request.use(
@@ -34,15 +40,15 @@ service.interceptors.request.use(
       const localItems = JSON.parse(localStorage.getItem('items'))
       if(localItems) {
         const id1 = localItems.id
-        console.log(id1,'+++++++++++++++++++++++++++++++++++')
+        console.log(id1,'++++++++++++++++++++++++++++id1+++++++')
         config.headers['token'] = store.getters.token
-        config.headers['park_id'] = id1
+        config.headers['parkid'] = id1
       }else {
         const LocalInfo = JSON.parse(localStorage.getItem('userInfo'))
         const id2 = LocalInfo.data.Communityid
-        console.log(id2,'+++++++++++++++++++++++++++++++++++')
+        console.log(id2,'++++++++++++++++++++++++++id2+++++++++')
         config.headers['token'] = store.getters.token
-        config.headers['park_id'] = id2
+        config.headers['parkid'] = id2
       }
     }else {
       const obj = {}
@@ -82,6 +88,7 @@ service.interceptors.response.use(
     window.history.forward(-1)
     const res = response.data
     if (res.code === 10000) {
+      alert(res.code)
       console.log('删掉token')
       // localStorage.removeItem('userInfo')
       localStorage.removeItem('userInfo')

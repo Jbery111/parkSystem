@@ -165,9 +165,11 @@ export default {
     },
     handleLogin () {
       localStorage.setItem('isRefresh', true)
+      const name = Number(this.loginForm.username)
+      const password = Number(this.loginForm.password)
       this.login({
-        name: this.loginForm.username,
-        password: this.loginForm.password
+        name: name,
+        password: password
       }).then((response) => {
         console.log(response, '登录页面666')
         if (response.code === 200) {
