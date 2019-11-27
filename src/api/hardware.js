@@ -12,6 +12,9 @@ export function postDoorList(data) {
 //新增门岗
 export function postDoorAdd(data) {
     return request({
+    //   headers: {
+    //   'Content-Type': 'application/x-www-form-urlencoded'
+    // },
       url: '/index/v1.door/door_add',
       method: 'post',
       data

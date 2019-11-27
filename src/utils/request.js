@@ -8,34 +8,22 @@ import QS from 'qs' // 引入qs模块，用来序列化post类型的数据
 
 const service = axios.create({
   baseURL: 'http://park.txsqtech.com', // url = base url + request url
-  // headers: {
-  //   'Content-Type': 'application/x-www-form-urlencoded'
-  // },
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+  },
 
   timeout: 5000 // request timeout
 })
 // const _post = (url, params) => {
 //   return service.post(url, QS.stringify(params))
 // }
-service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+// service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 // request interceptor
 service.interceptors.request.use(
-  // if (window.history && window.history.pushState) {
-  //   $(window).on('popstate', function () {
-  //     // 当点击浏览器的 后退和前进按钮 时才会被触发，
-  //     window.history.pushState('forward', null, '');
-  //     window.history.forward(1);
-  //   })
-  // }
-  // window.history.pushState('forward', null, '')
-  // window.history.forward(1)
   config => {
-    
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    config.data = QS.stringify(config.data)
     if (getToken()) {
       config.headers['token'] = store.getters.token
-        // config.headers['token'] = 'eyJ1aWQiOjM1NCwiaXAiOjE1NzQ4NDczNDd9'
         config.headers['parkid'] = 15
     } else {
       const obj = {}

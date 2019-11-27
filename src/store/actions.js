@@ -11,7 +11,7 @@ import {
   postDelete,
   postHighests
 } from '@/api/user'
-
+import QS from 'qs' // 引入qs模块，用来序列化post类型的数据
 import { payMent, setmeal } from '@/api/pay'
 import { setToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
@@ -146,7 +146,7 @@ const actions = {
     console.log(userInfo, 'choice')
     const { uid, Communityid } = userInfo
     return new Promise((resolve, reject) => {
-      postHighest({ uid, Communityid }).then((resp) => {
+      postHighest(QS.stringify({ uid, Communityid })).then((resp) => {
         console.log('ininininininin')
         resolve(resp)
       }).catch(error => {

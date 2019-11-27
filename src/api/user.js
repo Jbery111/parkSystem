@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import QS from 'qs' // 引入qs模块，用来序列化post类型的数据
 export function postLogin(data) {
   console.log(data,'登录的参数参数')
   return request({
@@ -97,7 +97,11 @@ export function postHighests(data) {
 }
 // 查询小区
 export function postHighes(data) {
+  console.log(data,'请求小区数据的data参数')
   return request({
+    // headers: {
+    //   'Content-Type': 'application/x-www-form-urlencoded'
+    // },
     url: '/index/index/Highes',
     method: 'post',
     data
