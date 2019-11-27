@@ -143,80 +143,132 @@ export default {
     ...mapMutations(['isWyCover', 'replaceUserInfoData', 'setDueToTheTime', 'replaceUserInfoList']),
     //选择小区点击确认
     toDashboard () {
+      localStorage.setItem('isPark',true)
       const token1 = this.userInfo1.data.token
       const localItems1 = JSON.parse(localStorage.getItem('items'))
-      console.log(localItems1,'6666666data')
+      // console.log(localItems1,'6666666data')
       const id1 = localItems1.id
       this.param.uid = this.userInfo.data.uid
       this.param.Communityid = this.itemid
       console.log(this.param, '小区IDIDID一滴滴')
       this.choiceCommunity(this.param).then(resp => {
         console.log(resp,'选择小区点击确认')
-        // localStorage.setItem('isRefresh', true)
-        // this.setDueToTheTime(resp.time)
-        // //停车场新增判断
-        // // console.log(localStorage.getItem('items'))
-        // const items1 = JSON.parse(localStorage.getItem('items'))
-        // if (items1.state_type === 1) {
-        //   localStorage.setItem('dashCreate', 1)
-        //   this.$router.push('/dashboard')
-        // } else {
-        //   if (resp.code === 200) {
-        //     // 未被替换掉的userINFO
-        //     this.$store.commit('permission/CLEAR_PERMISSION')
-        //     this.replaceUserInfoData(resp.data)
-        //     this.replaceUserInfoList(resp.list)
-        //     setInfo(this.userInfo)
-        //     if (resp.amg === 2) {
-        //       // localStorage.setItem('isRefresh', true)
-        //       if (this.Jurisdiction === 1) {
-        //         localStorage.setItem('isRefresh', true)
-        //         this.$router.push('/dashboard')//跳转到首页
-        //       } else if (this.Jurisdiction === 2) {
-        //         this.isWyCover()
-        //         this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
-        //       } else if (this.Jurisdiction === 4) {
-        //         this.isWyCover()
-        //         this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
-        //       }
-        //     } else if (resp.amg === 1) {
-        //       localStorage.setItem('isRefresh', true)
-        //       this.$router.replace({ path: 'dashboard' })//直接跳直接
-        //     }
-        //   } else if (resp.code === 302) {
-        //     this.replaceUserInfoList(resp.list)
-        //     //list的变化
-        //     setRoutes(resp.list)
-        //     this.replaceUserInfoData(resp.data)
-        //     setInfo(this.userInfo)
-        //     if (this.Jurisdiction === 1) {
-        //       localStorage.setItem('isRefresh', true)
-        //       this.$router.push('/dashboard')//跳转到首页
-        //     } else if (this.Jurisdiction === 2) {
-        //       this.$router.push('/pay')//跳转到套餐页面
-        //     } else if (this.Jurisdiction === 4) {
-        //       // localStorage.setItem('isRefresh', true)
-        //       this.$router.push({ path: 'dashboard', query: { Ju: '2' } })//首页提示小区系统已欠费，请缴费，页面加蒙城30秒倒计时后返回选择小区页面
-        //     }
-        //   }
-        // }
+        localStorage.setItem('isRefresh', true)
+        this.setDueToTheTime(resp.time)
+        //停车场新增判断
+        // console.log(localStorage.getItem('items'))
+        const items1 = JSON.parse(localStorage.getItem('items'))
+        if (items1.state_type === 1) {
+          localStorage.setItem('dashCreate', 1)
+          this.$router.push('/dashboard')
+        } else {
+          if (resp.code === 200) {
+            // 未被替换掉的userINFO
+            this.$store.commit('permission/CLEAR_PERMISSION')
+            this.replaceUserInfoData(resp.data)
+            this.replaceUserInfoList(resp.list)
+            setInfo(this.userInfo)
+            if (resp.amg === 2) {
+              // localStorage.setItem('isRefresh', true)
+              if (this.Jurisdiction === 1) {
+                localStorage.setItem('isRefresh', true)
+                this.$router.push('/dashboard')//跳转到首页
+              } else if (this.Jurisdiction === 2) {
+                this.isWyCover()
+                this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
+              } else if (this.Jurisdiction === 4) {
+                this.isWyCover()
+                this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
+              }
+            } else if (resp.amg === 1) {
+              localStorage.setItem('isRefresh', true)
+              this.$router.replace({ path: 'dashboard' })//直接跳直接
+            }
+          } else if (resp.code === 302) {
+            this.replaceUserInfoList(resp.list)
+            //list的变化
+            setRoutes(resp.list)
+            this.replaceUserInfoData(resp.data)
+            setInfo(this.userInfo)
+            if (this.Jurisdiction === 1) {
+              localStorage.setItem('isRefresh', true)
+              this.$router.push('/dashboard')//跳转到首页
+            } else if (this.Jurisdiction === 2) {
+              this.$router.push('/pay')//跳转到套餐页面
+            } else if (this.Jurisdiction === 4) {
+              // localStorage.setItem('isRefresh', true)
+              this.$router.push({ path: 'dashboard', query: { Ju: '2' } })//首页提示小区系统已欠费，请缴费，页面加蒙城30秒倒计时后返回选择小区页面
+            }
+          }
+        }
       })
-      // axios.post('http://www.wuye.com/index/index/Highest',
+      // axios.post('http://park.txsqtech.com/index/index/Highest',
       //   {
       //     Communityid: this.itemid,
       //     uid: this.userInfo.data.uid
       //   },
       //   {
       //     headers: {
-      //       token: token1,
-      //       parkid: id1
+      //       // 'Content-Type': 'application/json; charset=utf-8',
+      //       // 'token': token1,
+      //       // 'parkid': id1
       //     }
       //   }).then(resp => {
       //     console.log(resp,'resp1212121212121212')
+      //      console.log(resp,'选择小区点击确认')
+      //   localStorage.setItem('isRefresh', true)
+      //   this.setDueToTheTime(resp.time)
+      //   //停车场新增判断
+      //   // console.log(localStorage.getItem('items'))
+      //   const items1 = JSON.parse(localStorage.getItem('items'))
+      //   if (items1.state_type === 1) {
+      //     localStorage.setItem('dashCreate', 1)
+      //     this.$router.push('/dashboard')
+      //   } else {
+      //     if (resp.code === 200) {
+      //       // 未被替换掉的userINFO
+      //       this.$store.commit('permission/CLEAR_PERMISSION')
+      //       this.replaceUserInfoData(resp.data)
+      //       this.replaceUserInfoList(resp.list)
+      //       setInfo(this.userInfo)
+      //       if (resp.amg === 2) {
+      //         // localStorage.setItem('isRefresh', true)
+      //         if (this.Jurisdiction === 1) {
+      //           localStorage.setItem('isRefresh', true)
+      //           this.$router.push('/dashboard')//跳转到首页
+      //         } else if (this.Jurisdiction === 2) {
+      //           this.isWyCover()
+      //           this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
+      //         } else if (this.Jurisdiction === 4) {
+      //           this.isWyCover()
+      //           this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
+      //         }
+      //       } else if (resp.amg === 1) {
+      //         localStorage.setItem('isRefresh', true)
+      //         this.$router.replace({ path: 'dashboard' })//直接跳直接
+      //       }
+      //     } else if (resp.code === 302) {
+      //       this.replaceUserInfoList(resp.list)
+      //       //list的变化
+      //       setRoutes(resp.list)
+      //       this.replaceUserInfoData(resp.data)
+      //       setInfo(this.userInfo)
+      //       if (this.Jurisdiction === 1) {
+      //         localStorage.setItem('isRefresh', true)
+      //         this.$router.push('/dashboard')//跳转到首页
+      //       } else if (this.Jurisdiction === 2) {
+      //         this.$router.push('/pay')//跳转到套餐页面
+      //       } else if (this.Jurisdiction === 4) {
+      //         // localStorage.setItem('isRefresh', true)
+      //         this.$router.push({ path: 'dashboard', query: { Ju: '2' } })//首页提示小区系统已欠费，请缴费，页面加蒙城30秒倒计时后返回选择小区页面
+      //       }
+      //     }
+      //   }
       //   })
     },
     // 按照小区首字母搜索小区
     selectCommunityByLetter (name) {
+      localStorage.setItem('isPark',false)
       this.isCommunity = true
       this.isActiveData1 = name
       this.isActiveData2 = false
@@ -228,20 +280,21 @@ export default {
       const propertyId = data1.propertyId
       if (Communityid) {
         const data = { Communityid, name }
-        axios.post('http://park.txsqtech.com/index/index/Highests',
-        {
-          Communityid: Communityid,
-          name: name
-        },
-        {
-          headers: {
+        // axios.post('http://park.txsqtech.com/index/index/Highests',
+        // {
+        //   Communityid: Communityid,
+        //   name: name
+        // },
+        // {
+        //   headers: {
             
-          }
-        }).then(resp => {
+        //   }
+        // }).
+        this.letterCommunity(data).then(resp => {
           this.dataLists = resp.msg.data
-          this.page = resp.data.msg.page
-          this.pages = resp.data.msg.pageNum
-          this.total = resp.data.msg.total
+          this.page = resp.msg.page
+          this.pages = resp.msg.pageNum
+          this.total = resp.msg.total
           this.itemid = this.dataLists[0].id
 
           const items = JSON.stringify(this.dataLists[0])
@@ -253,23 +306,24 @@ export default {
         })
       } else {
         const data = { propertyId, name }
-        axios.post('http://park.txsqtech.com/index/index/Highests',
-        {
-          propertyId: propertyId,
-          name: name
-        },
-        {
-          headers: {
+        // axios.post('http://park.txsqtech.com/index/index/Highests',
+        // {
+        //   propertyId: propertyId,
+        //   name: name
+        // },
+        // {
+        //   headers: {
             
-          }
-        }).then(resp => {
-          this.dataLists = resp.data.msg.data
+        //   }
+        // }).
+        this.letterCommunity(data).then(resp => {
+          this.dataLists = resp.msg.data
           if (!this.dataLists.length) {
             this.isCommunity = false
           }
-          this.page = resp.data.msg.page
-          this.pages = resp.data.msg.pageNum
-          this.total = resp.data.msg.total
+          this.page = resp.msg.page
+          this.pages = resp.msg.pageNum
+          this.total = resp.msg.total
           this.itemid = this.dataLists[0].id
           const items = JSON.stringify(this.dataLists[0])
           localStorage.setItem('items', items)
@@ -278,6 +332,9 @@ export default {
     },
     // 点击全部
     selectQb () {
+      localStorage.setItem('isPark',false)
+      const data2 = JSON.parse(localStorage.getItem('replcaeData'))
+      const token2 = data2.token
       this.isCommunity = true
       this.isActiveData1 = "全部"
       this.isActiveData2 = true
@@ -288,56 +345,58 @@ export default {
       // console.log(Communityid, propertyId)
       if (Communityid) {
         const data = { Communityid, name }
-        axios.post('http://park.txsqtech.com/index/index/Highes',
-        {
-          Communityid: Communityid
-        },
-        {
-          headers: {
-            
-          }
-        }).then(resp => {
+        // axios.post('http://park.txsqtech.com/index/index/Highes',
+        // {
+        //   Communityid: Communityid
+        // },
+        // {
+        //   headers: {
+        //   }
+        // }).
+        postHighes(data).then(resp => {
           this.dataLists = resp.msg.data
-          this.page = resp.data.msg.page
-          this.pages = resp.data.msg.pageNum
-          this.total = resp.data.msg.total
+          this.page = resp.msg.page
+          this.pages = resp.msg.pageNum
+          this.total = resp.msg.total
         })
       } else {
         const data = { propertyId, name }
-         axios.post('http://park.txsqtech.com/index/index/Highes',
-        {
-          propertyId: propertyId
-        },
-        {
-          headers: {
-            
-          }
-        }).then(resp => {
-          this.dataLists = resp.data.msg.data
-          this.page = resp.data.msg.page
-          this.pages = resp.data.msg.pageNum
-          this.total = resp.data.msg.total
+        //  axios.post('http://park.txsqtech.com/index/index/Highes',
+        // {
+        //   propertyId: propertyId
+        // },
+        // {
+        //   headers: {
+        //   }
+        // }).
+        postHighes(data).then(resp => {
+          console.log(resp, '点击全部的resp')
+          this.dataLists = resp.msg.data
+          this.page = resp.msg.page
+          this.pages = resp.msg.pageNum
+          this.total = resp.msg.total
         })
       }
     },
     findComunity () {
+      localStorage.setItem('isPark',false)
       const data1 = JSON.parse(localStorage.getItem('replcaeData'))
       const Communityid = data1.Communityid
       const propertyId = data1.propertyId
       const token1 = data1.token
-      console.log(Communityid, 'hjhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+      console.log(token1,'token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1')
       if (Communityid) {
         const data = { Communityid }
         // /index/index/Highes
-        axios.post('http://park.txsqtech.com/index/index/Highes',
-        {
-          Communityid: Communityid
-        },
-        {
-          headers: {
-            
-          }
-        }).then(resp => {
+        // axios.post('http://park.txsqtech.com/index/index/Highes',
+        // {
+        //   Communityid: Communityid
+        // },
+        // {
+        //   headers: {
+        //   }
+        // }).
+        postHighes(data).then(resp => {
           console.log(resp, '+++++++++++++进入选择小区获取的所有小区数据（lists）+++++++++++++++')
           this.dataLists = resp.msg.data
           const items = JSON.stringify(this.dataLists[0])
@@ -353,24 +412,24 @@ export default {
         const token1 = data2.token
         const data = { propertyId }
         setToken(token1)
-        axios.post('http://park.txsqtech.com/index/index/Highes',
-        {
-          propertyId: propertyId
-        },
-        {
-          headers: {
-            
-          }
-        }).then(resp => {
+        // axios.post('http://park.txsqtech.com/index/index/Highes',
+        // {
+        //   propertyId: propertyId
+        // },
+        // {
+        //   headers: {
+        //   }
+        // }).
+        postHighes(data).then(resp => {
         console.log(resp, '+++++++++++++进入选择小区获取的所有小区数据（lists）+++++++++++++++')
-          this.dataLists = resp.data.msg.data
+          this.dataLists = resp.msg.data
           // console.log(this.dataLists,)
           const items = JSON.stringify(this.dataLists[0])
           localStorage.setItem('items', items)
           this.itemid = this.dataLists[0].id
-          this.page = resp.data.msg.page
-          this.pages = resp.data.msg.pageNum
-          this.total = resp.data.msg.total
+          this.page = resp.msg.page
+          this.pages = resp.msg.pageNum
+          this.total = resp.msg.total
         })
       }
     },
@@ -535,7 +594,7 @@ export default {
   },
   created () {
     this.userInfo1 = JSON.parse(localStorage.getItem('userInfo'))
-    console.log(this.userInfo1,'5555555')
+    // console.log(this.userInfo1,'5555555')
     this.findComunity()
     console.log(this.dataLists)
     this.selectQb()

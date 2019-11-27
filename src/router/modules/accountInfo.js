@@ -13,7 +13,6 @@ if (userInfoDatas) {
       if (item.auth_name === '账号分配') {
         if (item.zi.length) {
           const ziRoutes = item.zi
-          console.log(ziRoutes[0].auth_a, '账号分配路由')
           pathR += ziRoutes[0].auth_a
         }
       }

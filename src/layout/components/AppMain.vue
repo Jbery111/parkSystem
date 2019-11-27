@@ -64,12 +64,12 @@ export default {
   },
   watch: {
     '$route'(to, from) {
-      console.log(to.meta.title,'appmain-watch-创建')
+      console.log(to,'appmain-watch-创建')
       console.log(this.isDash,'appmain-创建')
       this.isThreeMenu = false
       this.isDivShow = false
       // 对路由变化作出响应...
-      if (to.meta.title === '首页111') {
+      if (to.meta.title === undefined) {
         this.isShowDash = false
         this.isDash = false
         this.clearRouterAsync()
@@ -105,6 +105,7 @@ export default {
     }
   },
   created() {
+    console.log(secondRouterLists,'secondRouterLists')
     // location.reload()
     // this.isShowDash = false
     this.isThreeMenu = false

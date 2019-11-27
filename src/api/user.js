@@ -63,7 +63,7 @@ export function postnewPwd(data) {
 // 选择小区
 export function postHighest(data) {
   return request({
-    url: 'http://www.wuye.com/index/index/Highest',
+    url: '/index/index/Highest',
     method: 'post',
     // headers: {  },
     // headers: {

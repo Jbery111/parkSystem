@@ -4,9 +4,9 @@
       <el-card class="box-card">
         <span id="newadd" @click="addDoor">新增门岗</span>
         <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
-          <el-table-column prop="uname" label="门岗名称" min-width="150" />
-          <el-table-column prop="ucphone" label="摄像头名称" min-width="150" />
-          <el-table-column prop="ucphone" label="当前收费员" min-width="150" />
+          <el-table-column prop="door_post_name" label="门岗名称" min-width="150" />
+          <el-table-column prop="camera_name" label="摄像头名称" min-width="150" />
+          <el-table-column prop="user_name" label="当前收费员" min-width="150" />
         </el-table>
       </el-card>
       <!-- 分页 -->
@@ -35,11 +35,11 @@
       <!-- <p>提示</p> -->
       <el-form :label-position="labelPosition" label-width="85px" :model="formLabelAlign" class="el-myclass">
       <el-form-item label="门岗名称:">
-        <el-input v-model="formLabelAlign.name"></el-input>
+        <el-input v-model="doorName"></el-input>
       </el-form-item>
       
     </el-form>
-    <div class="footer-class">
+    <div class="footer-class" @click="addMengang">
         <span>确认</span>
     </div>
     </el-dialog>
@@ -47,33 +47,19 @@
 </template>
 
 <script>
+import { postDoorList,postDoorAdd } from '@/api/hardware'
 // data数据
 export default {
   components: {},
   data() {
     return {
       centerDialogVisible1: false, // 新增门岗
-      tableData: [
-       
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        }
-      ],
-      labelPosition: 'right',
-        formLabelAlign: {
-          name: '',
-          region: '',
-          type: ''
-        }
+      tableData: [],
+      userInfoList: {},//localStorage的userInfo
+      pageNums: null,//总页数
+      totalPage: null,//总条数
+      doorName: '',//增加的门岗名称
+      labelPosition: 'right'
     }
   },
   computed: {},
@@ -81,15 +67,46 @@ export default {
 
   },
   created() {
-
+    const page = 1
+    const size = 10
+    postDoorList({page: 1,size}).then(resp=> {
+      // console.log(resp,'查询门岗列表')
+      this.tableData = resp.data.data
+      this.pageNums = resp.data.pageNum
+      this.totalPage = resp.data.total
+    })
+    this.userInfoList = JSON.parse(localStorage.getItem('userInfo'))
   },
   mounted() {
 
   },
   methods: {
+    //查询门岗列表
+    getDooorList(page = 1,size = 10) {
+       postDoorList({page,size}).then(resp=> {
+        console.log(resp,'查询门岗列表')
+        this.tableData = resp.data.data
+        this.pageNums = resp.data.pageNum
+        this.totalPage = resp.data.total
+      })
+    },
     addDoor() {
-      // alert('新增门岗')
       this.centerDialogVisible1 = true
+    },
+    //新增门岗
+    addMengang() {
+      const adminId = this.userInfoList.data.uid
+      // alert(adminId)
+      const doorName = this.doorName
+      postDoorAdd({adminId,doorName}).then(resp => {
+        console.log(resp,'添加门岗')
+        if(resp.data === '门岗添加成功') {
+          // const page = 1
+          // const size = 10
+          this.getDooorList(1,10)
+          this.centerDialogVisible1 = false
+        }
+      })
     }
   }
 }
@@ -367,6 +384,7 @@ export default {
     }
     .footer-class {
       // background-color: #f00;
+      cursor: pointer;
       display: flex;
       justify-content: center;
       height: 30px;
