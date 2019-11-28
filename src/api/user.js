@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import QS from 'qs' // 引入qs模块，用来序列化post类型的数据
+// const token1 = localStorage.getItem('userInfo').token
 export function postLogin(data) {
   console.log(data,'登录的参数参数')
   return request({
@@ -62,12 +63,11 @@ export function postnewPwd(data) {
 }
 // 选择小区
 export function postHighest(data) {
+  console.log(data,'highest选择小区data参数')
   return request({
     url: '/index/index/Highest',
     method: 'post',
-    // headers: {  },
     // headers: {
-    //   'token': 'eyJ1aWQiOjEsImlwIjoiMjIwLjE2Ni4yMzguMjI5In0',
     //   'Content-Type': 'application/json;charset=UTF-8'
     // },
     // credientials: false,
@@ -97,10 +97,10 @@ export function postHighests(data) {
 }
 // 查询小区
 export function postHighes(data) {
-  console.log(data,'请求小区数据的data参数')
+  console.log(data,'posthighes请求小区数据的data参数')
   return request({
     // headers: {
-    //   'Content-Type': 'application/x-www-form-urlencoded'
+    //   'Content-Type': 'application/x-www-form-urlencoded',
     // },
     url: '/index/index/Highes',
     method: 'post',

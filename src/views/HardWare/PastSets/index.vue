@@ -33,9 +33,9 @@
       :close-on-click-modal="false"
     >
       <!-- <p>提示</p> -->
-      <el-form :label-position="labelPosition" label-width="85px" :model="formLabelAlign" class="el-myclass">
+      <el-form :label-position="labelPosition" label-width="85px" class="el-myclass">
       <el-form-item label="门岗名称:">
-        <el-input v-model="doorName"></el-input>
+        <el-input v-model="doorName" @keydown.native.enter="addMengang" autofocus></el-input>
       </el-form-item>
       
     </el-form>
@@ -48,6 +48,7 @@
 
 <script>
 import { postDoorList,postDoorAdd } from '@/api/hardware'
+import { Message } from 'element-ui'
 // data数据
 export default {
   components: {},
@@ -59,7 +60,9 @@ export default {
       pageNums: null,//总页数
       totalPage: null,//总条数
       doorName: '',//增加的门岗名称
-      labelPosition: 'right'
+      labelPosition: 'right',
+      parkid: null,
+      currentPage: null,// 当前页
     }
   },
   computed: {},
@@ -69,8 +72,9 @@ export default {
   created() {
     const page = 1
     const size = 10
-    postDoorList({page: 1,size}).then(resp=> {
-      // console.log(resp,'查询门岗列表')
+    this.parkid = JSON.parse(localStorage.getItem('items')).id
+    postDoorList({page: 1,size,parkid: this.parkid}).then(resp=> {
+      console.log(resp,'查询门岗列表')
       this.tableData = resp.data.data
       this.pageNums = resp.data.pageNum
       this.totalPage = resp.data.total
@@ -81,9 +85,14 @@ export default {
 
   },
   methods: {
+    // 分页设置
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getDooorList(val,10,this.parkid)
+    },
     //查询门岗列表
-    getDooorList(page = 1,size = 10) {
-       postDoorList({page,size}).then(resp=> {
+    getDooorList(page = 1,size = 10,parkid = this.parkid) {
+       postDoorList({page,size,parkid}).then(resp=> {
         console.log(resp,'查询门岗列表')
         this.tableData = resp.data.data
         this.pageNums = resp.data.pageNum
@@ -91,20 +100,28 @@ export default {
       })
     },
     addDoor() {
+      this.doorName = ''
       this.centerDialogVisible1 = true
     },
     //新增门岗
     addMengang() {
       const adminId = this.userInfoList.data.uid
-      // alert(adminId)
       const doorName = this.doorName
-      postDoorAdd({adminId,doorName}).then(resp => {
-        console.log(resp,'添加门岗')
+      postDoorAdd({adminId,doorName,parkid: this.parkid}).then(resp => {
         if(resp.data === '门岗添加成功') {
-          // const page = 1
-          // const size = 10
-          this.getDooorList(1,10)
+          Message(resp.data)
           this.centerDialogVisible1 = false
+          const nume = Number(this.totalPage) / Number(10)
+            var shu = ''
+            if (Math.round(nume) === nume) {
+              // num是整数
+              shu = Number(nume) + Number(1)
+            } else {
+              shu = Math.ceil(nume)
+            }
+            const page = shu
+            this.getDooorList(shu,10,this.parkid)
+            this.handleCurrentChange(page)
         }
       })
     }

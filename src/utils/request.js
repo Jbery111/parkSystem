@@ -4,13 +4,12 @@ import store from '@/store'
 import Vue from 'vue'
 import { getToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
-import QS from 'qs' // 引入qs模块，用来序列化post类型的数据
 
 const service = axios.create({
   baseURL: 'http://park.txsqtech.com', // url = base url + request url
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-  },
+  // headers: {
+  //   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+  // },
 
   timeout: 5000 // request timeout
 })
@@ -18,13 +17,13 @@ const service = axios.create({
 //   return service.post(url, QS.stringify(params))
 // }
 // service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+// service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 // request interceptor
 service.interceptors.request.use(
   config => {
-    config.data = QS.stringify(config.data)
     if (getToken()) {
       config.headers['token'] = store.getters.token
-        config.headers['parkid'] = 15
+        
     } else {
       const obj = {}
       for (const i in config.headers) {
@@ -50,7 +49,6 @@ service.interceptors.response.use(
     window.history.forward(-1)
     const res = response.data
     if (res.code === 10000) {
-      alert(res.code)
       console.log('删掉token')
       // localStorage.removeItem('userInfo')
       localStorage.removeItem('userInfo')

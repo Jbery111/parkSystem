@@ -2,7 +2,7 @@
   <!-- eslint-disable -->
   <div class="community-container">
     <div class="wy-login-nav">
-      <span class="logo">宅-停车场管理系统</span>
+      <span class="logo">宅-物业管理系统</span>
       <ul style="cursor:pointer;">
         <li>关于我们</li>
         <div style="height:12px;border:1px solid white;margin-top:4px" />
@@ -14,7 +14,10 @@
       </ul>
     </div>
     <div class="main">
-      <h3 class="main-title" style="cursor:default;">请选择停车场</h3>
+      <p class="button" v-if="isCommunity">
+      <el-button type="primary" @click="toDashboard()">确认</el-button>
+    </p>
+      <h3 class="main-title" style="cursor:default;">请选择小区</h3>
       <div class="main-letter-container">
         <!-- <span>&lt;</span> -->
         <span @click="selectQb" :class="{qb:isActiveData2}" class="qb1">全部</span>
@@ -28,8 +31,8 @@
       </div>
 
       <div class="item-container">
-        <div class="tingche-community">
-          <div v-for="(item, index) in dataLists" :key="index">
+        <el-row :gutter="12">
+          <el-col :span="6" v-for="(item, index) in dataLists" :key="index">
             <div @click="activedd(item, index)">
               <el-card shadow="false" :class="actived===index ? 'bt1':'bt2'">
                 <div>{{ item.propertyName }}</div>
@@ -43,12 +46,9 @@
                 </p>
               </el-card>
             </div>
-          </div>
-        </div>
+          </el-col>
+        </el-row>
       </div>
-      <p class="button" v-if="isCommunity">
-        <el-button type="primary" @click="toDashboard()">确认</el-button>
-      </p>
       <span class="fenye-click left-click" @click="leftBtn()">
         <svg-icon icon-class="leftjiantou" />
       </span>
@@ -57,6 +57,8 @@
       </span>
     </div>
     <div class="wy-login-bottom">
+      <div class="wy-bottom" style="margin-left:-12px;">
+
       <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
       <div
         style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;"
@@ -64,9 +66,11 @@
       <a
         href="http://www.miibeian.gov.cn/"
         target="_blank"
-        style="margin-left:10px; white-space:nowrap;position:absolute;"
+        style="margin-left:10px; white-space:nowrap;"
       >蜀ICP备19024682号</a>
+      </div>
     </div>
+    
   </div>
 </template>
 
@@ -78,7 +82,6 @@ import { postHighest, postHighes, postget, getLetter } from '../../api/user'
 import { Message } from 'element-ui'
 import { getToken, setInfo, getReplaceData, setToken, setRoutes } from '@/utils/auth'
 import { userInfo } from 'os';
-import axios from 'axios'
 export default {
   name: "Community",
   data () {
@@ -129,8 +132,7 @@ export default {
       dueToTime: '',//到期时间
       isActiveData1: 'A',
       isActiveData2: true,
-      isCommunity: true,
-      userInfo1: {}
+      isCommunity: true
     }
   },
   computed: {
@@ -143,180 +145,84 @@ export default {
     ...mapMutations(['isWyCover', 'replaceUserInfoData', 'setDueToTheTime', 'replaceUserInfoList']),
     //选择小区点击确认
     toDashboard () {
-      localStorage.setItem('isPark',true)
-      const token1 = this.userInfo1.data.token
-      const localItems1 = JSON.parse(localStorage.getItem('items'))
-      // console.log(localItems1,'6666666data')
-      const id1 = localItems1.id
       this.param.uid = this.userInfo.data.uid
       this.param.Communityid = this.itemid
-      console.log(this.param, '小区IDIDID一滴滴')
       this.choiceCommunity(this.param).then(resp => {
-        console.log(resp,'选择小区点击确认')
+        localStorage.setItem('DuetoThetime',resp.time)
         localStorage.setItem('isRefresh', true)
-        this.setDueToTheTime(resp.time)
-        //停车场新增判断
-        // console.log(localStorage.getItem('items'))
-        const items1 = JSON.parse(localStorage.getItem('items'))
-        if (items1.state_type === 1) {
-          localStorage.setItem('dashCreate', 1)
-          this.$router.push('/dashboard')
-        } else {
-          if (resp.code === 200) {
-            // 未被替换掉的userINFO
-            this.$store.commit('permission/CLEAR_PERMISSION')
-            this.replaceUserInfoData(resp.data)
-            this.replaceUserInfoList(resp.list)
-            setInfo(this.userInfo)
-            if (resp.amg === 2) {
-              // localStorage.setItem('isRefresh', true)
-              if (this.Jurisdiction === 1) {
-                localStorage.setItem('isRefresh', true)
-                this.$router.push('/dashboard')//跳转到首页
-              } else if (this.Jurisdiction === 2) {
-                this.isWyCover()
-                this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
-              } else if (this.Jurisdiction === 4) {
-                this.isWyCover()
-                this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
-              }
-            } else if (resp.amg === 1) {
-              localStorage.setItem('isRefresh', true)
-              this.$router.replace({ path: 'dashboard' })//直接跳直接
-            }
-          } else if (resp.code === 302) {
-            this.replaceUserInfoList(resp.list)
-            //list的变化
-            setRoutes(resp.list)
-            this.replaceUserInfoData(resp.data)
-            setInfo(this.userInfo)
+        localStorage.setItem('dashCreate',1)
+        if (resp.code === 200) {
+          // 未被替换掉的userINFO
+          this.$store.commit('permission/CLEAR_PERMISSION')
+          this.replaceUserInfoData(resp.data)
+          this.replaceUserInfoList(resp.list)
+          setInfo(this.userInfo)
+          // console.log('------替换的userInfo的data----resp------------')
+          if (resp.amg === 2) {
             if (this.Jurisdiction === 1) {
               localStorage.setItem('isRefresh', true)
               this.$router.push('/dashboard')//跳转到首页
             } else if (this.Jurisdiction === 2) {
-              this.$router.push('/pay')//跳转到套餐页面
+              localStorage.setItem('isRefresh', true)
+              this.isWyCover()
+              this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
+              localStorage.setItem('isRefresh', true)
             } else if (this.Jurisdiction === 4) {
-              // localStorage.setItem('isRefresh', true)
-              this.$router.push({ path: 'dashboard', query: { Ju: '2' } })//首页提示小区系统已欠费，请缴费，页面加蒙城30秒倒计时后返回选择小区页面
+              this.isWyCover()
+              localStorage.setItem('isRefresh', true)
+              this.$router.push({ path: 'dashboard', query: { Ju: '1' } })//跳转到首页加蒙层，提示小区多久到期
             }
+          } else if (resp.amg === 1) {
+            localStorage.setItem('isRefresh', true)
+            this.$router.replace({ path: 'dashboard' })//直接跳直接
+          }
+        } else if (resp.code === 302) {
+          //  this.replaceUserInfoData(resp.data)
+          this.replaceUserInfoList(resp.list)
+          //list的变化
+          setRoutes(resp.list)
+          console.log(resp.data)
+          this.replaceUserInfoData(resp.data)
+          setInfo(this.userInfo)
+          if (this.Jurisdiction === 1) {
+            this.$router.push('/dashboard')//跳转到首页
+          } else if (this.Jurisdiction === 2) {
+            this.$router.push('/pay')//跳转到选择年页面
+          } else if (this.Jurisdiction === 4) {
+            this.$router.push({ path: 'dashboard', query: { Ju: '2' } })//首页提示小区系统已欠费，请缴费，页面加蒙城30秒倒计时后返回选择小区页面
           }
         }
       })
-      // axios.post('http://park.txsqtech.com/index/index/Highest',
-      //   {
-      //     Communityid: this.itemid,
-      //     uid: this.userInfo.data.uid
-      //   },
-      //   {
-      //     headers: {
-      //       // 'Content-Type': 'application/json; charset=utf-8',
-      //       // 'token': token1,
-      //       // 'parkid': id1
-      //     }
-      //   }).then(resp => {
-      //     console.log(resp,'resp1212121212121212')
-      //      console.log(resp,'选择小区点击确认')
-      //   localStorage.setItem('isRefresh', true)
-      //   this.setDueToTheTime(resp.time)
-      //   //停车场新增判断
-      //   // console.log(localStorage.getItem('items'))
-      //   const items1 = JSON.parse(localStorage.getItem('items'))
-      //   if (items1.state_type === 1) {
-      //     localStorage.setItem('dashCreate', 1)
-      //     this.$router.push('/dashboard')
-      //   } else {
-      //     if (resp.code === 200) {
-      //       // 未被替换掉的userINFO
-      //       this.$store.commit('permission/CLEAR_PERMISSION')
-      //       this.replaceUserInfoData(resp.data)
-      //       this.replaceUserInfoList(resp.list)
-      //       setInfo(this.userInfo)
-      //       if (resp.amg === 2) {
-      //         // localStorage.setItem('isRefresh', true)
-      //         if (this.Jurisdiction === 1) {
-      //           localStorage.setItem('isRefresh', true)
-      //           this.$router.push('/dashboard')//跳转到首页
-      //         } else if (this.Jurisdiction === 2) {
-      //           this.isWyCover()
-      //           this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
-      //         } else if (this.Jurisdiction === 4) {
-      //           this.isWyCover()
-      //           this.$router.push('/dashboard?Ju=1')//跳转到首页加蒙层，提示小区多久到期
-      //         }
-      //       } else if (resp.amg === 1) {
-      //         localStorage.setItem('isRefresh', true)
-      //         this.$router.replace({ path: 'dashboard' })//直接跳直接
-      //       }
-      //     } else if (resp.code === 302) {
-      //       this.replaceUserInfoList(resp.list)
-      //       //list的变化
-      //       setRoutes(resp.list)
-      //       this.replaceUserInfoData(resp.data)
-      //       setInfo(this.userInfo)
-      //       if (this.Jurisdiction === 1) {
-      //         localStorage.setItem('isRefresh', true)
-      //         this.$router.push('/dashboard')//跳转到首页
-      //       } else if (this.Jurisdiction === 2) {
-      //         this.$router.push('/pay')//跳转到套餐页面
-      //       } else if (this.Jurisdiction === 4) {
-      //         // localStorage.setItem('isRefresh', true)
-      //         this.$router.push({ path: 'dashboard', query: { Ju: '2' } })//首页提示小区系统已欠费，请缴费，页面加蒙城30秒倒计时后返回选择小区页面
-      //       }
-      //     }
-      //   }
-      //   })
     },
     // 按照小区首字母搜索小区
     selectCommunityByLetter (name) {
-      localStorage.setItem('isPark',false)
       this.isCommunity = true
       this.isActiveData1 = name
       this.isActiveData2 = false
       // this.isActive = false
-      // /index/index/Highests
       this.name = name
       const data1 = JSON.parse(localStorage.getItem('replcaeData'))
       const Communityid = data1.Communityid
       const propertyId = data1.propertyId
       if (Communityid) {
         const data = { Communityid, name }
-        // axios.post('http://park.txsqtech.com/index/index/Highests',
-        // {
-        //   Communityid: Communityid,
-        //   name: name
-        // },
-        // {
-        //   headers: {
-            
-        //   }
-        // }).
         this.letterCommunity(data).then(resp => {
-          this.dataLists = resp.msg.data
           this.page = resp.msg.page
           this.pages = resp.msg.pageNum
           this.total = resp.msg.total
           this.itemid = this.dataLists[0].id
-
+          this.dataLists = resp.msg.data
           const items = JSON.stringify(this.dataLists[0])
           localStorage.setItem('items', items)
-          console.log(this.itemid, '这里是、、')
+          console.log(this.dataLists.length, '这里是、、')
           if (!this.dataLists.length) {
             this.isCommunity = false
           }
         })
       } else {
         const data = { propertyId, name }
-        // axios.post('http://park.txsqtech.com/index/index/Highests',
-        // {
-        //   propertyId: propertyId,
-        //   name: name
-        // },
-        // {
-        //   headers: {
-            
-        //   }
-        // }).
         this.letterCommunity(data).then(resp => {
+          console.log(this.dataLists.length, '这里是、、')
           this.dataLists = resp.msg.data
           if (!this.dataLists.length) {
             this.isCommunity = false
@@ -332,9 +238,6 @@ export default {
     },
     // 点击全部
     selectQb () {
-      localStorage.setItem('isPark',false)
-      const data2 = JSON.parse(localStorage.getItem('replcaeData'))
-      const token2 = data2.token
       this.isCommunity = true
       this.isActiveData1 = "全部"
       this.isActiveData2 = true
@@ -345,14 +248,6 @@ export default {
       // console.log(Communityid, propertyId)
       if (Communityid) {
         const data = { Communityid, name }
-        // axios.post('http://park.txsqtech.com/index/index/Highes',
-        // {
-        //   Communityid: Communityid
-        // },
-        // {
-        //   headers: {
-        //   }
-        // }).
         postHighes(data).then(resp => {
           this.dataLists = resp.msg.data
           this.page = resp.msg.page
@@ -361,16 +256,7 @@ export default {
         })
       } else {
         const data = { propertyId, name }
-        //  axios.post('http://park.txsqtech.com/index/index/Highes',
-        // {
-        //   propertyId: propertyId
-        // },
-        // {
-        //   headers: {
-        //   }
-        // }).
         postHighes(data).then(resp => {
-          console.log(resp, '点击全部的resp')
           this.dataLists = resp.msg.data
           this.page = resp.msg.page
           this.pages = resp.msg.pageNum
@@ -379,25 +265,15 @@ export default {
       }
     },
     findComunity () {
-      localStorage.setItem('isPark',false)
       const data1 = JSON.parse(localStorage.getItem('replcaeData'))
       const Communityid = data1.Communityid
       const propertyId = data1.propertyId
       const token1 = data1.token
-      console.log(token1,'token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1token1')
+      // console.log(Communityid, 'hjhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
       if (Communityid) {
         const data = { Communityid }
-        // /index/index/Highes
-        // axios.post('http://park.txsqtech.com/index/index/Highes',
-        // {
-        //   Communityid: Communityid
-        // },
-        // {
-        //   headers: {
-        //   }
-        // }).
         postHighes(data).then(resp => {
-          console.log(resp, '+++++++++++++进入选择小区获取的所有小区数据（lists）+++++++++++++++')
+          // console.log(resp.msg.data, '+++++++++++++进入选择小区获取的所有小区数据（lists）+++++++++++++++')
           this.dataLists = resp.msg.data
           const items = JSON.stringify(this.dataLists[0])
           localStorage.setItem('items', items)
@@ -412,16 +288,7 @@ export default {
         const token1 = data2.token
         const data = { propertyId }
         setToken(token1)
-        // axios.post('http://park.txsqtech.com/index/index/Highes',
-        // {
-        //   propertyId: propertyId
-        // },
-        // {
-        //   headers: {
-        //   }
-        // }).
         postHighes(data).then(resp => {
-        console.log(resp, '+++++++++++++进入选择小区获取的所有小区数据（lists）+++++++++++++++')
           this.dataLists = resp.msg.data
           // console.log(this.dataLists,)
           const items = JSON.stringify(this.dataLists[0])
@@ -447,8 +314,11 @@ export default {
             const propertyId = ''
             const data2 = { page, Communityid, propertyId }
             postget(data2).then(resp => {
-              console.log(resp)
+              console.log(resp, '121212右边1212')
               this.dataLists = resp.msg.data
+              this.itemid = this.dataLists[0].id
+              const items = JSON.stringify(this.dataLists[0])
+              localStorage.setItem('items', items)
             })
           }
 
@@ -460,8 +330,11 @@ export default {
             const Communityid = ''
             const data2 = { page, propertyId, Communityid }
             postget(data2).then(resp => {
-              console.log(resp)
+              console.log(resp, '121212右边')
               this.dataLists = resp.msg.data
+              this.itemid = this.dataLists[0].id
+              const items = JSON.stringify(this.dataLists[0])
+              localStorage.setItem('items', items)
             })
           }
         }
@@ -515,6 +388,9 @@ export default {
             postget(data2).then(resp => {
               console.log(resp)
               this.dataLists = resp.msg.data
+              this.itemid = this.dataLists[0].id
+              const items = JSON.stringify(this.dataLists[0])
+              localStorage.setItem('items', items)
             })
 
           }
@@ -544,6 +420,9 @@ export default {
               getLetter(data2).then(resp => {
                 console.log(resp)
                 this.dataLists = resp.msg.data
+                this.itemid = this.dataLists[0].id
+                const items = JSON.stringify(this.dataLists[0])
+                localStorage.setItem('items', items)
               })
             }
           }
@@ -581,7 +460,9 @@ export default {
       console.log(this.Jurisdiction)
       if (this.Jurisdiction === 2) {
         this.$router.push('/pay')
-      } else {
+      }else if(this.Jurisdiction === 4){
+        Message('请联系老板充值')
+      }else{
         this.$router.push('/community')
       }
     }
@@ -593,12 +474,11 @@ export default {
     }
   },
   created () {
-    this.userInfo1 = JSON.parse(localStorage.getItem('userInfo'))
-    // console.log(this.userInfo1,'5555555')
+    // console.log(this.$router)
     this.findComunity()
-    console.log(this.dataLists)
+    // console.log(this.dataLists)
     this.selectQb()
-    console.log(this.itemid)
+    // console.log(this.itemid)
     // this.itemid = JSON.parse(localStorage.getItem('items'))
     this.param.Communityid = this.itemid
   }
@@ -646,23 +526,22 @@ export default {
   }
   .main {
     position: relative;
-    width: 1050px;
-    height: 635px;
-
-    padding: 4.2vh 6.6vw 5vh 6.6vw;
+    width: 1000px;
+    height: 550px;
+    padding: 20px 30px 30px;
     background: white;
     border-radius: 10px;
     position: absolute;
     left: 0;
     right: 0;
-    top: -10px;
+    top: 8px;
     bottom: 0;
     margin: auto;
-    margin-top: 11vh;
+    // margin-top: 11px;
     &-title {
-      height: 2.6vh;
+      height: 26px;
       text-align: center;
-      font-size: 1.46vw;
+      font-size: 22px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(51, 51, 51, 1);
@@ -670,10 +549,10 @@ export default {
     &-letter-container {
       display: flex;
       width: 100%;
-      margin-top: 5.6vh;
-      margin-left: 0.5vw;
+      margin-top: 20px;
+      margin-left: 5px;
       box-sizing: border-box;
-      font-size: 0.3vw;
+      font-size: 12px;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: rgba(102, 102, 102, 1);
@@ -681,51 +560,34 @@ export default {
       cursor: pointer;
       .qb {
         color: rgba(37, 186, 217, 1);
-        font-size: 0.8vw;
+        font-size: 13px !important;
         font-family: Microsoft YaHei;
         font-weight: 400;
-        // padding-top: 3px;
-        // padding-right: 1.5vw;
-        padding: 0.3vh 1.5vw 0px 0.5vw;
+        padding: 3px 15px 0px 5px;
         cursor: pointer;
         width: auto;
         display: inline-block;
       }
       .qb1 {
-        font-size: 0.8vw;
+        font-size: 12px;
         font-family: Microsoft YaHei;
         font-weight: 400;
-        // padding-top: 3px;
-        // padding-right: 1.5vw;
-        padding: 0.3vh 1.5vw 0px 0.5vw;
+        padding: 3px 15px 0px 5px;
         cursor: pointer;
         width: auto;
         display: inline-block;
       }
-      // .qb1 {
-      //   // color: rgba(37, 186, 217, 1);
-      //    color: rgba(37, 186, 217, 1);
-      //   font-size: 0.8vw;
-      //   font-family:Microsoft YaHei;
-      //   font-weight:400;
-      //   // padding-top: 3px;
-      //   // padding-right: 1.5vw;
-      //   padding: 0.3vh 1.5vw 0px 0.5vw;
-      //   cursor: pointer;
-      //   width: auto;
-      //   display: inline-block;
-      // }
       &_list {
         display: flex;
         flex: 1;
         // padding-left: 10px;
         justify-content: space-between;
         li {
-          font-size: 0.73vw;
+          font-size: 13px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
-          padding-top: 0.3vh;
+          padding-top: 3px;
           cursor: pointer;
           &:hover {
             color: rgba(37, 186, 217, 1);
@@ -734,51 +596,57 @@ export default {
       }
     }
     .item-container {
-      padding: 0 0.45vw 0 1.35vw;
-      // .el-col {
-      // margin-top: 1.9vh;
-      .bt1 {
-        background: rgba(255, 255, 255, 1);
-        border: 1px solid rgba(248, 172, 89, 1);
-        // box-shadow: 0px 6px 5px 0px rgba(248, 172, 89, 0.4) !important;
-        box-shadow: 0px 6px 5px 0px rgba(248, 172, 89, 0.15) !important;
-        border-radius: 4px;
-      }
-      .bt2 {
-        border: 1px solid rgba(243, 243, 243, 1);
-        box-shadow: 0px 4px 4px 0px rgba(204, 204, 204, 0.15);
-        // box-shadow:0px 4px 5px 0px rgba(248,172,89,0.4);
-        background: rgba(255, 255, 255, 1);
-      }
-      /deep/.el-card {
-        // height: 13.1vh;
-        padding: 2.1vh 0 2.1vh 0;
-        width: 180px;
-        height: 137px !important;
-        min-height: 100px;
-        box-shadow: 0px 6px 5px 0px rgba(204, 204, 204, 0.15);
-        border-radius: 4px;
-        // padding: 0px 0 3.2vh 1.5vw;
-        box-sizing: border-box;
-        // display: table-cell;
-        cursor: pointer;
-        div {
-          font-size: 14px;
-          font-family: Microsoft YaHei;
-          font-weight: border;
-          color: rgba(51, 51, 51, 1);
-          text-align: center;
-          margin-bottom: 1.56vh;
+      padding: 4px 6px 0 43px;
+      .el-col {
+        margin-top: 19px;
+        .bt1 {
+          background: rgba(255, 255, 255, 1);
+          border: 1px solid rgba(248, 172, 89, 1);
+          // box-shadow: 0px 6px 5px 0px rgba(248, 172, 89, 0.4) !important;
+          box-shadow: 0px 6px 5px 0px rgba(248, 172, 89, 0.15) !important;
+          border-radius: 4px;
         }
-        p {
-          font-size: 12px;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          color: rgba(102, 102, 102, 1);
-          text-align: center;
+        .bt2 {
+          border: 1px solid rgba(243, 243, 243, 1);
+          box-shadow: 0px 4px 4px 0px rgba(204, 204, 204, 0.15);
+          // box-shadow:0px 4px 5px 0px rgba(248,172,89,0.4);
+          background: rgba(255, 255, 255, 1);
         }
-        .tips {
-          color: red;
+        .el-card {
+          // padding: 21px 0 21px 0;
+          width: 250px;
+          height: 112px;
+          vertical-align: middle;
+          box-shadow: 0px 6px 5px 0px rgba(204, 204, 204, 0.15);
+          border-radius: 4px;
+          // padding: 0px 0 3.2vh 1.5vw;
+          box-sizing: border-box;
+          display: table-cell;
+          cursor: pointer;
+          div {
+            font-size: 16px;
+            font-family: Microsoft YaHei;
+            font-weight: border;
+            color: rgba(51, 51, 51, 1);
+            text-align: center;
+            margin-bottom: 10px;
+          }
+          p {
+            font-size: 12px;
+            font-family: Microsoft YaHei;
+            font-weight: 400;
+            color: rgba(102, 102, 102, 1);
+            text-align: center;
+          }
+          .tips {
+            color: red;
+          }
+          //         &:hover {
+          //             background:rgba(255,255,255,1);
+          // border:1px solid rgba(243,243,243,1);
+          // box-shadow:0px 4px 5px 0px rgba(204,204,204,0.5);
+          // border-radius:4px;
+          //               }
         }
       }
     }
@@ -786,23 +654,22 @@ export default {
       // background-color: #f00;
       position: absolute;
       right: 0;
-      top: 70vh;
+      // top: 26px;
+      bottom: 15px;
       width: 100%;
-      height: 13vh;
-      margin-top: 1.5vh;
+      height: 30px;
       display: flex;
       justify-content: center;
       .el-button {
-        width: 4.5vw;
-        height: 20px;
+        width: 72px;
+        height: 30px;
         border: none;
         background: rgba(248, 172, 89, 1);
         border-radius: 4px;
         text-align: center;
-        font-size: 0.9vw;
-        padding-top: 1.1vh;
-        position: relative;
-        bottom: 71px;
+        font-size: 14px;
+        line-height: 0;
+        position: relative
       }
     }
     .fenye-click {
@@ -810,8 +677,8 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 3vw;
-      height: 3vw;
+      width: 30px;
+      height: 30px;
       // background-color: #c4c4c4;
       font-size: 40px;
       text-align: center;
@@ -821,41 +688,43 @@ export default {
     }
     .left-click {
       position: absolute;
-      top: 36.7vh;
-      left: 2vw;
+      top: 50%;
+      left: 20px;
     }
     .right-click {
       position: absolute;
-      top: 36.7vh;
-      right: 2vw;
+      top: 50%;
+      right: 20px;
     }
   }
 }
-.wy-login-bottom {
+.wy-login-bottom{
   position: absolute;
   bottom: 12px;
   color: #fff;
   font-size: 14px;
-  margin: 0 38%;
   width: 100%;
   white-space: nowrap !important;
-  .zi {
-    position: absolute;
-    text-align: center;
-    color: rgba(255, 255, 255, 1);
-    font-family: MicrosoftYaHei;
-    font-weight: 400;
-    cursor: default;
-    white-space: nowrap;
-    width: 280px;
-  }
-}
-.tingche-community {
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
-  width: 850px;
-  div {
-    margin: 5px;
+  justify-content: center;
+.zi {
+     position: absolute;
+     text-align: center;
+     color: rgba(255, 255, 255, 1);
+     font-family: MicrosoftYaHei;
+     font-weight: 400;
+     cursor: default;
+     white-space:nowrap;
+     width: 280px;
+     
+     }
+    
   }
-}
+  .el-col-6{
+    width: 24%;
+  }
+  /deep/.el-card__body{
+    padding: 10px !important;
+  }
 </style>

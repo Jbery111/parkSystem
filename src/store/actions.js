@@ -146,7 +146,7 @@ const actions = {
     console.log(userInfo, 'choice')
     const { uid, Communityid } = userInfo
     return new Promise((resolve, reject) => {
-      postHighest(QS.stringify({ uid, Communityid })).then((resp) => {
+      postHighest(userInfo).then((resp) => {
         console.log('ininininininin')
         resolve(resp)
       }).catch(error => {

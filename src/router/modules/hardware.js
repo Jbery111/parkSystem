@@ -48,7 +48,7 @@ const hardwareRouter = {
       path: 'CameraManages',
       hidden: true,
       name: 'CameraManages',
-      component: () => import('@/views/HardWare/InSet/index'),
+      component: () => import('@/views/HardWare/CameraManages/index'),
       meta: { title: '摄像头管理', auth_id: 65 }
     },
     {

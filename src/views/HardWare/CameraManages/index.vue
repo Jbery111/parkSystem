@@ -422,7 +422,6 @@ export default {
   color: rgba(102, 102, 102, 1);
 }
 //分页器的样式
-//分页器的样式
 .block {
   .record-data {
     cursor: default;
@@ -436,18 +435,17 @@ export default {
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
   }
-  // position: absolute;
-  // bottom: 80px;
+  position: relative;
+  top: -30px;
   height: 40px;
   width: 100%;
   .el-pagination {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     right: 87px;
     /deep/button {
       min-width: 24px !important;
       height: 24px;
-      cursor: default;
     }
     /deep/.el-pagination__jump {
       position: relative;
@@ -463,17 +461,17 @@ export default {
         height: 24px;
         width: 40px;
         margin-left: 5px;
-        border-radius: 3px;
-        color: rgba(102, 102, 102, 1);
         outline: none;
+        color: rgba(102, 102, 102, 1);
+
         /deep/.el-input__inner {
           font-size: 14px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: rgba(102, 102, 102, 1);
           display: inline-block;
-          margin-left: 48px;
           width: 40px;
+          margin-left: 48px;
           height: 24px !important;
           border: 1px solid rgba(239, 242, 245, 1) !important;
           border-radius: 3px;
@@ -483,11 +481,10 @@ export default {
           content: "前往";
           color: #fff;
           font-size: 14px;
-          display: inline-block;
-          position: absolute;
           margin-left: 4px;
-          text-align: center;
+          position: absolute;
           margin-top: 3px;
+          text-align: center;
           height: 24px;
         }
         &:after {

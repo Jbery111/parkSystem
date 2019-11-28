@@ -34,9 +34,11 @@ export default {
   },
   created() {
 const dashNumber = localStorage.getItem('dashCreate')
+const isSetParams = JSON.parse(localStorage.getItem('items')).state_type
+console.log(typeof(isSetParams),'isisiisisisi')
 if(dashNumber === '2'){
   this.centerDialogVisible4 = false
-}else {
+}else if(isSetParams === 1 && dashNumber === '1'){
   this.centerDialogVisible4 = true
 }
   },

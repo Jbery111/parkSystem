@@ -162,6 +162,7 @@ export default {
     }
   },
   created () {
+    localStorage.setItem('isPark',true)
     this.dialogVisible = this.hasWyCover1
     // console.log(this.type)
     // console.log(this.$route)
