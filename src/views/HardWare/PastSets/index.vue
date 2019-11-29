@@ -73,11 +73,12 @@ export default {
     const page = 1
     const size = 10
     this.parkid = JSON.parse(localStorage.getItem('items')).id
-    postDoorList({page: 1,size,parkid: this.parkid}).then(resp=> {
+    postDoorList({page,size,parkid: this.parkid}).then(resp=> {
       console.log(resp,'查询门岗列表')
       this.tableData = resp.data.data
       this.pageNums = resp.data.pageNum
       this.totalPage = resp.data.total
+      this.currentPage = res.data.page
     })
     this.userInfoList = JSON.parse(localStorage.getItem('userInfo'))
   },

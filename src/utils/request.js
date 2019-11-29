@@ -4,7 +4,7 @@ import store from '@/store'
 import Vue from 'vue'
 import { getToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
-
+import QS from 'qs'
 const service = axios.create({
   baseURL: 'http://park.txsqtech.com', // url = base url + request url
   // headers: {
@@ -21,6 +21,7 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    // config.data = QS.stringify(config.data)
     if (getToken()) {
       config.headers['token'] = store.getters.token
         

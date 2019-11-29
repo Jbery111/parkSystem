@@ -2,17 +2,29 @@
   <div class="hard-setparamClass">
     <div class="setparam-container">
       <el-card class="box-card">
-        <span id="newadd" @click="addDoor">新增摄像头</span>
+        <span id="newadd" @click="addCamer">新增摄像头</span>
         <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
-          <el-table-column prop="uname" label="门岗名称" min-width="80" />
-          <el-table-column prop="ucphone" label="出/入口" min-width="80" />
-          <el-table-column prop="ucphone" label="设备名称" min-width="80" />
-          <el-table-column prop="uname" label="设备序列号" min-width="100" />
-          <el-table-column prop="ucphone" label="设备IP地址" min-width="90" />
-          <el-table-column prop="ucphone" label="最后一次提交时间" min-width="110" />
-          <el-table-column prop="uname" label="设备状态" min-width="70" />
-          <el-table-column prop="ucphone" label="网络状态" min-width="60" />
-          <el-table-column prop="ucphone" label="设备时间" min-width="70" />
+          <el-table-column prop="door_name" label="门岗名称" min-width="80" />
+          <el-table-column  label="出/入口" min-width="80" >
+            <template slot-scope="scope">
+              <span v-html="scope.row.camera_door === 1 ? '入口' : '出口'"></span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="camera_name" label="设备名称" min-width="80" />
+          <el-table-column prop="camera_sn" label="设备序列号" min-width="100" />
+          <el-table-column prop="camera_host" label="设备IP地址" min-width="90" />
+          <el-table-column prop="end_time" label="最后一次提交时间" min-width="110" />
+          <el-table-column label="设备状态" min-width="70">
+            <template slot-scope="scope">
+              <span v-html="scope.row.camera_state === 1 ? '已启用' : '已禁用'"></span>
+            </template>
+          </el-table-column>
+          <el-table-column label="网络状态" min-width="60">
+            <template slot-scope="scope">
+              <span v-html="scope.row.camera_internet_state === 1 ? '已连接' : '断网'"></span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="camera_time" label="设备时间" min-width="70" />
           <!-- 操作 -->
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
@@ -71,7 +83,7 @@
       <div style="font-size:16px;">是否启用该摄像头?</div>
       <span slot="footer" class="dialog-footer">
         <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible1 = false">取 消</el-button>
-        <el-button type="primary" style="font-size:14px;" @click="deleteQuerenHandler">确 认</el-button>
+        <el-button type="primary" style="font-size:14px;" >确 认</el-button>
       </span>
     </el-dialog>
     <!-- 禁用遮罩 -->
@@ -88,7 +100,7 @@
       <div style="font-size:16px;">是否禁用该摄像头?</div>
       <span slot="footer" class="dialog-footer">
         <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible4 = false">取 消</el-button>
-        <el-button type="primary" style="font-size:14px;" @click="deleteQuerenHandler">确 认</el-button>
+        <el-button type="primary" style="font-size:14px;" >确 认</el-button>
       </span>
     </el-dialog>
     <!-- 新增摄像头遮罩层 -->
@@ -104,17 +116,17 @@
       <el-form :label-position="labelPosition" label-width="120px">
         <div class="form-item">
           <el-form-item label="门岗名称:" class="region-class">
-            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
+            <el-select v-model="door_post_name" placeholder="请选择职位" class="width:73.5% !important">
               <el-option
-                v-for="item in cities"
-                :key="item.poname"
-                :value="item.poname"
+                v-for="item in doorNameLists"
+                :key="item.door_post_name"
+                :value="item.door_post_name"
               >
-                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+                <span class="chenp" @click="hanPoid_AddCamera(item.id)">{{ item.door_post_name }}</span>
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
-            <p class="mistack-message">{{ mistakeToast3 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast3 }}</p> -->
           </el-form-item>
         </div>
         
@@ -122,50 +134,48 @@
           <el-form-item label="设备名称:">
             <input
               ref="nameInput"
-              v-model="formAlign1.phone"
+              v-model="formAddContent.camera_name"
               type="text"
-              placeholder="请输入手机号"
-              @focus="handlerPhone"
+              placeholder="请输入设备名称"
             />
-            <p class="mistack-message">{{ mistakeToast2 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast2 }}</p> -->
           </el-form-item>
         </div>
         <div class="form-item" style="height:60px">
           <el-form-item label="设备序列号:">
             <input
               ref="nameInput"
-              v-model="formAlign1.phone"
+              v-model="formAddContent.camera_sn"
               type="text"
-              placeholder="请输入手机号"
-              @focus="handlerPhone"
+              placeholder="请输入设备序列号"
             />
-            <p class="mistack-message">{{ mistakeToast2 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast2 }}</p> -->
           </el-form-item>
         </div>
         <div class="form-item" style="height:60px">
           <el-form-item label="设备IP地址:">
-            <input v-model="formAlign1.name" type="text" @focus="handlerName" />
-            <p class="mistack-message">{{ mistakeToast1 }}</p>
+            <input v-model="formAddContent.camera_host" type="text" />
+            <!-- <p class="mistack-message">{{ mistakeToast1 }}</p> -->
           </el-form-item>
         </div>
         <div class="form-item">
           <el-form-item label="选择出/入口:" class="region-class">
-            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
+            <el-select v-model="inOut" class="width:73.5% !important" empty-text="暂无数据" placeholder="请选择出/入口">
               <el-option
-                v-for="item in cities"
-                :key="item.poname"
-                :value="item.poname"
+                v-for="item in options_In_outLists"
+                :key="item.value"
+                :value="item.label"
               >
-                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+                <span class="chenp" @click="hanPoid_InOut(item.value)">{{ item.label }}</span>
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
-            <p class="mistack-message">{{ mistakeToast3 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast3 }}</p> -->
           </el-form-item>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addtoHandler">确认</el-button>
+        <el-button type="primary" @click="addCamerDid">确认</el-button>
       </span>
     </el-dialog>
     <!-- 修改摄像头 -->
@@ -191,7 +201,7 @@
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
-            <p class="mistack-message">{{ mistakeToast3 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast3 }}</p> -->
           </el-form-item>
         </div>
         
@@ -219,7 +229,7 @@
         </div>
         <div class="form-item" style="height:60px">
           <el-form-item label="设备IP地址:">
-            <input v-model="formAlign1.name" type="text" @focus="handlerName" />
+            <input v-model="formAlign1.name" type="text" />
             <p class="mistack-message">{{ mistakeToast1 }}</p>
           </el-form-item>
         </div>
@@ -235,18 +245,19 @@
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
-            <p class="mistack-message">{{ mistakeToast3 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast3 }}</p> -->
           </el-form-item>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addtoHandler">确认</el-button>
+        <el-button type="primary" >确认</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { postCameraList,postDoorListId,postCamerAdd } from '@/api/hardware'
 // data数据
 export default {
   components: {},
@@ -264,22 +275,51 @@ export default {
       poname:'',//新增摄像头下拉选择数据
       mistakeToast1:'',
       mistakeToast2:'',
-      tableData: [
-        
+      tableData: [],
+      userInfoList: {},//localStorage的userInfo
+      pageNums: null,//总页数
+      totalPage: null,//总条数
+      doorName: '',//增加的门岗名称
+      labelPosition: 'right',
+      parkid: null,
+      currentPage: null,// 当前页
+      doorNameLists: [
         {
-          uname: 'chen',
-          ucphone: '45454545',
-          operation:1
+            "id": 69,
+            "door_post_name": "色温若"
         },
         {
-          uname: 'chen',
-          ucphone: '45454545'
+            "id": 70,
+            "door_post_name": "让他也让"
         },
         {
-          uname: 'chen',
-          ucphone: '45454545'
+            "id": 71,
+            "door_post_name": "而也让"
+        },
+        {
+            "id": 72,
+            "door_post_name": "区位图"
+        },
+      ],
+      options_In_outLists:[
+        {
+          label:'出口',
+          value: 2
+        },{
+          label:'入口',
+          value: 1
         }
-      ]
+      ],
+      //新增摄像头传给后端的参数
+      formAddContent: {
+        door_id: '',//门岗绑定的id
+        camera_name: '',//摄像头名称
+        camera_sn:'',//摄像头设备序列号
+        camera_host: '',//设备的ip地址
+        camera_door: ''//1是入口2是出口
+      },
+      door_post_name: '',//门岗名称
+      inOut: ''//出入口
     }
   },
   computed: {},
@@ -287,15 +327,43 @@ export default {
 
   },
   created() {
-
+    this.parkid = JSON.parse(localStorage.getItem('items')).id
+    this.getCamereList(1, 10, this.parkid)
   },
   mounted() {
 
   },
   methods: {
-    addDoor() {
-      // alert('新增门岗')
+    hanPoid_AddCamera(id) {
+      console.log(id,'点击门岗下拉')
+      this.formAddContent.door_id = id
+    },
+    hanPoid_InOut(value) {
+      console.log(value,'点击churu下拉')
+      this.formAddContent.camera_door = value
+    },
+    addCamer() {
       this.centerDialogVisible2 = true
+      // alert('新增门岗')
+      postDoorListId({parkid: this.parkid}).then(resp => {
+        console.log(resp,'门岗类型列表')
+        this.doorNameLists = resp.data
+      })
+
+    },
+    addCamerDid() {
+      const addCamerQuery = {
+        ...this.formAddContent,
+        park_id: this.parkid
+      }
+      console.log(addCamerQuery,'内容formAddContent')
+      postCamerAdd(addCamerQuery).then(resp => {
+        console.log(resp,'新增摄像头的response')
+        if(resp.data === "设备添加成功") {
+          this.centerDialogVisible2 = false
+          this.getCamereList(this.currentPage, 10, this.park_id)
+        }
+      })
     },
     handleEdit(index,row) {
       this.centerDialogVisible3 = true
@@ -305,6 +373,20 @@ export default {
     },
     handleJinyong(index,row) {
       this.centerDialogVisible4 = true
+    },
+    handleCurrentChange(val) {
+      //分页设置
+      console.log(val)
+    },
+    //查询摄像头列表
+    getCamereList(page = 1,size = 10,parkid = this.parkid) {
+       postCameraList({page,size,parkid}).then(resp=> {
+        console.log(resp,'查询摄像头列表')
+        this.tableData = resp.data.data
+        this.pageNums = resp.data.pageNum
+        this.totalPage = resp.data.total
+        this.currentPage = res.data.page
+      })
     }
   }
 }
