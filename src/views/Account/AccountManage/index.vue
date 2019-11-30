@@ -19,7 +19,7 @@
             </div>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%" empty-text="没有数据">
+        <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
           <el-table-column prop="uname" label="姓名" min-width="150" />
           <el-table-column prop="ucphone" label="账号" min-width="150" />
           <el-table-column prop="poname" label="职位" min-width="150" />
@@ -136,7 +136,7 @@
               type="text"
               v-model="formAlign.region"
             >-->
-            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
+            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important" empty-text="暂无数据">
               <el-option
                 v-for="item in cities"
                 :key="item.poname"
