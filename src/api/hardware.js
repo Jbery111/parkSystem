@@ -94,3 +94,15 @@ export function postCameraUpdate (data) {
     data: QS.stringify(data)
   })
 }
+//主副停车场参数输出
+export function postSetInfo (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/setInfo',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}

@@ -7,19 +7,27 @@
     </div>
     <div class="hard-setparamClass">
       <div class="setparam-container">
-        <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse v-model="activeNames" @change="handleChange" :disabled="true">
           <!-- 基础设置 -->
-          <el-collapse-item title="基础设置xiugai" name="1">
+          <el-collapse-item title="基础设置" name="1">
             <!-- 总 -->
             <div class="sum-class">
               <!-- 左部分 -->
               <div class="sumbox left-class">
                 <el-form :label-position="labelPosition" label-width="80px">
                   <el-form-item label="负责人:">
-                    <el-input v-model="formLabelAlign.basis_name" placeholder="请输入停车场负责人" />
+                    <el-input
+                      v-model="formLabelAlign.basisinfo.basis_name"
+                      :disabled="basisDisable"
+                      placeholder="请输入停车场负责人"
+                    />
                   </el-form-item>
                   <el-form-item label="联系电话:">
-                    <el-input v-model="formLabelAlign.basis_phone" placeholder="请输入停车场负责人联系电话" />
+                    <el-input
+                      v-model="formLabelAlign.basisinfo.basis_phone"
+                      :disabled="basisDisable"
+                      placeholder="请输入停车场负责人联系电话"
+                    />
                   </el-form-item>
                 </el-form>
               </div>
@@ -27,15 +35,28 @@
               <div class="sumbox right-class">
                 <el-form :label-position="labelPosition" label-width="80px">
                   <el-form-item label="详细地址:">
-                    <el-input v-model="formLabelAlign.basis_address" placeholder="请输入停车场详细地址" />
+                    <el-input
+                      v-model="formLabelAlign.basisinfo.basis_address"
+                      :disabled="basisDisable"
+                      placeholder="请输入停车场详细地址"
+                    />
                   </el-form-item>
                   <el-form-item label="车位总数:">
-                    <el-input v-model="formLabelAlign.basis_number" placeholder="请输入停车位数量" />
+                    <el-input
+                      v-model="formLabelAlign.basisinfo.basis_number"
+                      :disabled="basisDisable"
+                      placeholder="请输入停车位数量"
+                    />
                   </el-form-item>
                 </el-form>
               </div>
             </div>
-            <div style="color:red;">修改</div>
+            <!-- 修改 -->
+            <div class="modify-some">
+              <span class="modify-some_span">
+                <i class="el-icon-edit"></i>修改
+              </span>
+            </div>
           </el-collapse-item>
           <!-- 开闸管理 -->
           <el-collapse-item title="开闸管理" name="2">
@@ -43,34 +64,38 @@
             <div class="sum-class">
               <!-- 左部分 -->
               <div class="sumbox left-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form
+                  :label-position="labelPosition"
+                  label-width="80px"
+                  :disabled="brakeDisable"
+                >
                   <el-form-item label="是否匹配车牌地域名称（例：京、川）:">
-                    <el-radio-group v-model="formLabelAlign.car_number">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_number">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="长租车辆是否自动抬杆:">
-                    <el-radio-group v-model="formLabelAlign.car_rent">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_rent">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="出口是否无条件开闸:">
-                    <el-radio-group v-model="formLabelAlign.car_export">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_export">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="同一道口，重复识别车牌间隔时间（秒）:">
-                    <el-input v-model="formLabelAlign.car_endtime" />
+                    <el-input v-model="formLabelAlign.brakeinfo.car_endtime" />
                   </el-form-item>
                   <!-- TODOS: -->
                   <el-form-item label="支付后多少分钟内需要离场（分钟）:">
-                    <el-input v-model="formLabelAlign.region" />
+                    <el-input v-model="formLabelAlign.brakeinfo.region" />
                   </el-form-item>
                   <el-form-item label="一位多车情况下，当车位已有停放车辆时，所属车位下其他车辆入场是否允许抬杆放行:">
-                    <el-radio-group v-model="formLabelAlign.car_double">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_double">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
@@ -79,7 +104,11 @@
               </div>
               <!-- 右部分 -->
               <div class="sumbox left-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form
+                  :label-position="labelPosition"
+                  label-width="80px"
+                  :disabled="brakeDisable"
+                >
                   <el-form-item label="黄牌车指定通道:">
                     <el-radio-group v-model="car_yellow1">
                       <el-radio :label="1">是</el-radio>
@@ -88,7 +117,7 @@
                   </el-form-item>
                   <!-- //请选择门岗 -->
                   <el-select v-model="ChoiceDoor_value" v-if="car_yellow1 === 1">
-                    <!-- v-model="value"中'value"的值为el-option的value属性值 -->
+                    <!--  v-model="value"中'value"的值为el-option的value属性值 -->
                     <el-option
                       v-for="item in options_ChoiceDoor"
                       :key="item.id"
@@ -103,39 +132,45 @@
                     </el-option>
                   </el-select>
                   <el-form-item label="军警车是否自动开闸:">
-                    <el-radio-group v-model="formLabelAlign.car_police">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_police">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="是否检测有无物业欠费情况:">
-                    <el-radio-group v-model="formLabelAlign.car_wuye">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_wuye">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item
                     label="物业费欠费时是否不放行:"
-                    v-if="formLabelAlign.car_wuye === 1 ? true : false"
+                    v-if="formLabelAlign.brakeinfo.car_wuye === 1 ? true : false"
                   >
-                    <el-radio-group v-model="formLabelAlign.car_wuye_release">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_wuye_release">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                     <el-input
                       v-model="formContent.myself_msg"
                       placeholder="请自定义提示语"
-                      v-if="formLabelAlign.car_wuye_release === 1 ? true : false"
+                      v-if="formLabelAlign.brakeinfo.car_wuye_release === 1 ? true : false"
                     />
                   </el-form-item>
                   <el-form-item label="使用APP或公众号申请绑定车辆时，是否需要后台操作人员审核:">
-                    <el-radio-group v-model="formLabelAlign.car_app">
+                    <el-radio-group v-model="formLabelAlign.brakeinfo.car_app">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                 </el-form>
               </div>
+            </div>
+            <!-- 修改 -->
+            <div class="modify-some">
+              <span class="modify-some_span">
+                <i class="el-icon-edit"></i>修改
+              </span>
             </div>
           </el-collapse-item>
           <!-- 收费设置 -->
@@ -144,33 +179,41 @@
             <div class="sum-class">
               <!-- 左部分 -->
               <div class="sumbox left-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form
+                  :label-position="labelPosition"
+                  label-width="80px"
+                  :disabled="priceDisable"
+                >
                   <el-form-item label="免费停车时间（分钟）:">
-                    <el-input v-model="formLabelAlign.car_time" />
+                    <el-input v-model="formLabelAlign.priceinfo.car_time" />
                   </el-form-item>
                   <el-form-item label="基本收费时长（小时）:">
-                    <el-input v-model="formLabelAlign.car_price_time" />
+                    <el-input v-model="formLabelAlign.priceinfo.car_price_time" />
                   </el-form-item>
                   <el-form-item label="基本收费费用（元）:">
-                    <el-input v-model="formLabelAlign.car_price	" />
+                    <el-input v-model="formLabelAlign.priceinfo.car_price	" />
                   </el-form-item>
                   <el-form-item label="超时后收费计时单位（小时）:">
-                    <el-input v-model="formLabelAlign.time_out" />
+                    <el-input v-model="formLabelAlign.priceinfo.time_out" />
                   </el-form-item>
                   <el-form-item label="超时后收费单价（元）:">
-                    <el-input v-model="formLabelAlign.time_out_price" />
+                    <el-input v-model="formLabelAlign.priceinfo.time_out_price" />
                   </el-form-item>
                   <p>若上方四个值分别为:2，3，2，3，则超过免费时长后2小时内收费3元,超过2个小时,每2个小时收费3元</p>
                   <el-form-item label="单日收费最高限制（元）:">
-                    <el-input v-model="formLabelAlign.max_price" />
+                    <el-input v-model="formLabelAlign.priceinfo.max_price" />
                   </el-form-item>
                 </el-form>
               </div>
               <!-- 右部分 -->
               <div class="sumbox right-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form
+                  :label-position="labelPosition"
+                  label-width="80px"
+                  :disabled="priceDisable"
+                >
                   <el-form-item label="单日结算周期:">
-                    <el-select v-model="formLabelAlign.cycle">
+                    <el-select v-model="formLabelAlign.priceinfo.cycle">
                       <!-- v-model="value"中'value"的值为el-option的value属性值 -->
                       <el-option
                         v-for="item in options_ondayCycle"
@@ -182,39 +225,48 @@
                   </el-form-item>
                   <el-form-item label="单次停车是否有最高收费限制:">
                     <!-- //single_max -->
-                    <el-radio-group v-model="formLabelAlign.single_max">
+                    <el-radio-group v-model="formLabelAlign.priceinfo.single_max">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                     <el-input
-                      v-model="formLabelAlign.single_max_price"
+                      v-model="formLabelAlign.priceinfo.single_max_price"
                       placeholder="请输入最高收费金额"
-                      v-if="formLabelAlign.single_max === 1"
+                      v-if="formLabelAlign.priceinfo.single_max === 1"
                     />
                   </el-form-item>
                   <el-form-item label="一位多车情况下，当车位已有停放车辆时，所属车位下其他车辆入场是否持续计费:">
-                    <el-radio-group v-model="formLabelAlign.car_double_price">
+                    <el-radio-group v-model="formLabelAlign.priceinfo.car_double_price">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="一位多车情况下，当车位所剩车辆和车位数量相符时是否停止收费:">
-                    <el-radio-group v-model="formLabelAlign.car_double_price_2">
+                    <el-radio-group v-model="formLabelAlign.priceinfo.car_double_price_2">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="长租车欠费缓冲时长（天）:">
-                    <el-input v-model="formLabelAlign.car_rent_price" placeholder="请输入停车场负责人" />
+                    <el-input
+                      v-model="formLabelAlign.priceinfo.car_rent_price"
+                      placeholder="请输入停车场负责人"
+                    />
                   </el-form-item>
                   <el-form-item label="长租车出场时若租期已满，是否从过期时间计算费用:">
-                    <el-radio-group v-model="formLabelAlign.car_rent_price_2">
+                    <el-radio-group v-model="formLabelAlign.priceinfo.car_rent_price_2">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="2">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                 </el-form>
               </div>
+            </div>
+            <!-- 修改 -->
+            <div class="modify-some">
+              <span class="modify-some_span">
+                <i class="el-icon-edit"></i>修改
+              </span>
             </div>
           </el-collapse-item>
           <!-- 显示屏设置 -->
@@ -223,10 +275,10 @@
             <div class="sum-class">
               <!-- 左部分 -->
               <div class="sumbox left-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form :label-position="labelPosition" label-width="80px" :disabled="ledDisable">
                   <el-form-item label="显示屏显示行数:">
                     <!-- //下拉框 -->
-                    <el-select v-model="formLabelAlign.led_number" placeholder="请选择显示屏显示行数">
+                    <el-select v-model="formLabelAlign.ledinfo.led_number" placeholder="请选择显示屏显示行数">
                       <!-- v-model="value"中'value"的值为el-option的value属性值 -->
                       <el-option
                         v-for="item in options_screenNum"
@@ -239,7 +291,7 @@
                   <!-- 长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息: -->
                   <el-form-item
                     label="长租车,入场时显示屏显示的信息:"
-                    v-if="formLabelAlign.led_number === 2 || formLabelAlign.led_number === 4 || formLabelAlign.led_number === 6"
+                    v-if="formLabelAlign.ledinfo.led_number === 2 || formLabelAlign.ledinfo.led_number === 4 || formLabelAlign.ledinfo.led_number === 6"
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -286,7 +338,7 @@
                     </div>
                   </el-form-item>
                   <el-form-item
-                    v-if="formLabelAlign.led_number === 6 || formLabelAlign.led_number === 4 "
+                    v-if="formLabelAlign.ledinfo.led_number === 6 || formLabelAlign.ledinfo.led_number === 4 "
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -332,7 +384,7 @@
                       </el-select>
                     </div>
                   </el-form-item>
-                  <el-form-item v-if="formLabelAlign.led_number === 6">
+                  <el-form-item v-if="formLabelAlign.ledinfo.led_number === 6">
                     <!-- //下拉框 -->
                     <div>
                       <span>第五行</span>
@@ -377,7 +429,7 @@
                   <!-- 临停车,入场时显示屏显示的信息:临停车,入场时显示屏显示的信息:临停车,入场时显示屏显示的信息:临停车,入场时显示屏显示的信息: -->
                   <el-form-item
                     label="临停车,入场时显示屏显示的信息:"
-                    v-if="formLabelAlign.led_number === 2 || formLabelAlign.led_number === 4 || formLabelAlign.led_number === 6"
+                    v-if="formLabelAlign.ledinfo.led_number === 2 || formLabelAlign.ledinfo.led_number === 4 || formLabelAlign.ledinfo.led_number === 6"
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -424,7 +476,7 @@
                     </div>
                   </el-form-item>
                   <el-form-item
-                    v-if="formLabelAlign.led_number === 6 || formLabelAlign.led_number === 4 "
+                    v-if="formLabelAlign.ledinfo.led_number === 6 || formLabelAlign.ledinfo.led_number === 4 "
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -470,7 +522,7 @@
                       </el-select>
                     </div>
                   </el-form-item>
-                  <el-form-item v-if="formLabelAlign.led_number === 6">
+                  <el-form-item v-if="formLabelAlign.ledinfo.led_number === 6">
                     <!-- //下拉框 -->
                     <div>
                       <span>第五行</span>
@@ -515,7 +567,7 @@
                   <!-- 无车时,入口显示屏显示的内容信息无车时,入口显示屏显示的内容信息无车时,入口显示屏显示的内容信息无车时,入口显示屏显示的内容信息无车时,入口显示屏显示的内容信息 -->
                   <el-form-item
                     label="无车时,入口显示屏显示的内容信息:"
-                    v-if="formLabelAlign.led_number === 2 || formLabelAlign.led_number === 4 || formLabelAlign.led_number === 6"
+                    v-if="formLabelAlign.ledinfo.led_number === 2 || formLabelAlign.ledinfo.led_number === 4 || formLabelAlign.ledinfo.led_number === 6"
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -562,7 +614,7 @@
                     </div>
                   </el-form-item>
                   <el-form-item
-                    v-if="formLabelAlign.led_number === 6 || formLabelAlign.led_number === 4 "
+                    v-if="formLabelAlign.ledinfo.led_number === 6 || formLabelAlign.ledinfo.led_number === 4 "
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -608,7 +660,7 @@
                       </el-select>
                     </div>
                   </el-form-item>
-                  <el-form-item v-if="formLabelAlign.led_number === 6">
+                  <el-form-item v-if="formLabelAlign.ledinfo.led_number === 6">
                     <!-- //下拉框 -->
                     <div>
                       <span>第五行</span>
@@ -651,23 +703,28 @@
                     </div>
                   </el-form-item>
                   <el-form-item label="长租车提前提示车位到期时间（天）:">
-                    <el-input v-model="formLabelAlign.car_rent_day" />
+                    <el-input v-model="formLabelAlign.ledinfo.car_rent_day" />
                   </el-form-item>
                   <el-form-item label="扬声器声音大小(0-10):">
-                    <!-- <span>扬声器{{formLabelAlign.sound}}</span> -->
+                    <!-- <span>扬声器{{formLabelAlign.ledinfo.sound}}</span> -->
                     <div class="block">
-                      <el-slider max="10" v-model="formLabelAlign.sound" step="1" show-stops></el-slider>
+                      <el-slider
+                        max="10"
+                        v-model="formLabelAlign.ledinfo.sound"
+                        step="1"
+                        show-stops
+                      ></el-slider>
                     </div>
                   </el-form-item>
                 </el-form>
               </div>
               <!-- 右部分 -->
               <div class="sumbox right-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form :label-position="labelPosition" label-width="80px" :disabled="ledDisable">
                   <!-- 长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息: -->
                   <el-form-item
                     label="长租车,出场时显示屏显示的信息:"
-                    v-if="formLabelAlign.led_number === 2 || formLabelAlign.led_number === 4 || formLabelAlign.led_number === 6"
+                    v-if="formLabelAlign.ledinfo.led_number === 2 || formLabelAlign.ledinfo.led_number === 4 || formLabelAlign.ledinfo.led_number === 6"
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -714,7 +771,7 @@
                     </div>
                   </el-form-item>
                   <el-form-item
-                    v-if="formLabelAlign.led_number === 6 || formLabelAlign.led_number === 4 "
+                    v-if="formLabelAlign.ledinfo.led_number === 6 || formLabelAlign.ledinfo.led_number === 4 "
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -760,7 +817,7 @@
                       </el-select>
                     </div>
                   </el-form-item>
-                  <el-form-item v-if="formLabelAlign.led_number === 6">
+                  <el-form-item v-if="formLabelAlign.ledinfo.led_number === 6">
                     <!-- //下拉框 -->
                     <div>
                       <span>第五行</span>
@@ -805,7 +862,7 @@
                   <!-- 临停车,入场时显示屏显示的信息:临停车,入场时显示屏显示的信息:临停车,入场时显示屏显示的信息:临停车,入场时显示屏显示的信息: -->
                   <el-form-item
                     label="临停车,出场时显示屏显示的信息:"
-                    v-if="formLabelAlign.led_number === 2 || formLabelAlign.led_number === 4 || formLabelAlign.led_number === 6"
+                    v-if="formLabelAlign.ledinfo.led_number === 2 || formLabelAlign.ledinfo.led_number === 4 || formLabelAlign.ledinfo.led_number === 6"
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -852,7 +909,7 @@
                     </div>
                   </el-form-item>
                   <el-form-item
-                    v-if="formLabelAlign.led_number === 6 || formLabelAlign.led_number === 4 "
+                    v-if="formLabelAlign.ledinfo.led_number === 6 || formLabelAlign.ledinfo.led_number === 4 "
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -898,7 +955,7 @@
                       </el-select>
                     </div>
                   </el-form-item>
-                  <el-form-item v-if="formLabelAlign.led_number === 6">
+                  <el-form-item v-if="formLabelAlign.ledinfo.led_number === 6">
                     <!-- //下拉框 -->
                     <div>
                       <span>第五行</span>
@@ -942,7 +999,7 @@
                   </el-form-item>
                   <el-form-item
                     label="无车时,出口显示屏显示的内容信息:"
-                    v-if="formLabelAlign.led_number === 2 || formLabelAlign.led_number === 4 || formLabelAlign.led_number === 6"
+                    v-if="formLabelAlign.ledinfo.led_number === 2 || formLabelAlign.ledinfo.led_number === 4 || formLabelAlign.ledinfo.led_number === 6"
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -989,7 +1046,7 @@
                     </div>
                   </el-form-item>
                   <el-form-item
-                    v-if="formLabelAlign.led_number === 6 || formLabelAlign.led_number === 4 "
+                    v-if="formLabelAlign.ledinfo.led_number === 6 || formLabelAlign.ledinfo.led_number === 4 "
                   >
                     <!-- //下拉框 -->
                     <div>
@@ -1035,7 +1092,7 @@
                       </el-select>
                     </div>
                   </el-form-item>
-                  <el-form-item v-if="formLabelAlign.led_number === 6">
+                  <el-form-item v-if="formLabelAlign.ledinfo.led_number === 6">
                     <!-- //下拉框 -->
                     <div>
                       <span>第五行</span>
@@ -1078,14 +1135,20 @@
                     </div>
                   </el-form-item>
                   <el-form-item label="车辆通过时，显示屏重复显示信息的时间（秒）:">
-                    <el-input v-model="formLabelAlign.time" />
+                    <el-input v-model="formLabelAlign.ledinfo.time" />
                   </el-form-item>
                 </el-form>
               </div>
             </div>
+            <!-- 修改 -->
+            <div class="modify-some">
+              <span class="modify-some_span">
+                <i class="el-icon-edit"></i>修改
+              </span>
+            </div>
           </el-collapse-item>
         </el-collapse>
-        <div class="button-class">
+        <div class="button-class" v-if="querenVisible">
           <span class="button" @click="addSetting">确认</span>
         </div>
       </div>
@@ -1094,7 +1157,7 @@
 </template>
 
 <script>
-import { postDoorListId, postSettingadd } from '@/api/hardware'
+import { postDoorListId, postSettingadd, postSetInfo } from '@/api/hardware'
 import { Message } from 'element-ui'
 import ModifyParam from './ModifyParam.vue'
 export default {
@@ -1104,55 +1167,70 @@ export default {
   // data数据
   data () {
     return {
+      querenVisible: false,//确认按钮是否显示
       selectShow: true,//当显示屏的下拉框变成输入框时对应的下拉框是否消失
       activeNames: [], // 展开列
       labelPosition: 'top',
       radio: 3, // 开闸管理
       formLabelAlign: {
-        basis_name: '',//负责人
-        basis_phone: '',//联系电话
-        basis_address: '',//详细地址
-        basis_number: '',//车位总数
+        basisinfo: {
+          basis_name: '',//负责人
+          basis_phone: '',//联系电话
+          basis_address: '',//详细地址
+          basis_number: '',//车位总数
+        },
         // 开闸管理
-        car_number: 2,//是否匹配车牌地域名称（例：京、川）:
-        car_rent: 1,//长租车辆是否自动抬杆:
-        car_export: 2,//出口是否无条件开闸:
-        car_endtime: 60,//同一道口，重复识别车牌间隔时间（秒）:
-        car_double: 2,//一位多车情况下，当车位已有停放车辆时，所属车位下其他车辆入场是否允许抬杆放行
-        car_yellow: 0,//黄牌车指定通道
-        car_police: 1,//军警车是否自动开闸
-        car_wuye: 2,//是否检测有无物业欠费情况
-        car_wuye_release: 2,//物业费欠费时是否不放行
-        car_app: 1,//使用APP或公众号申请绑定车辆时，是否需要后台操作人员审核
+        brakeinfo: {
+          car_number: 2,//是否匹配车牌地域名称（例：京、川）:
+          car_rent: 1,//长租车辆是否自动抬杆:
+          car_export: 2,//出口是否无条件开闸:
+          car_endtime: 60,//同一道口，重复识别车牌间隔时间（秒）:
+          car_double: 2,//一位多车情况下，当车位已有停放车辆时，所属车位下其他车辆入场是否允许抬杆放行
+          car_yellow: 0,//黄牌车指定通道
+          car_police: 1,//军警车是否自动开闸
+          car_wuye: 2,//是否检测有无物业欠费情况
+          car_wuye_release: 2,//物业费欠费时是否不放行
+          car_app: 1,//使用APP或公众号申请绑定车辆时，是否需要后台操作人员审核
+        },
         //收费设置
-        car_time: 15,//免费停车时间（分钟）
-        car_price_time: null,//基本收费时长（小时）
-        car_price: null,//基本收费费用（元）
-        time_out: null,//超时后收费计时单位（小时）
-        time_out_price: '2,3,2,3',//超时后收费单价（元）
-        max_price: null,//单日收费最高限制（元）
-        cycle: 1,//单日结算周期
-        single_max: 2,//单次停车是否有最高收费限制
-        single_max_price: 0,//请输入最高收费金额
-        car_double_price: 1,//一位多车情况下，当车位已有停放车辆时，所属车位下其他车辆入场是否持续计费
-        car_double_price_2: 2,//一位多车情况下，当车位所剩车辆和车位数量相符时是否停止收费
-        car_rent_price: 0,//长租车欠费缓冲时长（天）
-        car_rent_price_2: 2,//长租车出场时若租期已满，是否从过期时间计算费用
+        priceinfo: {
+          car_time: 15,//免费停车时间（分钟）
+          car_price_time: null,//基本收费时长（小时）
+          car_price: null,//基本收费费用（元）
+          time_out: null,//超时后收费计时单位（小时）
+          time_out_price: '2,3,2,3',//超时后收费单价（元）
+          max_price: null,//单日收费最高限制（元）
+          cycle: 1,//单日结算周期
+          single_max: 2,//单次停车是否有最高收费限制
+          single_max_price: 0,//请输入最高收费金额
+          car_double_price: 1,//一位多车情况下，当车位已有停放车辆时，所属车位下其他车辆入场是否持续计费
+          car_double_price_2: 2,//一位多车情况下，当车位所剩车辆和车位数量相符时是否停止收费
+          car_rent_price: null,//长租车欠费缓冲时长（天）
+          car_rent_price_2: 2,//长租车出场时若租期已满，是否从过期时间计算费用
+        },
         //显示屏
-        led_number: 2,//下拉选择行数
-        car_rent_day: null,//长租车提前提示车位到期时间（天）
-        car_rent_admission: '',
-        car_stop_admission: '',
-        car_no_admission: '',
-        car_rent_appearance: '',
-        car_stop_appearance: '',
-        car_no_appearance: '',
-        sound: 0,//扬声器声音大小(0-10)
-        time: null,//车辆通过时，显示屏重复显示信息的时间（秒）
+        ledinfo: {
+          led_number: 2,//下拉选择行数
+          car_rent_day: null,//长租车提前提示车位到期时间（天）
+          car_rent_admission: '',
+          car_stop_admission: '',
+          car_no_admission: '',
+          car_rent_appearance: '',
+          car_stop_appearance: '',
+          car_no_appearance: '',
+          sound: 0,//扬声器声音大小(0-10)
+          time: null,//车辆通过时，显示屏重复显示信息的时间（秒）
+        },
         state: 1,
         pid: 0,
+        region: null,//
         parkid: null
       },
+      //控制四个个模块disabled
+      basisDisable: true,
+      brakeDisable: true,
+      ledDisable: true,
+      priceDisable: true,
       car_yellow1: 0,//黄牌车指定通道
       formContent: {
         myself_msg: '',//自定义提示语
@@ -1241,15 +1319,41 @@ export default {
   },
   computed: {},
   watch: {
-
+    activeNames: function (newQuestion, oldQuestion) {
+      console.log(newQuestion, 'newQuestionnewQuestionnewQuestionnewQuestion')
+      if (newQuestion.length === 0) {
+        this.querenVisible = false
+      } else {
+        this.querenVisible = true
+      }
+    }
   },
   created () {
     console.log(this.screenConten.car_rent_admission, 'screenConten.car_rent_admission')
     this.parkid = JSON.parse(localStorage.getItem('items')).id
+    const type = 1
     // alert('新增门岗')
-    postDoorListId({ parkid: this.parkid }).then(resp => {
-      // console.log(resp,'门岗类型列表')
-      this.options_ChoiceDoor = resp.data
+    postSetInfo({ parkid: this.parkid, type: type }).then(resp => {
+      console.log(resp, '参数数据回显')
+      // this.options_ChoiceDoor = resp.data
+      // this.formLabelAlign = {
+      //   ...resp.data.basisinfo,
+      //   ...resp.data.brakeinfo,
+      //   ...resp.data.ledinfo,
+      //   ...resp.data.priceinfo,
+      // }
+      this.formLabelAlign.basisinfo = resp.data.basisinfo,
+        this.formLabelAlign.brakeinfo = resp.data.brakeinfo,
+        this.formLabelAlign.ledinfo = resp.data.ledinfo,
+        this.formLabelAlign.priceinfo = resp.data.priceinfo,
+        console.log(this.formLabelAlign, 'this.formLabelAlign')
+      // this.formLabelAlign
+      this.car_rent_admission1 = resp.data.ledinfo.car_rent_admission
+      this.car_stop_admission1 = resp.data.ledinfo.car_stop_admission
+      this.car_no_admission1 = resp.data.ledinfo.car_no_admission
+      this.car_rent_appearance1 = resp.data.ledinfo.car_rent_appearance
+      this.car_stop_appearance1 = resp.data.ledinfo.car_stop_appearance
+      this.car_no_appearance1 = resp.data.ledinfo.car_no_appearance
     })
   },
   mounted () {
@@ -1369,8 +1473,9 @@ export default {
   width: 100%;
   position: relative;
   &_span {
+    cursor: pointer;
     position: absolute;
-    right: 27px;
+    right: 20px;
     bottom: 10px;
     font-size: 14px;
     font-family: Microsoft YaHei;
@@ -1381,5 +1486,15 @@ export default {
 /deep/.el-collapse-item {
   // background: #f00 !important;
   color: red !important;
+}
+.modify-some {
+  width: 100%;
+  height: 32px;
+  position: relative;
+  &_span {
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+  }
 }
 </style>
