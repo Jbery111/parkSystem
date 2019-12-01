@@ -68,3 +68,29 @@ export function postCamerAdd (data) {
     data: QS.stringify(data)
   })
 }
+//启用摄像头
+//禁用摄像头
+export function postCamerType (data) {
+  console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.door/camera_type',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//修改摄像头
+
+export function postCameraUpdate (data) {
+  console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.door/camera_update',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}

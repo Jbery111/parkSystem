@@ -27,23 +27,24 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       centerDialogVisible4: false
     }
   },
-  created() {
-const dashNumber = localStorage.getItem('dashCreate')
-const isSetParams = JSON.parse(localStorage.getItem('items')).state_type
-console.log(typeof(isSetParams),'isisiisisisi')
-if(dashNumber === '2'){
-  this.centerDialogVisible4 = false
-}else if(isSetParams === 1 && dashNumber === '1'){
-  this.centerDialogVisible4 = true
-}
+  created () {
+    localStorage.setItem('setParamState', 2)
+    const dashNumber = localStorage.getItem('dashCreate')
+    const isSetParams = JSON.parse(localStorage.getItem('items')).state_type
+    console.log(typeof (isSetParams), 'isisiisisisi')
+    if (dashNumber === '2') {
+      this.centerDialogVisible4 = false
+    } else if (isSetParams === 1 && dashNumber === '1') {
+      this.centerDialogVisible4 = true
+    }
   },
   methods: {
-    cc() {
+    cc () {
       console.log('vv')
       localStorage.setItem('dashCreate', 2)
       this.centerDialogVisible4 = false

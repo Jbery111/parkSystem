@@ -70,20 +70,6 @@
           </el-table-column>
         </el-table>
       </div>
-      <!-- <p v-if="hongShow" class="hongdian" />
-      <div class="block">
-        <p class="record-data">共{{ pageNums }}页 共{{ totalPage }}条</p>
-        <el-pagination
-          background
-          :page-size="listNum"
-          layout="prev, pager, next, jumper"
-          :total="totalPage"
-          :current-page="currentPage"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          @next-click="nextClickHandler"
-        />
-      </div>-->
     </el-card>
     <!-- 分页 -->
     <p v-if="hongShow" class="hongdian" />
@@ -136,7 +122,12 @@
               type="text"
               v-model="formAlign.region"
             >-->
-            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important" empty-text="暂无数据">
+            <el-select
+              v-model="poname"
+              placeholder="请选择职位"
+              class="width:73.5% !important"
+              empty-text="暂无数据"
+            >
               <el-option
                 v-for="item in cities"
                 :key="item.poname"

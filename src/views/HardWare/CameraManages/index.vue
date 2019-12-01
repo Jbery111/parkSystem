@@ -16,7 +16,7 @@
           <el-table-column prop="end_time" label="最后一次提交时间" min-width="110" />
           <el-table-column label="设备状态" min-width="70">
             <template slot-scope="scope">
-              <span v-html="scope.row.camera_state === 1 ? '已启用' : '已禁用'"></span>
+              <span v-html="scope.row.camera_state === 1 ? '已启用' : '已禁用'" class="qiyong-calss"></span>
             </template>
           </el-table-column>
           <el-table-column label="网络状态" min-width="60">
@@ -35,7 +35,7 @@
                 @click="handleEdit(scope.$index, scope.row)"
               >修改</el-button>
               <el-button
-                v-if="scope.row.operation === 1"
+                v-if="scope.row.camera_state === 1"
                 class="el-btn2"
                 size="mini"
                 type="danger"
@@ -83,7 +83,7 @@
       <div style="font-size:16px;">是否启用该摄像头?</div>
       <span slot="footer" class="dialog-footer">
         <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible1 = false">取 消</el-button>
-        <el-button type="primary" style="font-size:14px;">确 认</el-button>
+        <el-button type="primary" style="font-size:14px;" @click="qiyongHandler">确 认</el-button>
       </span>
     </el-dialog>
     <!-- 禁用遮罩 -->
@@ -100,7 +100,7 @@
       <div style="font-size:16px;">是否禁用该摄像头?</div>
       <span slot="footer" class="dialog-footer">
         <el-button class="quxiao1" style="font-size:14px;" @click="centerDialogVisible4 = false">取 消</el-button>
-        <el-button type="primary" style="font-size:14px;">确 认</el-button>
+        <el-button type="primary" style="font-size:14px;" @click="jingongHandler">确 认</el-button>
       </span>
     </el-dialog>
     <!-- 新增摄像头遮罩层 -->
@@ -116,7 +116,7 @@
       <el-form :label-position="labelPosition" label-width="120px">
         <div class="form-item">
           <el-form-item label="门岗名称:" class="region-class">
-            <el-select v-model="door_post_name" placeholder="请选择职位" class="width:73.5% !important">
+            <el-select v-model="door_post_name" placeholder="请选择门岗" class="width:73.5% !important">
               <el-option
                 v-for="item in doorNameLists"
                 :key="item.door_post_name"
@@ -192,9 +192,13 @@
       <el-form :label-position="labelPosition" label-width="120px">
         <div class="form-item">
           <el-form-item label="门岗名称:" class="region-class">
-            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
-              <el-option v-for="item in cities" :key="item.poname" :value="item.poname">
-                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+            <el-select v-model="door_post_name1" placeholder="请选择门岗" class="width:73.5% !important">
+              <el-option
+                v-for="item in doorNameLists"
+                :key="item.door_post_name"
+                :value="item.door_post_name"
+              >
+                <span class="chenp" @click="hanPoid_AddCamera1(item.id)">{{ item.door_post_name }}</span>
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
@@ -204,27 +208,37 @@
 
         <div class="form-item" style="height:60px">
           <el-form-item label="设备名称:">
-            <input ref="nameInput" v-model="formAlign1.phone" type="text" placeholder="请输入手机号" />
-            <p class="mistack-message">{{ mistakeToast2 }}</p>
+            <input
+              ref="nameInput1"
+              v-model="formModifyContent.camera_name"
+              type="text"
+              placeholder="请输入设备名称"
+            />
+            <!-- <p class="mistack-message">{{ mistakeToast2 }}</p> -->
           </el-form-item>
         </div>
         <div class="form-item" style="height:60px">
           <el-form-item label="设备序列号:">
-            <input ref="nameInput" v-model="formAlign1.phone" type="text" placeholder="请输入手机号" />
-            <p class="mistack-message">{{ mistakeToast2 }}</p>
+            <input
+              ref="nameInput"
+              v-model="formModifyContent.camera_sn"
+              type="text"
+              placeholder="请输入设备序列号"
+            />
+            <!-- <p class="mistack-message">{{ mistakeToast2 }}</p> -->
           </el-form-item>
         </div>
         <div class="form-item" style="height:60px">
           <el-form-item label="设备IP地址:">
-            <input v-model="formAlign1.name" type="text" />
-            <p class="mistack-message">{{ mistakeToast1 }}</p>
+            <input v-model="formModifyContent.camera_host" type="text" />
+            <!-- <p class="mistack-message">{{ mistakeToast1 }}</p> -->
           </el-form-item>
         </div>
         <div class="form-item">
           <el-form-item label="选择出/入口:" class="region-class">
-            <el-select v-model="poname" placeholder="请选择职位" class="width:73.5% !important">
-              <el-option v-for="item in cities" :key="item.poname" :value="item.poname">
-                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+            <el-select v-model="inOut1" class="width:73.5% !important">
+              <el-option v-for="item in options_In_outLists" :key="item.value" :value="item.label">
+                <span class="chenp" @click="hanPoid_InOut1(item.value)">{{ item.label }}</span>
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
@@ -233,19 +247,21 @@
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary">确认</el-button>
+        <el-button type="primary" @click="handleEditDid">确认</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { postCameraList, postDoorListId, postCamerAdd } from '@/api/hardware'
+import { Message } from 'element-ui'
+import { postCameraList, postDoorListId, postCamerAdd, postCamerType, postCameraUpdate } from '@/api/hardware'
 // data数据
 export default {
   components: {},
   data () {
     return {
+      camareId: null,//摄像头id
       centerDialogVisible2: false,//新增摄像头
       centerDialogVisible3: false,//修改摄像头
       centerDialogVisible1: false, // 启用
@@ -302,7 +318,18 @@ export default {
         camera_door: ''//1是入口2是出口
       },
       door_post_name: '',//门岗名称
-      inOut: ''//出入口
+      door_post_name1: '',//修改时的门岗名称
+      inOut: '',//出入口
+      inOut1: '',//出入口
+      //修改摄像头传给后端的参数
+      formModifyContent: {
+        door_id: '',//门岗绑定的id
+        camera_name: '',//摄像头名称
+        camera_sn: '',//摄像头设备序列号
+        camera_host: '',//设备的ip地址
+        camera_door: ''//1是入口2是出口
+      },
+
     }
   },
   computed: {},
@@ -325,6 +352,14 @@ export default {
       console.log(value, '点击churu下拉')
       this.formAddContent.camera_door = value
     },
+    hanPoid_AddCamera1 (id) {
+      console.log(id, '点击门岗下拉')
+      this.formModifyContent.door_id = id
+    },
+    hanPoid_InOut1 (value) {
+      console.log(value, '点击churu下拉')
+      this.formModifyContent.camera_door = value
+    },
     addCamer () {
       this.centerDialogVisible2 = true
       // alert('新增门岗')
@@ -343,23 +378,86 @@ export default {
       postCamerAdd(addCamerQuery).then(resp => {
         console.log(resp, '新增摄像头的response')
         if (resp.data === "设备添加成功") {
+          Message(resp.data)
           this.centerDialogVisible2 = false
+          const nume = Number(this.totalPage) / Number(10)
+          var shu = ''
+          if (Math.round(nume) === nume) {
+            // num是整数
+            shu = Number(nume) + Number(1)
+          } else {
+            shu = Math.ceil(nume)
+          }
+          const page = shu
+          this.getCamereList(shu, 10, this.parkid)
+          this.handleCurrentChange(page)
+          // this.getCamereList(this.currentPage, 10, this.park_id)
+        }
+      })
+    },
+    //修改摄像头
+    handleEdit (index, row) {
+      // console.log(row.door_name, 'jjjjjjj')
+      postCameraUpdate({ id: row.id, parkid: this.parkid }).then(resp => {
+        console.log(resp.data, 'postCameraUpdate')
+        this.formModifyContent.door_id = resp.data.door_id
+        this.formModifyContent.camera_name = resp.data.camera_name
+        this.formModifyContent.camera_sn = resp.data.camera_sn
+        this.formModifyContent.camera_host = resp.data.camera_host
+        this.formModifyContent.camera_door = resp.data.camera_door
+        this.inOut1 = resp.data.camera_door === 1 ? '入口' : '出口'
+      })
+      this.door_post_name1 = row.door_name
+
+      this.centerDialogVisible3 = true
+    },
+    handleEditDid () {
+      const ModifyCamerQuery = {
+        ...this.formModifyContent,
+        park_id: this.parkid
+      }
+      postCamerAdd(ModifyCamerQuery).then(resp => {
+        console.log(resp, '新增摄像头的response')
+        if (resp.data === "设备添加成功") {
+          this.centerDialogVisible3 = false
           this.getCamereList(this.currentPage, 10, this.park_id)
         }
       })
     },
-    handleEdit (index, row) {
-      this.centerDialogVisible3 = true
-    },
     handleQiyong (index, row) {
       this.centerDialogVisible1 = true
+      this.camareId = row.id
+      const type = 1 //1是启用,2是禁用
+    },
+    qiyongHandler () {
+      const type = 1 //1是启用,2是禁用
+      postCamerType({ parkid: this.parkid, type: type, id: this.camareId }).then(resp => {
+        // console.log(resp, 'postCamerType')
+        Message(resp.data)
+        this.centerDialogVisible1 = false
+        this.getCamereList(this.currentPage, 10, this.park_id)
+      })
     },
     handleJinyong (index, row) {
       this.centerDialogVisible4 = true
+      this.camareId = row.id
+      console.log(this.camareId, row, '禁用row')
+
+
     },
+    jingongHandler () {
+      const type = 2
+      postCamerType({ parkid: this.parkid, type: type, id: this.camareId }).then(resp => {
+        // console.log(resp, 'postCamerType')
+        Message(resp.data)
+        this.centerDialogVisible4 = false
+        this.getCamereList(this.currentPage, 10, this.park_id)
+      })
+    },
+    // 分页设置
     handleCurrentChange (val) {
-      //分页设置
-      console.log(val)
+      this.currentPage = val
+      this.getCamereList(val, 10, this.parkid)
     },
     //查询摄像头列表
     getCamereList (page = 1, size = 10, parkid = this.parkid) {
@@ -368,7 +466,7 @@ export default {
         this.tableData = resp.data.data
         this.pageNums = resp.data.pageNum
         this.totalPage = resp.data.total
-        this.currentPage = res.data.page
+        this.currentPage = resp.data.page
       })
     }
   }

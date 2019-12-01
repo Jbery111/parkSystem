@@ -1,6 +1,6 @@
 <template>
   <div class="hard-setparamClass">
-    <div class="setparam-container">
+    <div class="setparam-container" v-if="setModifyVisble">
       <el-collapse v-model="activeNames" @change="handleChange">
         <!-- 基础设置 -->
         <el-collapse-item title="基础设置" name="1">
@@ -1082,17 +1082,22 @@
         <span class="button" @click="addSetting">确认</span>
       </div>
     </div>
+    <ModifyParam v-else />
   </div>
 </template>
 
 <script>
 import { postDoorListId, postSettingadd } from '@/api/hardware'
 import { Message } from 'element-ui'
+import ModifyParam from './ModifyParam.vue'
 export default {
-  components: {},
+  components: {
+    ModifyParam
+  },
   // data数据
   data () {
     return {
+      setModifyVisble: true,//判断是否为设置参数还是修改参数
       selectShow: true,//当显示屏的下拉框变成输入框时对应的下拉框是否消失
       activeNames: ['1', '2', '3', '4'], // 展开列
       labelPosition: 'top',
@@ -1233,7 +1238,17 @@ export default {
 
   },
   created () {
-    console.log(this.screenConten.car_rent_admission, 'screenConten.car_rent_admission')
+    const isSetParams = JSON.parse(localStorage.getItem('items')).state_type
+    const setParamState = JSON.parse(localStorage.getItem('setParamState'))
+    console.log(setParamState, 'setParamStatesetParamStatesetParamState')
+    if (isSetParams === 2) {
+      this.setModifyVisble = false
+    } else {
+      if (setParamState === 1) {
+        this.setModifyVisble = false
+      }
+    }
+    this.userInfoList = JSON.parse(localStorage.getItem('userInfo'))
     this.parkid = JSON.parse(localStorage.getItem('items')).id
     // alert('新增门岗')
     postDoorListId({ parkid: this.parkid }).then(resp => {
@@ -1276,8 +1291,10 @@ export default {
       console.log(this.formLabelAlign, 'formLabelAlignformLabelAlignformLabelAlign')
       postSettingadd(this.formLabelAlign).then(resp => {
         // console.log(resp, '成功将任何国家和人家给')
-        // if(resp.)
         Message(resp.data)
+        this.setModifyVisble = false
+        // if(resp.)
+        localStorage.setItem('setParamState', 1)
       })
     }
   }
