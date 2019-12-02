@@ -15,9 +15,9 @@
     </div>
     <div class="main">
       <p class="button" v-if="isCommunity">
-      <el-button type="primary" @click="toDashboard()">确认</el-button>
-    </p>
-      <h3 class="main-title" style="cursor:default;">请选择小区</h3>
+        <el-button type="primary" @click="toDashboard()">确认</el-button>
+      </p>
+      <h3 class="main-title" style="cursor:default;">请选择停车场</h3>
       <div class="main-letter-container">
         <!-- <span>&lt;</span> -->
         <span @click="selectQb" :class="{qb:isActiveData2}" class="qb1">全部</span>
@@ -58,19 +58,17 @@
     </div>
     <div class="wy-login-bottom">
       <div class="wy-bottom" style="margin-left:-12px;">
-
-      <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
-      <div
-        style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;"
-      ></div>
-      <a
-        href="http://www.miibeian.gov.cn/"
-        target="_blank"
-        style="margin-left:10px; white-space:nowrap;"
-      >蜀ICP备19024682号</a>
+        <p class="zi">成都同享社圈智慧科技有限公司版权所有</p>
+        <div
+          style="height:12px;border:1px solid white;margin-top:4px;width:2px;margin-left:277px;display: inline-block;"
+        ></div>
+        <a
+          href="http://www.miibeian.gov.cn/"
+          target="_blank"
+          style="margin-left:10px; white-space:nowrap;"
+        >蜀ICP备19024682号</a>
       </div>
     </div>
-    
   </div>
 </template>
 
@@ -148,9 +146,9 @@ export default {
       this.param.uid = this.userInfo.data.uid
       this.param.Communityid = this.itemid
       this.choiceCommunity(this.param).then(resp => {
-        localStorage.setItem('DuetoThetime',resp.time)
+        localStorage.setItem('DuetoThetime', resp.time)
         localStorage.setItem('isRefresh', true)
-        localStorage.setItem('dashCreate',1)
+        localStorage.setItem('dashCreate', 1)
         if (resp.code === 200) {
           // 未被替换掉的userINFO
           this.$store.commit('permission/CLEAR_PERMISSION')
@@ -460,9 +458,9 @@ export default {
       console.log(this.Jurisdiction)
       if (this.Jurisdiction === 2) {
         this.$router.push('/pay')
-      }else if(this.Jurisdiction === 4){
+      } else if (this.Jurisdiction === 4) {
         Message('请联系老板充值')
-      }else{
+      } else {
         this.$router.push('/community')
       }
     }
@@ -669,7 +667,7 @@ export default {
         text-align: center;
         font-size: 14px;
         line-height: 0;
-        position: relative
+        position: relative;
       }
     }
     .fenye-click {
@@ -698,7 +696,7 @@ export default {
     }
   }
 }
-.wy-login-bottom{
+.wy-login-bottom {
   position: absolute;
   bottom: 12px;
   color: #fff;
@@ -708,23 +706,21 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
-.zi {
-     position: absolute;
-     text-align: center;
-     color: rgba(255, 255, 255, 1);
-     font-family: MicrosoftYaHei;
-     font-weight: 400;
-     cursor: default;
-     white-space:nowrap;
-     width: 280px;
-     
-     }
-    
+  .zi {
+    position: absolute;
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    cursor: default;
+    white-space: nowrap;
+    width: 280px;
   }
-  .el-col-6{
-    width: 24%;
-  }
-  /deep/.el-card__body{
-    padding: 10px !important;
-  }
+}
+.el-col-6 {
+  width: 24%;
+}
+/deep/.el-card__body {
+  padding: 10px !important;
+}
 </style>

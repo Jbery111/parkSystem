@@ -2,7 +2,7 @@
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
 
-function resolve(dir) {
+function resolve (dir) {
   return path.join(__dirname, dir)
 }
 
@@ -37,7 +37,7 @@ module.exports = {
 
     'proxy': {
       '/index': {
-        target: 'http://park.txsqtech.com',
+        target: 'http://www.parking.com',
         changeOrigin: true,
         pathRewrite: {
           '^/index': '/index'
@@ -67,7 +67,7 @@ module.exports = {
       }
     }
   },
-  chainWebpack(config) {
+  chainWebpack (config) {
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
 

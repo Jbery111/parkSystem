@@ -60,7 +60,7 @@
                 </el-form-item>
                 <!-- TODOS: -->
                 <el-form-item label="支付后多少分钟内需要离场（分钟）:">
-                  <el-input v-model="formLabelAlign.region" />
+                  <el-input v-model="formLabelAlign.end_time" />
                 </el-form-item>
                 <el-form-item label="一位多车情况下，当车位已有停放车辆时，所属车位下其他车辆入场是否允许抬杆放行:">
                   <el-radio-group v-model="formLabelAlign.car_double">
@@ -251,8 +251,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_rent_admission1"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -272,8 +272,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_admission2"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -296,8 +296,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_admission3"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -318,8 +318,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_rent_admission4"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -341,8 +341,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_admission5"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -361,8 +361,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_admission6"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -389,8 +389,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_stop_admission1"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -410,8 +410,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_admission2"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -434,8 +434,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_admission3"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -456,8 +456,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_stop_admission4"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -479,8 +479,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_admission5"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -499,8 +499,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_admission6"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -527,8 +527,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_no_admission1"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -548,8 +548,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_admission2"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -572,8 +572,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_admission3"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -594,8 +594,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_no_admission4"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -617,8 +617,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_admission5"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -637,8 +637,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_admission6"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -679,8 +679,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_rent_appearance1"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -700,8 +700,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_appearance2"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -724,8 +724,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_appearance3"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -746,8 +746,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_rent_appearance4"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -769,8 +769,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_appearance5"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -789,8 +789,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_rent_appearance6"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -817,8 +817,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_stop_appearance1"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -838,8 +838,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_appearance2"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -862,8 +862,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_appearance3"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -884,8 +884,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_stop_appearance4"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -907,8 +907,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_appearance5"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -927,8 +927,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_stop_appearance6"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -954,8 +954,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_no_appearance1"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -975,8 +975,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_appearance2"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -999,8 +999,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_appearance3"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -1021,8 +1021,8 @@
                         <el-option
                           v-for="(item,index) in screenConten.car_no_appearance4"
                           :key="index"
-                          :label="item"
-                          :value="item"
+                          :label="item.name"
+                          :value="item.name"
                         ></el-option>
                       </div>
                     </el-select>
@@ -1044,8 +1044,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_appearance5"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -1064,8 +1064,8 @@
                       <el-option
                         v-for="(item,index) in screenConten.car_no_appearance6"
                         :key="index"
-                        :label="item"
-                        :value="item"
+                        :label="item.name"
+                        :value="item.name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -1087,7 +1087,7 @@
 </template>
 
 <script>
-import { postDoorListId, postSettingadd } from '@/api/hardware'
+import { postDoorListId, postSettingadd, postMonthly, postMonthlyOut, postNonMonthly, postNonMonthlyOut } from '@/api/hardware'
 import { Message } from 'element-ui'
 import ModifyParam from './ModifyParam.vue'
 export default {
@@ -1170,47 +1170,47 @@ export default {
       //显示屏下拉框的数据
       screenConten: {
         //长租车入场
-        car_rent_admission1: ['限号1', '限号2', '限号3'],
-        car_rent_admission2: ['限号1', '限号2', '限号3'],
-        car_rent_admission3: ['限号1', '限号2', '限号3'],
-        car_rent_admission4: ['限号1', '限号2', '限号3'],
-        car_rent_admission5: ['限号1', '限号2', '限号3'],
-        car_rent_admission6: ['限号1', '限号2', '限号3'],
+        car_rent_admission1: {},
+        car_rent_admission2: {},
+        car_rent_admission3: {},
+        car_rent_admission4: {},
+        car_rent_admission5: {},
+        car_rent_admission6: {},
         //临停车入场
-        car_stop_admission1: ['限号1', '限号2', '限号3'],
-        car_stop_admission2: ['限号1', '限号2', '限号3'],
-        car_stop_admission3: ['限号1', '限号2', '限号3'],
-        car_stop_admission4: ['限号1', '限号2', '限号3'],
-        car_stop_admission5: ['限号1', '限号2', '限号3'],
-        car_stop_admission6: ['限号1', '限号2', '限号3'],
+        car_stop_admission1: {},
+        car_stop_admission2: {},
+        car_stop_admission3: {},
+        car_stop_admission4: {},
+        car_stop_admission5: {},
+        car_stop_admission6: {},
         //无车时入场
-        car_no_admission1: ['限号1', '限号2', '限号3'],
-        car_no_admission2: ['限号1', '限号2', '限号3'],
-        car_no_admission3: ['限号1', '限号2', '限号3'],
-        car_no_admission4: ['限号1', '限号2', '限号3'],
-        car_no_admission5: ['限号1', '限号2', '限号3'],
-        car_no_admission6: ['限号1', '限号2', '限号3'],
+        car_no_admission1: {},
+        car_no_admission2: {},
+        car_no_admission3: {},
+        car_no_admission4: {},
+        car_no_admission5: {},
+        car_no_admission6: {},
         //长租车出厂
-        car_rent_appearance1: ['限号1', '限号2', '限号3'],
-        car_rent_appearance2: ['限号1', '限号2', '限号3'],
-        car_rent_appearance3: ['限号1', '限号2', '限号3'],
-        car_rent_appearance4: ['限号1', '限号2', '限号3'],
-        car_rent_appearance5: ['限号1', '限号2', '限号3'],
-        car_rent_appearance6: ['限号1', '限号2', '限号3'],
+        car_rent_appearance1: {},
+        car_rent_appearance2: {},
+        car_rent_appearance3: {},
+        car_rent_appearance4: {},
+        car_rent_appearance5: {},
+        car_rent_appearance6: {},
         //临停车出厂
-        car_stop_appearance1: ['限号1', '限号2', '限号3'],
-        car_stop_appearance2: ['限号1', '限号2', '限号3'],
-        car_stop_appearance3: ['限号1', '限号2', '限号3'],
-        car_stop_appearance4: ['限号1', '限号2', '限号3'],
-        car_stop_appearance5: ['限号1', '限号2', '限号3'],
-        car_stop_appearance6: ['限号1', '限号2', '限号3'],
+        car_stop_appearance1: {},
+        car_stop_appearance2: {},
+        car_stop_appearance3: {},
+        car_stop_appearance4: {},
+        car_stop_appearance5: {},
+        car_stop_appearance6: {},
         //无车时出厂
-        car_no_appearance1: ['限号1', '限号2', '限号3'],
-        car_no_appearance2: ['限号1', '限号2', '限号3'],
-        car_no_appearance3: ['限号1', '限号2', '限号3'],
-        car_no_appearance4: ['限号1', '限号2', '限号3'],
-        car_no_appearance5: ['限号1', '限号2', '限号3'],
-        car_no_appearance6: ['限号1', '限号2', '限号3'],
+        car_no_appearance1: {},
+        car_no_appearance2: {},
+        car_no_appearance3: {},
+        car_no_appearance4: {},
+        car_no_appearance5: {},
+        car_no_appearance6: {},
 
       },
       //显示屏用户输入的数据
@@ -1255,14 +1255,65 @@ export default {
       // console.log(resp,'门岗类型列表')
       this.options_ChoiceDoor = resp.data
     })
+    //led下拉提示语
+    postMonthly({}).then(resp => {
+      console.log(resp, 'resp提示语')
+      this.screenConten.car_rent_admission1 = resp.data
+      this.screenConten.car_rent_admission2 = resp.data
+      this.screenConten.car_rent_admission3 = resp.data
+      this.screenConten.car_rent_admission4 = resp.data
+      this.screenConten.car_rent_admission5 = resp.data
+      this.screenConten.car_rent_admission6 = resp.data
+    })
+    postMonthlyOut({}).then(resp => {
+      this.screenConten.car_rent_appearance1 = resp.data
+      this.screenConten.car_rent_appearance2 = resp.data
+      this.screenConten.car_rent_appearance3 = resp.data
+      this.screenConten.car_rent_appearance4 = resp.data
+      this.screenConten.car_rent_appearance5 = resp.data
+      this.screenConten.car_rent_appearance6 = resp.data
+    })
+    postNonMonthly({}).then(resp => {
+      this.screenConten.car_stop_admission1 = resp.data
+      this.screenConten.car_stop_admission2 = resp.data
+      this.screenConten.car_stop_admission3 = resp.data
+      this.screenConten.car_stop_admission4 = resp.data
+      this.screenConten.car_stop_admission5 = resp.data
+      this.screenConten.car_stop_admission6 = resp.data
+      //无车时
+      this.screenConten.car_no_admission1 = resp.data
+      this.screenConten.car_no_admission2 = resp.data
+      this.screenConten.car_no_admission3 = resp.data
+      this.screenConten.car_no_admission4 = resp.data
+      this.screenConten.car_no_admission5 = resp.data
+      this.screenConten.car_no_admission6 = resp.data
+    })
+    postNonMonthlyOut({}).then(resp => {
+      this.screenConten.car_stop_appearance1 = resp.data
+      this.screenConten.car_stop_appearance2 = resp.data
+      this.screenConten.car_stop_appearance3 = resp.data
+      this.screenConten.car_stop_appearance4 = resp.data
+      this.screenConten.car_stop_appearance5 = resp.data
+      this.screenConten.car_stop_appearance6 = resp.data
+      //无车时
+      this.screenConten.car_no_appearance1 = resp.data
+      this.screenConten.car_no_appearance2 = resp.data
+      this.screenConten.car_no_appearance3 = resp.data
+      this.screenConten.car_no_appearance4 = resp.data
+      this.screenConten.car_no_appearance5 = resp.data
+      this.screenConten.car_no_appearance6 = resp.data
+    })
   },
   mounted () {
 
   },
   methods: {
+    // //处理LED提示语方法
+    // ledMsgHandler(arr) {
+
+    // },
     selectFacus () {
 
-      console.log(this.screenConten.car_rent_admission1, '121212')
     },
     handleChange (val) {
       console.log(val)
@@ -1283,7 +1334,7 @@ export default {
       this.formLabelAlign.car_rent_day = Number(this.formLabelAlign.car_rent_day)
       this.formLabelAlign.car_rent_price = Number(this.formLabelAlign.car_rent_price)
       this.formLabelAlign.max_price = Number(this.formLabelAlign.max_price)
-      this.formLabelAlign.region = Number(this.formLabelAlign.region)
+      this.formLabelAlign.end_time = Number(this.formLabelAlign.end_time)
       this.formLabelAlign.time = Number(this.formLabelAlign.time)
       this.formLabelAlign.time_out = Number(this.formLabelAlign.time_out)
       this.formLabelAlign.car_time = Number(this.formLabelAlign.car_time)

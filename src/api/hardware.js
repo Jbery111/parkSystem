@@ -35,6 +35,128 @@ export function postSettingadd (data) {
     data: QS.stringify(data)
   })
 }
+// 修改++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//主副停车场参数输出
+export function postSetInfo (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/setInfo',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//包月入口提示语言
+export function postMonthly (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/monthly',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//包月出口提示语言
+export function postMonthlyOut (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/monthly_out',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//非包月车辆入口
+export function postNonMonthly (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/non_monthly',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+// 非包月车辆出口
+export function postNonMonthlyOut (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/non_monthly_out',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//修改停车场(修改全部)
+export function postSetupdateAll (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/setting_update',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//基础设置修改
+export function postSetupdateBasis (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/basis',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//开闸管理修改
+export function postSetupdateBrake (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/brake',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+// 收费修改
+export function postSetupdatePrice (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/park_priceset',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//led设置修改
+export function postSetupdateLed (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/led_update',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+// 以上为参数修改修改++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //摄像头列表
 export function postCameraList (data) {
   return request({
@@ -82,7 +204,6 @@ export function postCamerType (data) {
   })
 }
 //修改摄像头
-
 export function postCameraUpdate (data) {
   console.log(data, '修改摄像头状态小串的参数')
   return request({
@@ -90,18 +211,6 @@ export function postCameraUpdate (data) {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     url: '/index/v1.door/camera_update',
-    method: 'post',
-    data: QS.stringify(data)
-  })
-}
-//主副停车场参数输出
-export function postSetInfo (data) {
-  // console.log(data, '修改摄像头状态小串的参数')
-  return request({
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    url: '/index/v1.setting/setInfo',
     method: 'post',
     data: QS.stringify(data)
   })

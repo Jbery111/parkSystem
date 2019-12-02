@@ -6,7 +6,7 @@ import { getToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
 import QS from 'qs'
 const service = axios.create({
-  baseURL: 'http://park.txsqtech.com', // url = base url + request url
+  baseURL: 'http://www.parking.com', // url = base url + request url
   // headers: {
   //   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
   // },
@@ -24,7 +24,7 @@ service.interceptors.request.use(
     // config.data = QS.stringify(config.data)
     if (getToken()) {
       config.headers['token'] = store.getters.token
-        
+
     } else {
       const obj = {}
       for (const i in config.headers) {
@@ -34,7 +34,7 @@ service.interceptors.request.use(
       } // 这里没用
       config.headers = obj
     }
-    console.log(config,'config')
+    console.log(config, 'config')
     return config
   },
   error => {
