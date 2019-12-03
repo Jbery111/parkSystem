@@ -12,26 +12,26 @@ export default {
   },
   getters: {},
   mutations: {
-    SET_PERMISSION(state, routes) {
+    SET_PERMISSION (state, routes) {
       state.permissionList = routes
     },
-    CLEAR_PERMISSION(state) {
+    CLEAR_PERMISSION (state) {
       state.permissionList = null
     },
     // 生成左侧导航栏菜单
-    SET_MENU(state, menu) {
+    SET_MENU (state, menu) {
       state.sidebarMenu = menu
     },
-    CLEAR_MENU(state) {
+    CLEAR_MENU (state) {
       state.sidebarMenu = []
     },
-    SET_CURRENT_MENU(state, currentMenu) {
+    SET_CURRENT_MENU (state, currentMenu) {
       state.currentMenu = currentMenu
     }
     // FETCH_PERMISSION(state,)
   },
   actions: {
-    FETCH_PERMISSION({ commit, state }) {
+    FETCH_PERMISSION ({ commit, state }) {
       // 获取后台给的权限数组
       commit('CLEAR_PERMISSION')
       console.log(state1.userInfo.Jurisdiction)
@@ -52,7 +52,7 @@ export default {
       const children = JSON.parse(JSON.stringify(mainChildren))
 
       children.push(...routes)
-      console.log(MainContainer.children, children, '__________________________________------_______________')
+      // console.log(MainContainer.children, children, '__________________________________------_______________')
       // children.shift()
       // // // /* 生成左侧导航菜单 */
       // commit('CLEAR_MENU')

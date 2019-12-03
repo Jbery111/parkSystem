@@ -1,41 +1,46 @@
 <template>
   <div class="hard-setparamClass">
     <div class="setparam-container">
-      <el-card class="box-card" v-if="isShowCard">
-        <span id="newadd" >新增内场</span>
-        <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
-          <el-table-column prop="uname" label="内场名称" min-width="150" />
-          <!-- 操作 -->
-          <el-table-column label="操作" min-width="100">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
+      <div v-if="isShowAdd">
+        <el-card class="box-card" v-if="isShowCard">
+          <span id="newadd" @click="addClick">新增内场</span>
+          <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
+            <el-table-column prop="setting_name" label="内场名称" min-width="150" />
+            <!-- 操作 -->
+            <el-table-column label="操作" min-width="100">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
             border-color:#25BAD9; padding:5px;"
-                @click="handleEdit(scope.$index, scope.row)"
-              >修改参数</el-button>
-              <el-button
-                size="mini"
-                style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
+                  @click="handleEdit(scope.$index, scope.row)"
+                >修改</el-button>
+                <el-button
+                  size="mini"
+                  style="background:#25BAD9; color:#fff; font-size:14px;height:30px; width:52px;
             border-color:#25BAD9; padding:5px;"
-                @click="handleBandi(scope.$index, scope.row)"
-              >绑定</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-card>
-<modify-params v-else @isShowCardFunc="isShowCardFunc1"></modify-params>
+                  @click="handleBandi(scope.$index, scope.row)"
+                >绑定</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
+        <modify-params v-else @isShowCardFunc="isShowCardFunc1" :inSetId="inSetId"></modify-params>
+      </div>
+      <add-inset v-if="!isShowAdd" @isShowCardFunc1="isShowCardFunc2"></add-inset>
       <!-- 分页 -->
-      <div class="block" v-if="isShowCard">
-        <p class="record-data">共{{ pageNums }}页 共{{ totalPage }}条</p>
-        <el-pagination
-          background
-          :page-size="10"
-          layout="prev, pager, next, jumper"
-          :total="totalPage"
-          :current-page.sync="currentPage"
-          @current-change="handleCurrentChange"
-        />
+      <div v-if="isShowAdd">
+        <div class="block" v-if="isShowCard">
+          <p class="record-data">共{{ pageNums }}页 共{{ totalPage }}条</p>
+          <el-pagination
+            background
+            :page-size="10"
+            layout="prev, pager, next, jumper"
+            :total="totalPage"
+            :current-page.sync="currentPage"
+            @current-change="handleCurrentChange"
+          />
+        </div>
       </div>
     </div>
     <!-- 绑定遮罩三 -->
@@ -50,9 +55,9 @@
     >
       <!-- <p>提示</p> -->
       <el-form label-position="right" label-width="80px">
-       <div class="form-item">
+        <div class="form-item">
           <el-form-item label="职位:" class="region-class">
-            <el-select v-model="poname" placeholder="请选择职位" >
+            <el-select v-model="poname" placeholder="请选择职位">
               <el-option
                 v-for="item in cities"
                 :key="item.poname"
@@ -66,83 +71,100 @@
             <p class="mistack-message">{{ mistakeToast3 }}</p>
           </el-form-item>
           <!-- //选择停车场备选组 -->
-          <el-form-item label="职位:" >
+          <el-form-item label="职位:">
             <el-checkbox-group v-model="checkList">
-    <el-checkbox label="复选框 A"></el-checkbox>
-    <el-checkbox label="复选框 B"></el-checkbox><br>
-    <el-checkbox label="复选框 C"></el-checkbox>
-  </el-checkbox-group>
+              <el-checkbox label="复选框 A"></el-checkbox>
+              <el-checkbox label="复选框 B"></el-checkbox>
+              <br />
+              <el-checkbox label="复选框 C"></el-checkbox>
+            </el-checkbox-group>
             <p class="mistack-message">{{ mistakeToast3 }}</p>
           </el-form-item>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        
-        <el-button type="primary" style="font-size:14px;" >确 认</el-button>
+        <el-button type="primary" style="font-size:14px;">确 认</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
+import { Message } from 'element-ui'
+import { postBindingCar } from '@/api/hardware'
 import ModifyParams from './ModifyParams.vue'
+import AddInset from './AddInset.vue'
 // data数据
 export default {
   components: {
-    ModifyParams
+    ModifyParams,
+    AddInset
   },
-  data() {
+  data () {
     return {
-      totalPage:10,
-      pageNums:1,
+      inSetId: '',//内场id
+      isShowAdd: true,
+      parkid: null,
+      totalPage: 10,
+      pageNums: 1,
+      currentPage: null,// 当前页
       centerDialogVisible1: false, // 新增门岗
-      isShowCard:true,
-      formAlign:{
-        name:''
+      isShowCard: true,
+      formAlign: {
+        name: ''
       },
-      poname:'',
-      checkList: ['选中且禁用','复选框 A'],
-      tableData: [
-       
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        },
-        {
-          uname: 'chen',
-          ucphone: '45454545'
-        }
-      ]
+      poname: '',
+      checkList: ['选中且禁用', '复选框 A'],
+      tableData: []
     }
   },
   computed: {},
   watch: {
 
   },
-  created() {
-
+  created () {
+    console.log('内场管理创建')
+    this.parkid = JSON.parse(localStorage.getItem('items')).id
+    this.getInsetList()
   },
-  mounted() {
+  mounted () {
 
   },
   methods: {
-    handleCurrentChange(val) {
-console.log(val)
+    //请求内场数据列表
+    getInsetList (page = 1, size = 10, parkid = this.parkid) {
+      // const parkid = this.parkid
+      postBindingCar({ page, size, parkid }).then(resp => {
+        console.log(resp, '内场response')
+        this.tableData = resp.data.data
+        this.pageNums = resp.data.pageNum
+        this.totalPage = resp.data.total
+        this.currentPage = resp.data.page
+      })
     },
-    handleBandi(index,row) {
+    handleCurrentChange (val) {
+      console.log(val)
+    },
+    handleBandi (index, row) {
       // alert('新增门岗')
       this.centerDialogVisible1 = true
     },
-    handleEdit(index,row) {
-      this.isShowCard =false
+    handleEdit (index, row) {
+      this.isShowCard = false
+      // console.log(row, 'row')
+      this.inSetId = row.id
     },
-    isShowCardFunc1(data) {
+    isShowCardFunc1 (data) {
       this.isShowCard = data
+      this.getInsetList()
+    },
+    isShowCardFunc2 (data) {
+      this.isShowAdd = data
+      this.getInsetList()
+    },
+    //新增内场
+    addClick () {
+      this.isShowAdd = false
     }
   }
 }
@@ -455,7 +477,6 @@ console.log(val)
   }
 }
 
-
 /deep/.el-tree-node {
   font-family: Microsoft YaHei;
   font-weight: 400;
@@ -545,15 +566,15 @@ console.log(val)
   // background-color: green;
   width: 100%;
 }
-/deep/.el-table .cell{
+/deep/.el-table .cell {
   height: 30px !important;
 }
-.bangding-class{
-  /deep/.el-dialog{
+.bangding-class {
+  /deep/.el-dialog {
     width: 500px;
     height: 273px !important;
-    .el-dialog__body{
-      height: 200px;;
+    .el-dialog__body {
+      height: 200px;
     }
   }
 }

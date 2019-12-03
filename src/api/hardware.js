@@ -159,6 +159,7 @@ export function postSetupdateLed (data) {
 // 以上为参数修改修改++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //摄像头列表
 export function postCameraList (data) {
+  // console.log(data, '摄像头列表response的参数')
   return request({
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -170,6 +171,7 @@ export function postCameraList (data) {
 }
 //添加摄像头里面的门岗数据
 export function postDoorListId (data) {
+  // console.log(data, 'postDoorListId')
   return request({
     // headers: {
     //   'Content-Type': 'application/x-www-form-urlencoded'
@@ -181,6 +183,7 @@ export function postDoorListId (data) {
 }
 //新增摄像头
 export function postCamerAdd (data) {
+  // console.log(data, '添加摄像头的参数')
   return request({
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -193,7 +196,7 @@ export function postCamerAdd (data) {
 //启用摄像头
 //禁用摄像头
 export function postCamerType (data) {
-  console.log(data, '修改摄像头状态小串的参数')
+  // console.log(data, '修改摄像头状态小串的参数')
   return request({
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -205,12 +208,36 @@ export function postCamerType (data) {
 }
 //修改摄像头
 export function postCameraUpdate (data) {
-  console.log(data, '修改摄像头状态小串的参数')
+  // console.log(data, '修改摄像头状态小串的参数')
   return request({
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     url: '/index/v1.door/camera_update',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//传入二维码
+export function postCameraCode (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.door/camer_code',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//副参数列表输出
+export function postBindingCar (data) {
+  // console.log(data, '修改摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/binding_car',
     method: 'post',
     data: QS.stringify(data)
   })

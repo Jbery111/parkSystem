@@ -275,7 +275,7 @@
             <div class="sum-class">
               <!-- 左部分 -->
               <div class="sumbox left-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form :label-position="labelPosition" label-width="80px" :disabled="ledDisable">
                   <el-form-item label="显示屏显示行数:">
                     <!-- //下拉框 -->
                     <el-select v-model="formLabelAlign.ledinfo.led_number" placeholder="请选择显示屏显示行数">
@@ -720,7 +720,7 @@
               </div>
               <!-- 右部分 -->
               <div class="sumbox right-class">
-                <el-form :label-position="labelPosition" label-width="80px">
+                <el-form :label-position="labelPosition" label-width="80px" :disabled="ledDisable">
                   <!-- 长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息:长租车,入场时显示屏显示的信息: -->
                   <el-form-item
                     label="长租车,出场时显示屏显示的信息:"
@@ -1140,6 +1140,12 @@
                 </el-form>
               </div>
             </div>
+            <!-- 修改 -->
+            <div class="modify-some">
+              <span class="modify-some_span" @click="modifyLed">
+                <i class="el-icon-edit"></i>修改
+              </span>
+            </div>
           </el-collapse-item>
         </el-collapse>
         <div class="button-class" v-if="querenVisible">
@@ -1151,7 +1157,7 @@
 </template>
 
 <script>
-import { postDoorListId, postSettingadd, postSetInfo, postSetupdateAll, postSetupdateBasis, postSetupdateBrake, postSetupdatePrice, postMonthly, postMonthlyOut, postNonMonthly, postNonMonthlyOut } from '@/api/hardware'
+import { postDoorListId, postSettingadd, postSetInfo, postSetupdateAll, postSetupdateBasis, postSetupdateBrake, postSetupdatePrice, postMonthly, postMonthlyOut, postNonMonthly, postNonMonthlyOut, postSetupdateLed } from '@/api/hardware'
 import { Message } from 'element-ui'
 import ModifyParam from './ModifyParam.vue'
 export default {
@@ -1312,6 +1318,13 @@ export default {
       userInfoList: {},//localStorage的userInfo
       outId: null,//最外层Id
       inID: null,//内层ID
+      //修改全部时需要的参数
+      // priceQuery: {},
+      // ledQuery: {},
+      // brakeQuery: {},
+      // basisQuery: {}
+
+
     }
   },
   computed: {},
@@ -1463,7 +1476,7 @@ export default {
     // 点击确认
     addSetting () {
       if (this.modifyNum === 1) {
-        alert(this.modifyNum)
+        // alert(this.modifyNum)
         var basisQuery = {}
         basisQuery.basis_name = this.formLabelAlign.basisinfo.basis_name
         basisQuery.basis_phone = this.formLabelAlign.basisinfo.basis_phone
@@ -1473,6 +1486,7 @@ export default {
         basisQuery.parkid = this.parkid
         // basisQuery.basis_name = this.formLabelAlign.basisinfo.basis_name
         // console.log(basisQuery, '1428')
+        this.basisQuery = basisQuery
         postSetupdateBasis(basisQuery).then(resp => {
           console.log(resp, 'resp')
           if (resp.data = '修改成功') {
@@ -1483,6 +1497,8 @@ export default {
       } else if (this.modifyNum === 2) {
         // console.log(this.formLabelAlign, '222222222222222222222222222222')
         var brakeQuery = {}
+        brakeQuery.car_app = this.formLabelAlign.brakeinfo.car_app
+        brakeQuery.end_time = this.formLabelAlign.brakeinfo.end_time
         brakeQuery.id = this.formLabelAlign.brakeinfo.id
         brakeQuery.car_number = this.formLabelAlign.brakeinfo.car_number
         brakeQuery.car_rent = this.formLabelAlign.brakeinfo.car_rent
@@ -1495,6 +1511,7 @@ export default {
         brakeQuery.car_wuye_release = this.formLabelAlign.brakeinfo.car_wuye_release
         brakeQuery.parkid = this.parkid
         console.log(brakeQuery, 'brakeQuery')
+        this.brakeQuery = brakeQuery
         postSetupdateBrake(brakeQuery).then(resp => {
           console.log(resp, 'resp1455')
           if (resp.data = '修改成功') {
@@ -1504,29 +1521,110 @@ export default {
         })
 
       } else if (this.modifyNum === 3) {
-        console.log(this.formLabelAlign, '222222222222222222222222222222')
+        // console.log(this.formLabelAlign, '222222222收费设置222222222222222222222')
         var priceQuery = {}
-        priceQuery.car_time = this.formLabelAlign.brakeinfo.car_time
-        priceQuery.car_price_time = this.formLabelAlign.brakeinfo.car_price_time
-        priceQuery.car_price = this.formLabelAlign.brakeinfo.car_price
-        priceQuery.time_out = this.formLabelAlign.brakeinfo.time_out
-        priceQuery.time_out_price = this.formLabelAlign.brakeinfo.time_out_price
-        priceQuery.max_price = this.formLabelAlign.brakeinfo.max_price
-        priceQuery.cycle = this.formLabelAlign.brakeinfo.cycle
-        priceQuery.single_max = this.formLabelAlign.brakeinfo.single_max
-        priceQuery.single_max_price = this.formLabelAlign.brakeinfo.single_max_price
-        priceQuery.car_double_price = this.formLabelAlign.brakeinfo.car_double_price
-        priceQuery.car_double_price_2 = this.formLabelAlign.brakeinfo.car_double_price_2
-        priceQuery.car_rent_price = this.formLabelAlign.brakeinfo.car_rent_price
-        priceQuery.car_rent_price_2 = this.formLabelAlign.brakeinfo.car_rent_price_2
+
+        priceQuery.car_time = this.formLabelAlign.priceinfo.car_time
+        priceQuery.car_price_time = this.formLabelAlign.priceinfo.car_price_time
+        priceQuery.car_price = this.formLabelAlign.priceinfo.car_price
+        priceQuery.time_out = this.formLabelAlign.priceinfo.time_out
+        priceQuery.time_out_price = this.formLabelAlign.priceinfo.time_out_price
+        priceQuery.max_price = this.formLabelAlign.priceinfo.max_price
+        priceQuery.cycle = this.formLabelAlign.priceinfo.cycle
+        priceQuery.single_max = this.formLabelAlign.priceinfo.single_max
+        priceQuery.single_max_price = this.formLabelAlign.priceinfo.single_max_price
+        priceQuery.car_double_price = this.formLabelAlign.priceinfo.car_double_price
+        priceQuery.car_double_price_2 = this.formLabelAlign.priceinfo.car_double_price_2
+        priceQuery.car_rent_price = this.formLabelAlign.priceinfo.car_rent_price
+        priceQuery.car_rent_price_2 = this.formLabelAlign.priceinfo.car_rent_price_2
         priceQuery.id = this.formLabelAlign.priceinfo.id
         priceQuery.parkid = this.parkid
         console.log(priceQuery, 'priceQuery2222222')
+        this.priceQuery = priceQuery
         postSetupdatePrice(priceQuery).then(resp => {
           console.log(resp, 'respprice')
+          if (resp.data = '修改成功') {
+            Message(resp.data)
+            this.setInfoHandler()
+          }
         })
       } else if (this.modifyNum === 4) {
-
+        //显示屏修改
+        console.log(this.formLabelAlign, '222222222收费设置222222222222222222222')
+        var ledQuery = {}
+        ledQuery.car_rent_admission = this.car_rent_admission1.join(',')
+        ledQuery.car_rent_appearance = this.car_rent_appearance1.join(',')
+        ledQuery.car_stop_admission = this.car_stop_admission1.join(',')
+        ledQuery.car_stop_appearance = this.car_stop_appearance1.join(',')
+        ledQuery.car_no_admission = this.car_no_admission1.join(',')
+        ledQuery.car_no_appearance = this.car_no_appearance1.join(',')
+        ledQuery.led_number = this.formLabelAlign.ledinfo.led_number
+        ledQuery.car_rent_day = this.formLabelAlign.ledinfo.car_rent_day
+        ledQuery.sound = this.formLabelAlign.ledinfo.sound
+        ledQuery.time = this.formLabelAlign.ledinfo.time
+        ledQuery.id = this.formLabelAlign.ledinfo.id
+        ledQuery.parkid = this.parkid
+        console.log(ledQuery, 'ledQuery2222222')
+        this.ledQuery = ledQuery
+        postSetupdateLed(ledQuery).then(resp => {
+          console.log(resp, 'ledresp')
+          if (resp.data = '修改成功') {
+            Message(resp.data)
+            this.setInfoHandler()
+          }
+        })
+      } else if (this.modifyNum === 0) {
+        // console.log(this.ledQuery
+        var modifyAllQuery = {}
+        modifyAllQuery.basis_name = this.formLabelAlign.basisinfo.basis_name
+        modifyAllQuery.basis_address = this.formLabelAlign.basisinfo.basis_address
+        modifyAllQuery.basis_phone = this.formLabelAlign.basisinfo.basis_phone
+        modifyAllQuery.basis_number = this.formLabelAlign.basisinfo.basis_number
+        modifyAllQuery.car_number = this.formLabelAlign.brakeinfo.car_number
+        modifyAllQuery.car_rent = this.formLabelAlign.brakeinfo.car_rent
+        modifyAllQuery.car_export = this.formLabelAlign.brakeinfo.car_export
+        modifyAllQuery.car_endtime = this.formLabelAlign.brakeinfo.car_endtime
+        modifyAllQuery.car_double = this.formLabelAlign.brakeinfo.car_double
+        modifyAllQuery.car_yellow = this.formLabelAlign.brakeinfo.car_yellow
+        modifyAllQuery.car_police = this.formLabelAlign.brakeinfo.car_police
+        modifyAllQuery.car_wuye = this.formLabelAlign.brakeinfo.car_wuye
+        modifyAllQuery.car_wuye_release = this.formLabelAlign.brakeinfo.car_wuye_release
+        modifyAllQuery.car_app = this.formLabelAlign.brakeinfo.car_app
+        modifyAllQuery.led_number = this.formLabelAlign.ledinfo.led_number
+        modifyAllQuery.car_rent_admission = this.car_rent_admission1.join(',')
+        modifyAllQuery.car_rent_appearance = this.car_rent_appearance1.join(',')
+        modifyAllQuery.car_stop_admission = this.car_stop_admission1.join(',')
+        modifyAllQuery.car_stop_appearance = this.car_stop_appearance1.join(',')
+        modifyAllQuery.car_no_admission = this.car_no_admission1.join(',')
+        modifyAllQuery.car_no_appearance = this.car_no_appearance1.join(',')
+        modifyAllQuery.car_rent_day = this.formLabelAlign.ledinfo.car_rent_day
+        modifyAllQuery.sound = this.formLabelAlign.ledinfo.sound
+        modifyAllQuery.car_time = this.formLabelAlign.priceinfo.car_time
+        modifyAllQuery.car_price_time = this.formLabelAlign.priceinfo.car_price_time
+        modifyAllQuery.car_price = this.formLabelAlign.priceinfo.car_price
+        modifyAllQuery.time_out = this.formLabelAlign.priceinfo.time_out
+        modifyAllQuery.time_out_price = this.formLabelAlign.priceinfo.time_out_price
+        modifyAllQuery.max_price = this.formLabelAlign.priceinfo.max_price
+        modifyAllQuery.cycle = this.formLabelAlign.priceinfo.cycle
+        modifyAllQuery.single_max = this.formLabelAlign.priceinfo.single_max
+        modifyAllQuery.single_max_price = this.formLabelAlign.priceinfo.single_max_price
+        modifyAllQuery.car_double_price = this.formLabelAlign.priceinfo.car_double_price
+        modifyAllQuery.car_double_price_2 = this.formLabelAlign.priceinfo.car_double_price_2
+        modifyAllQuery.car_rent_price = this.formLabelAlign.priceinfo.car_rent_price
+        modifyAllQuery.car_rent_price_2 = this.formLabelAlign.priceinfo.car_rent_price_2
+        modifyAllQuery.pid = 0
+        modifyAllQuery.time = this.formLabelAlign.ledinfo.time
+        modifyAllQuery.id = this.outId
+        modifyAllQuery.state = 1
+        modifyAllQuery.id = this.outId
+        modifyAllQuery.parkid = this.parkid
+        modifyAllQuery.end_time = this.formLabelAlign.brakeinfo.end_time
+        console.log(modifyAllQuery, 'modifyAllQuerymodifyAllQuerymodifyAllQuerymodifyAllQuery')
+        postSetupdateAll(modifyAllQuery).then(resp => {
+          console.log(resp, '修改全部的response')
+          Message(resp.data)
+          this.setInfoHandler()
+        })
       }
     }
   }

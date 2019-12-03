@@ -52,6 +52,15 @@
             border-color:#46C346FF; padding:5px;"
                 @click="handleQiyong(scope.$index, scope.row)"
               >启用</el-button>
+              <el-button
+                v-if="scope.row.camera_door === 2 ? true:false"
+                class="el-btn2"
+                size="mini"
+                style="background:#1FBBA6; color:#fff; font-size:14px;height:30px; width:52px;
+            border-color:#1FBBA6; padding:5px;"
+                @click="handleQr(scope.$index, scope.row)"
+                v-html="scope.row.image===null  ? '收款码':'查看收款码'"
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -250,17 +259,82 @@
         <el-button type="primary" @click="handleEditDid">确认</el-button>
       </span>
     </el-dialog>
+    <!-- 收款码 -->
+    <el-dialog
+      title="收款码"
+      custom-class="myAddForm"
+      :append-to-body="true"
+      class="face-class"
+      :visible.sync="fcDialogFormVisible"
+      :close-on-click-modal="false"
+    >
+      <!-- 上传身份证正面 -->
+      <div class="upimg-class upimg-top">
+        <span style="width:158px;">收款码:</span>
+        <div class="up-img">
+          <el-upload
+            ref="upload"
+            :limit="1"
+            action="#"
+            :on-remove="handleRemove"
+            :on-preview="handlePictureCardPreview"
+            :on-change="handleChange"
+            list-type="picture-card"
+            :auto-upload="false"
+            :class="{hide:hideUpload}"
+          >
+            <i slot="default" class="el-icon-plus" />
+            <div slot="file" slot-scope="{file}">
+              <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
+              <span class="el-upload-list__item-actions">
+                <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                  <i class="el-icon-zoom-in" />
+                </span>
+              </span>
+            </div>
+          </el-upload>
+          <!-- 图片预览部分 -->
+          <el-dialog
+            style="width:100%;background:#999;height:100%;z-index:25689;"
+            custom-class="detailForm"
+            title="查看详情"
+            :modal="mod"
+            :visible.sync="ImgDiaLog.add"
+            :append-to-body="true"
+            :fullscreen="true"
+            :close-on-click-modal="false"
+          >
+            <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
+          </el-dialog>
+        </div>
+      </div>
+      <div class="addNow" style="top:80%;" @click="uploadFaceHandler">确认上传</div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { Message } from 'element-ui'
-import { postCameraList, postDoorListId, postCamerAdd, postCamerType, postCameraUpdate } from '@/api/hardware'
+import { postCameraList, postDoorListId, postCamerAdd, postCamerType, postCameraUpdate, postCameraCode } from '@/api/hardware'
 // data数据
 export default {
   components: {},
   data () {
     return {
+      // outId: null,//本条数据的id
+      limitCount: 1,
+      hideUpload: false,
+      mod: false, // 不需要遮罩层
+      fileLists: [], // 添加图片
+      fcDialogFormVisible: false,
+      ImgDiaLog: { // 图片弹窗显示与否
+        origin: false,
+        originSrc: '',
+        add: false,
+        addSrc: '',
+        modify: false,
+        modifySrc: ''
+      },
       camareId: null,//摄像头id
       centerDialogVisible2: false,//新增摄像头
       centerDialogVisible3: false,//修改摄像头
@@ -315,7 +389,7 @@ export default {
         camera_name: '',//摄像头名称
         camera_sn: '',//摄像头设备序列号
         camera_host: '',//设备的ip地址
-        camera_door: ''//1是入口2是出口
+        camera_door: null//1是入口2是出口
       },
       door_post_name: '',//门岗名称
       door_post_name1: '',//修改时的门岗名称
@@ -327,7 +401,7 @@ export default {
         camera_name: '',//摄像头名称
         camera_sn: '',//摄像头设备序列号
         camera_host: '',//设备的ip地址
-        camera_door: ''//1是入口2是出口
+        camera_door: null//1是入口2是出口
       },
 
     }
@@ -361,11 +435,19 @@ export default {
       this.formModifyContent.camera_door = value
     },
     addCamer () {
+      this.formAddContent.door_id = ''
+      this.formAddContent.camera_name = ''
+      this.formAddContent.camera_sn = ''
+      this.formAddContent.camera_host = ''
+      this.formAddContent.camera_door = null
       this.centerDialogVisible2 = true
+      this.inOut = ''
+      this.door_post_name = ''
       // alert('新增门岗')
       postDoorListId({ parkid: this.parkid }).then(resp => {
         console.log(resp, '门岗类型列表')
         this.doorNameLists = resp.data
+
       })
 
     },
@@ -467,6 +549,43 @@ export default {
         this.pageNums = resp.data.pageNum
         this.totalPage = resp.data.total
         this.currentPage = resp.data.page
+      })
+    },
+    handleQr (index, row) {
+      console.log(row, 'row')
+      this.fcDialogFormVisible = true
+      this.camareId = row.id
+    },
+    // 图片事件
+    handleRemove (file, fileList) {
+      console.log(fileList, 636)
+      this.fileLists = fileList
+      this.hideUpload = fileList.length >= this.limitCount
+    },
+    handlePictureCardPreview (file) {
+      this.ImgDiaLog.addSrc = file.url
+      this.ImgDiaLog.add = true // 添加预览
+      console.log(123)
+    },
+    // 本地选中的图片变化
+    handleChange (file, fileList) {
+      console.log(file, fileList, '图片事件')
+      if (fileList.length < 2) { // 允许最多上传三张图片
+        this.fileLists = fileList
+      }
+      this.hideUpload = fileList.length >= this.limitCount
+    },
+    uploadFaceHandler () {
+      const id = this.camareId
+      const formData = new FormData()
+      formData.append('id', id)
+      formData.append('parkid', this.parkid)
+      if (this.fileLists[0]) {
+        formData.append('image', this.fileLists[0].raw)
+      }
+      console.log(this.fileLists, '二维码参数')
+      postCameraCode(formData).then(resp => {
+        console.log(resp, 'resp二维码')
       })
     }
   }
@@ -1050,6 +1169,88 @@ export default {
 /deep/.el-table .cell {
   height: 30px !important;
 }
-.addCame-class {
+.chenp {
+  display: block;
+}
+.face-class {
+  // background-color: #f00;
+  /deep/.el-dialog {
+    width: 400px;
+    height: 216px !important;
+    min-width: 420px !important;
+    .el-dialog__body {
+      padding: 40px;
+      box-sizing: border-box;
+    }
+  }
+}
+/deep/.up-img {
+  z-index: 999;
+  height: 60px;
+  overflow: hidden;
+  position: absolute;
+  top: 50px;
+  left: 140px;
+
+  .el-icon-plus {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+  }
+  .el-upload--picture-card {
+    position: relative;
+    width: 60px !important;
+    height: 60px !important;
+  }
+  .el-upload-list--picture-card {
+    height: 60px !important;
+    width: 60px !important;
+    .el-upload-list__item {
+      width: 60px !important;
+      height: 60px !important;
+    }
+    .el-upload-list--picture-card .el-upload-list__item {
+      height: 60px !important;
+    }
+  }
+}
+/deep/.myAddForm {
+  background-color: #fff;
+  margin-top: 0% !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  min-width: 420px;
+  border-radius: 5px;
+}
+.addNow {
+  display: block;
+  padding: 0 12px;
+  height: 32px;
+  background: rgba(248, 172, 89, 1);
+  border-radius: 4px;
+  position: absolute;
+  bottom: 24px;
+  left: 43%;
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: rgba(255, 254, 254, 1);
+  line-height: 32px;
+  text-align: center;
+  cursor: pointer;
+}
+/deep/.hide .el-upload--picture-card {
+  display: none !important;
+}
+.detailForm {
+}
+/deep/.el-dialog.is-fullscreen {
+  width: 800px !important;
+  height: 640px !important;
+  margin-top: 140px !important;
 }
 </style>

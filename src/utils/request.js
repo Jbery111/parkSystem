@@ -34,7 +34,7 @@ service.interceptors.request.use(
       } // 这里没用
       config.headers = obj
     }
-    console.log(config, 'config')
+    // console.log(config, 'config')
     return config
   },
   error => {

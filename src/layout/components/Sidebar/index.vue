@@ -36,13 +36,13 @@ export default {
   components: { SidebarItem, Logo },
   methods: {
     ...mapMutations(['setRouterAsync']),
-    routerHandler(item) {
+    routerHandler (item) {
       console.log(item, '我的item')
       eventBus.$emit('firstRouter', item)
     }
   },
   watch: {
-    '$route'(to, from) {
+    '$route' (to, from) {
       // console.log(to, 'tototootototototot')
       const fullPath = to.fullPath
       const str = fullPath.split('/')
@@ -61,10 +61,10 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
-    routes() {
+    routes () {
       return this.$router.options.routes
     },
-    activeMenu() {
+    activeMenu () {
       const route = this.$route
       const { meta, path } = route
       // if set path, the sidebar will highlight the path you set
@@ -72,34 +72,34 @@ export default {
         return meta.activeMenu
       }
       let newPath = path.split("/")
-      const newPath1 = '/'+newPath[1]
+      const newPath1 = '/' + newPath[1]
       // console.log(newPath1,'newdddddddddddddddddddddddddddddddddddddddddddddddddddddddd')
       return newPath1
     },
-    showLogo() {
+    showLogo () {
       return this.$store.state.settings.sidebarLogo
     },
-    variables() {
+    variables () {
       return variables
     },
-    isCollapse() {
+    isCollapse () {
       return !this.sidebar.opened
     }
   },
 
-  created() {
-    console.log(this.sidebarMenu,'this.sidebarMenu')
+  created () {
+    // console.log(this.sidebarMenu, 'this.sidebarMenu')
     const fullPath = this.$route.fullPath
-      const str = fullPath.split('/')
-      const strData = str[1]
-      const routerOptions = this.sidebarMenu
-      const lists = routerOptions.filter(item => item.name === strData)
-      if (strData === 'dashboard') {
-        // console.log(strData)
-      } else {
-        this.setRouterAsync(lists[0])
-      }
-    console.log(this.$route,'this.$routeSIDERBAR')
+    const str = fullPath.split('/')
+    const strData = str[1]
+    const routerOptions = this.sidebarMenu
+    const lists = routerOptions.filter(item => item.name === strData)
+    if (strData === 'dashboard') {
+      // console.log(strData)
+    } else {
+      this.setRouterAsync(lists[0])
+    }
+    // console.log(this.$route,'this.$routeSIDERBAR')
     if (localStorage.getItem('isRefresh') === 'true') {
       location.reload()
       localStorage.setItem('isRefresh', false)

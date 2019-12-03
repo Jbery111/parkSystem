@@ -38,7 +38,7 @@ Vue.use(ElementUI, {
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
-  console.log(to,'进入beforeEach')
+  // console.log(to,'进入beforeEach')
   if (to.meta.toClearLocalStorage) {
     removeToken()
     localStorage.clear()

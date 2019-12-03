@@ -1118,6 +1118,7 @@ export default {
         car_wuye: 2,//是否检测有无物业欠费情况
         car_wuye_release: 2,//物业费欠费时是否不放行
         car_app: 1,//使用APP或公众号申请绑定车辆时，是否需要后台操作人员审核
+        end_time: null,
         //收费设置
         car_time: 15,//免费停车时间（分钟）
         car_price_time: null,//基本收费时长（小时）
