@@ -59,7 +59,7 @@
                 style="background:#1FBBA6; color:#fff; font-size:14px;height:30px; width:52px;
             border-color:#1FBBA6; padding:5px;"
                 @click="handleQr(scope.$index, scope.row)"
-                v-html="scope.row.image===null  ? '收款码':'查看收款码'"
+                v-html="scope.row.image  ? '查看收款码':'收款码'"
               ></el-button>
             </template>
           </el-table-column>
@@ -259,7 +259,7 @@
         <el-button type="primary" @click="handleEditDid">确认</el-button>
       </span>
     </el-dialog>
-    <!-- 收款码 -->
+    <!-- 录入收款码 -->
     <el-dialog
       title="收款码"
       custom-class="myAddForm"
@@ -268,7 +268,7 @@
       :visible.sync="fcDialogFormVisible"
       :close-on-click-modal="false"
     >
-      <!-- 上传身份证正面 -->
+      <!-- 上传二维码 -->
       <div class="upimg-class upimg-top">
         <span style="width:158px;">收款码:</span>
         <div class="up-img">
@@ -308,7 +308,67 @@
           </el-dialog>
         </div>
       </div>
-      <div class="addNow" style="top:80%;" @click="uploadFaceHandler">确认上传</div>
+      <div
+        class="addNow"
+        style="top:80%;"
+        @click="uploadFaceHandler"
+        v-loading="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >确认上传</div>
+    </el-dialog>
+    <!-- 查看收款码 -->
+    <el-dialog
+      title="查看收款码"
+      custom-class="myAddForm"
+      :append-to-body="true"
+      class="face-class face-class1"
+      :visible.sync="fcDialogFormVisible1"
+      :close-on-click-modal="false"
+    >
+      <!-- 查看收款码 -->
+      <div class="upimg-class upimg-top">
+        <span style="width:158px;">收款码:</span>
+        <div class="up-img" style="left:105px;">
+          <el-upload
+            :limit="1"
+            action="#"
+            :file-list="temImgArr"
+            :on-remove="handleRemove"
+            :on-preview="handlePictureCardPreview"
+            :on-change="handleChange"
+            list-type="picture-card"
+            :auto-upload="false"
+            :class="{hide:hideUpload}"
+          >
+            <i slot="default" class="el-icon-plus" />
+            <div slot="file" slot-scope="{file}">
+              <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
+              <span class="el-upload-list__item-actions">
+                <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                  <i class="el-icon-zoom-in" />
+                </span>
+              </span>
+            </div>
+          </el-upload>
+          <!-- 图片预览 -->
+
+          <el-dialog
+            style="width:100%;background:#999;height:100%;z-index:25689;"
+            custom-class="detailForm"
+            title="查看详情"
+            :modal="mod"
+            :visible.sync="ImgDiaLog.add"
+            :append-to-body="true"
+            :fullscreen="true"
+            :close-on-click-modal="false"
+          >
+            <img width="100%;height:100%;" :src="ImgDiaLog.addSrc" alt />
+          </el-dialog>
+        </div>
+        <!-- <span ref="identiToast" class="tips" style="top:45px;margin-left:-40px;">请上传身份证正面</span> -->
+      </div>
+      <div v-loading="loading1" class="addNow" style="top:80%;" @click="uploadFaceHandler">确认</div>
     </el-dialog>
   </div>
 </template>
@@ -316,17 +376,21 @@
 <script>
 import { Message } from 'element-ui'
 import { postCameraList, postDoorListId, postCamerAdd, postCamerType, postCameraUpdate, postCameraCode } from '@/api/hardware'
+import M from 'minimatch'
 // data数据
 export default {
   components: {},
   data () {
     return {
+      temImgArr: [],//缩略图
+      loading: false,
       // outId: null,//本条数据的id
       limitCount: 1,
       hideUpload: false,
       mod: false, // 不需要遮罩层
       fileLists: [], // 添加图片
       fcDialogFormVisible: false,
+      fcDialogFormVisible1: false,//查看收款码
       ImgDiaLog: { // 图片弹窗显示与否
         origin: false,
         originSrc: '',
@@ -552,9 +616,23 @@ export default {
       })
     },
     handleQr (index, row) {
-      console.log(row, 'row')
-      this.fcDialogFormVisible = true
-      this.camareId = row.id
+      if (row.image) {
+        //此时为查看二维码
+        this.fcDialogFormVisible1 = true
+        console.log('插卡收款码')
+        this.camareId = row.id
+        const image = row.image
+        this.hideUpload = true
+        this.temImgArr = [{ url: image }]
+      } else {
+        console.log(row, 'row')
+        this.fcDialogFormVisible = true
+        this.camareId = row.id
+        this.hideUpload = false
+        this.$refs.upload.clearFiles()
+        this.fileLists = []
+        this.loading = false
+      }
     },
     // 图片事件
     handleRemove (file, fileList) {
@@ -576,6 +654,7 @@ export default {
       this.hideUpload = fileList.length >= this.limitCount
     },
     uploadFaceHandler () {
+      this.loading = true
       const id = this.camareId
       const formData = new FormData()
       formData.append('id', id)
@@ -583,9 +662,16 @@ export default {
       if (this.fileLists[0]) {
         formData.append('image', this.fileLists[0].raw)
       }
-      console.log(this.fileLists, '二维码参数')
+      console.log(id, this.fileLists, '二维码参数')
       postCameraCode(formData).then(resp => {
         console.log(resp, 'resp二维码')
+        if (resp.data === '修改二维码成功') {
+          this.loading = false
+          this.fcDialogFormVisible = false
+          this.fcDialogFormVisible1 = false
+          Message(resp.data)
+          this.getCamereList(this.currentPage, 10, this.park_id)
+        }
       })
     }
   }

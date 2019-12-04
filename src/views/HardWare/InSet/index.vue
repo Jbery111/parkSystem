@@ -56,34 +56,30 @@
       <!-- <p>提示</p> -->
       <el-form label-position="right" label-width="80px">
         <div class="form-item">
-          <el-form-item label="职位:" class="region-class">
-            <el-select v-model="poname" placeholder="请选择职位">
-              <el-option
-                v-for="item in cities"
-                :key="item.poname"
-                :value="item.poname"
-                @change="hanPoid(item.poid)"
-              >
-                <span class="chenp" @click="hanPoid(item.poid)">{{ item.poname }}</span>
+          <el-form-item label="选择停车场:" class="region-class">
+            <el-select v-model="setting_name" placeholder="请选择停车场">
+              <el-option v-for="item in parkLists" :key="item.id" :value="item.setting_name">
+                <span class="chenp" @click="hanid(item.id)">{{ item.setting_name }}</span>
                 <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
               </el-option>
             </el-select>
-            <p class="mistack-message">{{ mistakeToast3 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast3 }}</p> -->
           </el-form-item>
           <!-- //选择停车场备选组 -->
-          <el-form-item label="职位:">
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox label="复选框 A"></el-checkbox>
-              <el-checkbox label="复选框 B"></el-checkbox>
-              <br />
-              <el-checkbox label="复选框 C"></el-checkbox>
+          <el-form-item label="选择门岗:">
+            <el-checkbox-group v-model="doorLists1">
+              <el-checkbox
+                v-for="item in doorLists"
+                :label="item.id"
+                :key="item.door_post_name"
+              >{{item.door_post_name}}</el-checkbox>
             </el-checkbox-group>
-            <p class="mistack-message">{{ mistakeToast3 }}</p>
+            <!-- <p class="mistack-message">{{ mistakeToast3 }}</p> -->
           </el-form-item>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" style="font-size:14px;">确 认</el-button>
+        <el-button type="primary" style="font-size:14px;" @click="bangdingDid">确 认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -91,7 +87,7 @@
 
 <script>
 import { Message } from 'element-ui'
-import { postBindingCar } from '@/api/hardware'
+import { postBindingCar, postBindingInfo, postBindingInfoBach } from '@/api/hardware'
 import ModifyParams from './ModifyParams.vue'
 import AddInset from './AddInset.vue'
 // data数据
@@ -102,6 +98,7 @@ export default {
   },
   data () {
     return {
+      set_id: null,//选择的内场id
       inSetId: '',//内场id
       isShowAdd: true,
       parkid: null,
@@ -110,11 +107,10 @@ export default {
       currentPage: null,// 当前页
       centerDialogVisible1: false, // 新增门岗
       isShowCard: true,
-      formAlign: {
-        name: ''
-      },
-      poname: '',
-      checkList: ['选中且禁用', '复选框 A'],
+      parkLists: [],
+      doorLists1: [],
+      setting_name: '',
+      doorLists: [],
       tableData: []
     }
   },
@@ -123,7 +119,7 @@ export default {
 
   },
   created () {
-    console.log('内场管理创建')
+    // console.log('内场管理创建')
     this.parkid = JSON.parse(localStorage.getItem('items')).id
     this.getInsetList()
   },
@@ -131,6 +127,23 @@ export default {
 
   },
   methods: {
+    hanid (id) {
+      console.log(id, 'handpoid')
+      this.set_id = id
+    },
+    bangdingDid () {
+      console.log(this.doorLists1.join(','), 'checkListcheckListcheckList')
+      const door_id = this.doorLists1.join(',')
+      const set_id = this.set_id
+      const id = this.inSetId
+      postBindingInfoBach({ id, set_id, door_id, parkid: this.parkid }).then(resp => {
+        console.log(resp, '绑定的多多resp')
+        if (resp.data === '绑定成功') {
+          Message(resp.data)
+          this.centerDialogVisible1 = false
+        }
+      })
+    },
     //请求内场数据列表
     getInsetList (page = 1, size = 10, parkid = this.parkid) {
       // const parkid = this.parkid
@@ -146,7 +159,29 @@ export default {
       console.log(val)
     },
     handleBandi (index, row) {
-      // alert('新增门岗')
+
+      console.log(row, 'row')
+      this.inSetId = row.id
+      const id = row.id
+      postBindingInfo({ id: id, parkid: this.parkid }).then(resp => {
+        console.log(resp, '绑定的输出')
+
+        if (resp.data.seting_info) {
+          console.log('二次绑定')
+          this.doorLists = resp.data.door_list
+          this.parkLists = resp.data.set_list
+          this.set_id = resp.data.seting_info.id
+          this.setting_name = resp.data.seting_info.setting_name
+          this.doorLists1 = ['69']
+          console.log('ioioioioioioi')
+        } else {
+          console.log('第一一次绑定')
+          this.setting_name = ''
+          this.doorLists1 = []
+          this.doorLists = resp.data.door_list
+          this.parkLists = resp.data.set_list
+        }
+      })
       this.centerDialogVisible1 = true
     },
     handleEdit (index, row) {

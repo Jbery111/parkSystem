@@ -223,11 +223,11 @@ export function postCameraCode (data) {
   // console.log(data, '修改摄像头状态小串的参数')
   return request({
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'multipart/form-data;'
     },
     url: '/index/v1.door/camer_code',
     method: 'post',
-    data: QS.stringify(data)
+    data
   })
 }
 //副参数列表输出
@@ -238,6 +238,30 @@ export function postBindingCar (data) {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     url: '/index/v1.setting/binding_car',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+//绑定停车场参数输出
+export function postBindingInfo (data) {
+  console.log(data, '绑定摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/binding_info',
+    method: 'post',
+    data: QS.stringify(data)
+  })
+}
+// /停车场参数绑定
+export function postBindingInfoBach (data) {
+  console.log(data, '绑定摄像头状态小串的参数')
+  return request({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    url: '/index/v1.setting/binding_info_batch',
     method: 'post',
     data: QS.stringify(data)
   })

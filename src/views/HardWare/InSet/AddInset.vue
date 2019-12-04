@@ -112,7 +112,7 @@
                   <el-radio :label="2">否</el-radio>
                 </el-radio-group>
                 <el-input
-                  v-model="formContent.myself_msg"
+                  v-model="formLabelAlign.car_centons"
                   placeholder="请自定义提示语"
                   v-if="formLabelAlign.car_wuye_release === 1 ? true : false"
                 />
@@ -1099,6 +1099,7 @@ export default {
       formLabelAlign: {
         name: '',//负责人
         basis_number: null,//车位总数
+
         // 开闸管理
         car_number: 2,//是否匹配车牌地域名称（例：京、川）:
         car_rent: 1,//长租车辆是否自动抬杆:
@@ -1111,6 +1112,7 @@ export default {
         car_wuye_release: 2,//物业费欠费时是否不放行
         end_time: null,
         car_app: 1,//使用APP或公众号申请绑定车辆时，是否需要后台操作人员审核
+        car_centons: '',//自定义提示语
         //收费设置
         car_time: 15,//免费停车时间（分钟）
         car_price_time: null,//基本收费时长（小时）
