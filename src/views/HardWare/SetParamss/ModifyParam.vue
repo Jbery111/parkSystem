@@ -1636,8 +1636,7 @@ export default {
 }
 .setparam-container {
   position: relative;
-  // height: 2000px;
-  // background-color: green;
+  padding: 0px 20px;
   width: 100%;
   .sum-class {
     display: flex;

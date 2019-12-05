@@ -167,12 +167,15 @@ export default {
         console.log(resp, '绑定的输出')
 
         if (resp.data.seting_info) {
-          console.log('二次绑定')
+          // const arr1 = resp.data.door_info
           this.doorLists = resp.data.door_list
           this.parkLists = resp.data.set_list
           this.set_id = resp.data.seting_info.id
           this.setting_name = resp.data.seting_info.setting_name
-          this.doorLists1 = ['69']
+          //后端返回的checklist
+          this.$nextTick(function () {
+            this.doorLists1 = resp.data.door_info
+          })
           console.log('ioioioioioioi')
         } else {
           console.log('第一一次绑定')
