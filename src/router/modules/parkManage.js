@@ -55,6 +55,20 @@ const parkManageRouter = {
       name: 'MonthList',
       component: () => import('@/views/ParkManage/MonthList/index'),
       meta: { title: '包月列表', auth_id: 63 }
+    },
+    {
+      path: 'carType',
+      hidden: true,
+      name: 'carType',
+      component: () => import('@/views/ParkManage/CarType/Index'),
+      meta: { title: '车位类型', auth_id: 77 }
+    },
+    {
+      path: 'specialVehicle',
+      hidden: true,
+      name: 'specialVehicle',
+      component: () => import('@/views/ParkManage/specialVehicle/Index'),
+      meta: { title: '特殊车辆', auth_id: 78 }
     }
   ]
 }
