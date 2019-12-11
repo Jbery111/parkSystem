@@ -16,7 +16,7 @@
       </el-card>
       <!-- 分页 -->
       <div class="block">
-        <p class="record-data">共{{ pageNums }}页, {{ totalPage }}条</p>
+        <p class="record-data">共{{ pageNums }}页,共{{ totalPage }}条</p>
         <el-pagination
           background
           :page-size="pageSize"
@@ -39,28 +39,28 @@
       width="500px"
     >
       <el-form
+        ref="addCartype"
         :label-position="labelPosition"
         label-width="90px"
         :rules="rules"
         :model="addCarType"
         class="el-myclass"
-        ref="addCartype"
         hide-required-asterisk
       >
         <el-form-item label="车位类型:" prop="park_type">
           <el-input
-            class="form_item"
             v-model="addCarType.park_type"
-            @keydown.native.enter="submitForm"
+            class="form_item"
             autocomplete="off"
-          ></el-input>
+            @keydown.native.enter="submitForm"
+          />
         </el-form-item>
         <el-form-item label="长租车月租:" prop="park_car_long">
           <el-input
             v-model.number="addCarType.park_car_long"
-            @keydown.native.enter="submitForm"
             autocomplete="off"
-          ></el-input>
+            @keydown.native.enter="submitForm"
+          />
           <span class="units">元</span>
         </el-form-item>
       </el-form>
@@ -80,23 +80,23 @@
       width="500px"
     >
       <el-form
+        ref="amendCartype"
         :label-position="labelPosition"
         label-width="90px"
         :model="amendCartype"
-         :rules="rules"
+        :rules="rules"
         class="el-myclass"
         hide-required-asterisk
-        ref="amendCartype"
       >
         <el-form-item label="车位类型:" prop="park_type">
-          <el-input v-model="amendCartype.park_type" @keydown.native.enter="submit"></el-input>
+          <el-input v-model="amendCartype.park_type" @keydown.native.enter="submit" />
         </el-form-item>
         <el-form-item label="长租车月租:" prop="park_car_long">
           <el-input
             v-model.number="amendCartype.park_car_long"
-            @keydown.native.enter="submit"
             autofocus
-          ></el-input>
+            @keydown.native.enter="submit"
+          />
           <span class="units">元</span>
         </el-form-item>
       </el-form>
@@ -122,19 +122,14 @@
         class="el-myclass"
         hide-required-asterisk
       >
-        <el-form-item label="上次操作员:" >
-          <el-input
-            v-model="operatingData.name"
-            @keydown.native.enter="affirm"
-            autofocus
-            disabled
-          ></el-input>
+        <el-form-item label="上次操作员:">
+          <el-input v-model="operatingData.name" autofocus disabled @keydown.native.enter="affirm" />
         </el-form-item>
         <el-form-item label="上次操作时间:">
-          <el-input v-model="operatingData.time" @keydown.native.enter="affirm" autofocus disabled></el-input>
+          <el-input v-model="operatingData.time" autofocus disabled @keydown.native.enter="affirm" />
         </el-form-item>
-        <el-form-item label="上次操作IP地址:" prop="ip">
-          <el-input v-model="operatingData.ip" @keydown.native.enter="affirm" autofocus disabled></el-input>
+        <el-form-item label="上次操作IP地址:" >
+          <el-input v-model="operatingData.ip" autofocus disabled @keydown.native.enter="affirm" />
         </el-form-item>
       </el-form>
       <div class="footer-class">
@@ -147,7 +142,7 @@
 <script>
 import { Message } from "element-ui";
 import moment from "moment";
-import { addPark, parkList , modifyPark ,operatingRecord} from "@/api/parkCar";
+import { addPark, parkList, modifyPark, operatingRecord } from "@/api/parkCar";
 // data数据
 export default {
   components: {},
@@ -160,27 +155,27 @@ export default {
           { type: "number", message: "月租必须为数字" }
         ]
       },
-      Modifyparkingspacetype: false, //修改车位类型
+      Modifyparkingspacetype: false, // 修改车位类型
       centerDialogVisible1: false, // 新增车位类型
-      operationnote: false, //操作记录
+      operationnote: false, // 操作记录
       tableData: [],
-      userInfoList: {}, //localStorage的userInfo
-      pageNums: 1, //总页数
-      totalPage: "", //总条数
+      userInfoList: {}, // localStorage的userInfo
+      pageNums: 1, // 总页数
+      totalPage: "", // 总条数
       disabled: true,
-      id:"",//当前列id
-      ids:"",
-      //新增车位类型
+      id: "", // 当前列id
+      ids: "",
+      // 新增车位类型
       addCarType: {
         park_type: "",
         park_car_long: ""
       },
-      //修改车位类型
+      // 修改车位类型
       amendCartype: {
         park_type: "",
         park_car_long: ""
       },
-      //操作记录
+      // 操作记录
       operatingData: {
         name: "",
         time: "",
@@ -189,16 +184,16 @@ export default {
       labelPosition: "right",
       parkid: "",
       currentPage: 1, // 当前页
-      pageSize:10,//当前页条数
-      uid:"",
-      park_id:""
+      pageSize: 10, // 当前页条数
+      uid: "",
+      park_id: ""
     };
   },
   created() {
     const user = JSON.parse(localStorage.getItem("userInfo"));
-    this.parkid=user.data.Communityid;
-    this.uid=user.data.uid
-    this.park_id=user.data.Communityid
+    this.parkid = user.data.Communityid;
+    this.uid = user.data.uid;
+    this.park_id = user.data.Communityid;
     this.parkList();
   },
   methods: {
@@ -206,103 +201,119 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       console.log(val);
-      this.parkList()
+      this.parkList();
     },
-    //新增车位类型提交 验证所有表单
+    // 新增车位类型提交 验证所有表单
     submitForm() {
       this.$refs.addCartype.validate(async valid => {
         if (valid) {
-          //console.log( this.addCarType.park_type);
-        
-          let obj = await addPark({
+          // console.log( this.addCarType.park_type);
+
+          const obj = await addPark({
             park_type: this.addCarType.park_type,
             park_car_long: this.addCarType.park_car_long,
-            park_id:this.park_id,
-            uid:this.uid
+            park_id: this.park_id,
+            uid: this.uid
           });
           console.log(obj);
           if (obj === "添加成功") {
             this.centerDialogVisible1 = false;
-            //再此获取列表
-            this.parkList()
+            // 再此获取列表
+            this.parkList();
+            Message({
+              type: "success",
+              message: "添加成功"
+            });
+          } else {
+            // 失败
+            Message.error("添加失败");
           }
         } else {
           return false;
         }
       });
     },
-    //修改车位类型提交
+    // 修改车位类型提交
     submit() {
-      this.$refs.amendCartype.validate( async valid => {
+      this.$refs.amendCartype.validate(async valid => {
         if (valid) {
-          //console.log(this.amendCartype);
-          let obj=await modifyPark({
-           park_type:this.amendCartype.park_type,
-           park_car_long:this.amendCartype.park_car_long,
-           id:this.id,
-          uid:this.uid
-         })
-         this.Modifyparkingspacetype=false;
-         this.parkList();
+          // console.log(this.amendCartype);
+          const obj = await modifyPark({
+            park_type: this.amendCartype.park_type,
+            park_car_long: this.amendCartype.park_car_long,
+            id: this.id,
+            uid: this.uid
+          });
+          console.log(obj);
+          if (obj === "修改成功") {
+            this.Modifyparkingspacetype = false;
+            this.parkList();
+            Message({
+              type: "success",
+              message: "修改成功"
+            });
+          } else {
+            // 失败
+            Message.error("修改失败");
+          }
         } else {
           return false;
         }
       });
     },
-    //获取车位类型列表
+    // 获取车位类型列表
     async parkList() {
-        let obj= await parkList({
+      const obj = await parkList({
         page: this.currentPage,
         size: this.pageSize,
-        parkid:this.parkid,
-        uid:this.uid
+        parkid: this.parkid,
+        uid: this.uid
       });
-      //console.log(obj.data);
-      this.tableData=obj.data
-      this.totalPage=obj.total //总条数
-      this.pageNums=obj.pageNum
-     
+      // console.log(obj.data);
+      this.tableData = obj.data;
+      this.totalPage = obj.total; // 总条数
+      this.pageNums = obj.pageNum;
     },
-    //显示新增车位模态框
+    // 显示新增车位模态框
     addDoor() {
       this.centerDialogVisible1 = true;
-      //去除验证
+      // 去除验证
       this.$nextTick(() => {
         this.$refs.addCartype.resetFields();
       });
     },
-    //修改车位类型
+    // 修改车位类型
     compile(row) {
       console.log(row);
-      let { park_type, park_car_long ,id} = row;
+      const { park_type, park_car_long, id } = row;
       this.amendCartype.park_type = park_type;
       this.amendCartype.park_car_long = Number(park_car_long);
-      this.id=id;
+      this.id = id;
       this.Modifyparkingspacetype = true;
       // this.$nextTick(() => {
       //   this.$refs.amendCartype.resetFields();
       // });
     },
-    //操作记录
+    // 操作记录
     operation(row) {
       console.log(row);
-      let {id}=row;
-      this.ids=id
+      const { id } = row;
+      this.ids = id;
       this.operatingRecord();
       this.operationnote = true;
     },
     affirm() {
       this.operationnote = false;
     },
-    //获取操作记录列表
-    async operatingRecord(){
-      let obj=await operatingRecord({
-        state:1,
-        id:this.ids
-      })
+    // 获取操作记录列表
+    async operatingRecord() {
+      const obj = await operatingRecord({
+        state: 1,
+        id: this.ids
+      });
       console.log(obj);
-      obj.time=moment(obj.time).format("YYYY-MM-DD hh:mm:ss")
-      this.operatingData=obj
+      obj.time = moment(obj.time).format("YYYY-MM-DD hh:mm:ss");
+      this.operatingData = obj;
     }
   }
 };

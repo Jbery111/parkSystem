@@ -2,25 +2,62 @@
   <div class="hard-setparamClass">
     <div class="setparam-container">
       <el-card class="box-card">
-        <span id="newadd" @click="addor">新增特殊车辆</span>
+        <!-- 查询 -->
+        <el-form
+          style="margin-bottom: 20px;"
+          size="small"
+          :inline="true"
+          :model="searchForm"
+          class="demo-form-inline"
+        >
+          <el-form-item>
+            <el-button class="newadd" type="text" @click="addor">新增特殊车辆</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button v-if="back" class="newadd" type="text" @click="clear">返回上一级</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-input class="search" v-model="searchForm.orderNo" placeholder="输入搜索内容"></el-input>
+          </el-form-item>
+
+          <!-- 清除按钮和查询按钮 -->
+          <el-form-item>
+            <el-button class="btn" type="text" @click="search">查询</el-button>
+          </el-form-item>
+        </el-form>
         <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
-          <el-table-column prop="licensePlatenumber" label="车牌号" width="260" />
-          <el-table-column prop="Theownersname" label="车主姓名" width="260" />
-          <el-table-column prop="phone" label="联系电话" width="260"></el-table-column>
-          <el-table-column prop="remark" label="备注" width="350"></el-table-column>
-          <el-table-column prop="usermode" label="使用状态" width="260"></el-table-column>
+          <el-table-column prop="vehicle_car_number" label="车牌号" width="260" />
+          <el-table-column prop="vehicle_name" label="车主姓名" width="260" />
+          <el-table-column prop="vehicle_phone" label="联系电话" width="260"></el-table-column>
+          <el-table-column prop="centons" label="备注" width="350"></el-table-column>
+          <el-table-column label="使用状态" width="260">
+            <template slot-scope="scope">
+              <span :class="{active:scope.row.state===2}">{{scope.row.state===1?"已启用":'已禁用' }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <span class="el-btn11" @click="compile(scope.row)">修改</span>
-              <span class="el-btn22">禁用</span>
-              <span class="el-btn22">删除</span>
+              <el-button class="el-btn11" type="text" @click="compile(scope.row)">修改</el-button>
+              <el-button
+                class="el-btn22"
+                v-if="scope.row.state===1"
+                type="text"
+                @click="forbidden(scope.row)"
+              >禁用</el-button>
+              <el-button
+                class="el-btn33"
+                v-if="scope.row.state===2"
+                type="text"
+                @click="open(scope.row)"
+              >启用</el-button>
+              <el-button class="el-btn44" type="text" @click="del(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-card>
       <!-- 分页 -->
       <div class="block">
-        <p class="record-data">共 {{ pageNums }}页, {{ totalPage }}条</p>
+        <p class="record-data">共 {{ pageNums }}页,共 {{ totalPage }}条</p>
         <el-pagination
           background
           :page-size="10"
@@ -37,54 +74,113 @@
       :visible.sync="centerDialogVisible1"
       :append-to-body="true"
       center
-      class="chen"
+      class="specialvehicles"
       top="35vh"
       :close-on-click-modal="false"
       width="500px"
-    >
+     >
       <el-form
         :label-position="labelPosition"
         label-width="90px"
         :model="Specialvehicle"
         class="el-myclass"
-        ref="addCartype"
+        ref="Specialvehicle"
         hide-required-asterisk
-      >
-        <el-form-item label="车牌号:" >
+        :rules="rules"
+       >
+        <el-form-item label="车牌号:" prop="vehicle_car_number">
           <el-input
             class="form_item"
-            v-model="Specialvehicle.licensePlatenumber"
+            v-model="Specialvehicle.vehicle_car_number"
             @keydown.native.enter="submitForm"
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="车主姓名:" >
+        <el-form-item label="车主姓名:" prop="vehicle_name">
           <el-input
-            v-model.number="Specialvehicle.Theownersname"
+            v-model="Specialvehicle.vehicle_name"
             @keydown.native.enter="submitForm"
             autocomplete="off"
           ></el-input>
-          <span class="units">元</span>
         </el-form-item>
-        <el-form-item label="联系电话:" >
+        <el-form-item label="联系电话:" prop="vehicle_phone">
           <el-input
-            v-model.number="Specialvehicle.phone"
+            v-model.number="Specialvehicle.vehicle_phone"
             @keydown.native.enter="submitForm"
             autocomplete="off"
           ></el-input>
-          <span class="units">元</span>
         </el-form-item>
-        <el-form-item label="备注:" prop="carMonthly">
+        <el-form-item label="备注:" class="input_two">
           <el-input
-            v-model.number="Specialvehicle.remark"
+            v-model="Specialvehicle.centons"
             @keydown.native.enter="submitForm"
             autocomplete="off"
+            class="input textarea"
+            rows="4"
+            type="textarea"
           ></el-input>
-          <span class="units">元</span>
         </el-form-item>
       </el-form>
       <div class="footer-class">
         <span @click="submitForm">确认</span>
+      </div>
+    </el-dialog>
+
+    <!-- 修改特殊车辆 -->
+    <el-dialog
+      title="修改特殊车辆"
+      :visible.sync="Modification"
+      :append-to-body="true"
+      center
+      class="specialvehicles"
+      top="35vh"
+      :close-on-click-modal="false"
+      width="500px"
+     >
+      <el-form
+        :label-position="labelPosition"
+        label-width="90px"
+        :model="Modificationcar"
+        class="el-myclass"
+        ref="addCartype"
+        :rules="rules"
+        hide-required-asterisk
+      >
+        <el-form-item label="车牌号:" prop="vehicle_car_number">
+          <el-input
+            class="form_item"
+            v-model="Modificationcar.vehicle_car_number"
+            @keydown.native.enter="affirm"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="车主姓名:" prop="vehicle_car_number">
+          <el-input
+            v-model="Modificationcar.vehicle_name"
+            @keydown.native.enter="affirm"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话:" prop="vehicle_phone">
+          <el-input
+            v-model.number="Modificationcar.vehicle_phone"
+            @keydown.native.enter="affirm"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="备注:" prop="centons" class="input_two">
+          <el-input
+            v-model="Modificationcar.centons"
+            @keydown.native.enter="affirm"
+            autocomplete="off"
+            class="input textarea"
+            rows="4"
+            type="textarea"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="footer-class">
+        <span @click="affirm">确认</span>
       </div>
     </el-dialog>
   </div>
@@ -92,50 +188,290 @@
 
 <script>
 import { Message } from "element-ui";
+import {
+  addspecialcar,
+  specialcarlist,
+  amendcarlist,
+  deletecar,
+  searchList,
+  startusing
+} from "@/api/parkCar";
 // data数据
 export default {
   components: {},
   data() {
     return {
+      rules: {
+        vehicle_car_number: [{ required: true, message: "车牌号不能为空" }],
+        vehicle_name: [{ required: true, message: "姓名不能为空" }],
+        vehicle_phone: [
+          { required: true, message: "电话不能为空" },
+          { type: "number", message: "电话必须为数字" }
+        ]
+      },
       tableData: [],
+      back:false,
       userInfoList: {}, //localStorage的userInfo
-      pageNums: null, //总页数
+      pageNums: 1, //总页数
       totalPage: null, //总条数
       disabled: true,
       labelPosition: "right",
-      parkid: null,
-      currentPage: null, // 当前页
+      park_id: null, //停车场id
+      parkid: "",
+      currentPage: 1, // 当前页
+      pageSize: 10, // 当前页条数
       centerDialogVisible1: false, //新增特殊车辆
+      Modification: false, //修改特殊车辆
+      id: "", //列表唯一id
+      state: "", //状态1启用2禁用
+      //修改车辆
+      Modificationcar: {
+        vehicle_car_number: "", //车牌号
+        vehicle_name: "", //姓名
+        vehicle_phone: "", //电话
+        centons: "" //备注
+      },
+      //新增车辆
       Specialvehicle: {
-        licensePlatenumber: "",
-        Theownersname: "",
-        phone: "",
-        remark: "",
+        vehicle_car_number: "", //车牌号
+        vehicle_name: "", //姓名
+        vehicle_phone: "", //电话
+        centons: "" //备注
+      },
+      //查询
+      searchForm: {
+        orderNo: ""
       }
     };
   },
   created() {
-    let data = [
-      {
-        licensePlatenumber: "川AQBZ95",
-        Theownersname: "李四",
-        phone: "12345678912",
-        remark: "吃葡萄不吐葡萄皮",
-        usermode: "已启用"
-      }
-    ];
-    this.tableData = data;
+    //获取列表
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+    this.parkid = user.data.Communityid;
+    this.park_id = user.data.Communityid;
+    this.parkList();
   },
   methods: {
     // 分页设置
     handleCurrentChange(val) {
       this.currentPage = val;
+      this.parkList();
     },
-    compile() {},
-    addor(){
-        this.centerDialogVisible1=true
+    //编辑
+    compile(row) {
+      this.Modification = true;
+      let {
+        id,
+        vehicle_name,
+        vehicle_phone,
+        vehicle_car_number,
+        centons
+      } = row;
+      this.id = id;
+      this.Modificationcar.vehicle_name = vehicle_name;
+      this.Modificationcar.vehicle_phone = Number(vehicle_phone);
+      this.Modificationcar.vehicle_car_number = vehicle_car_number;
+      this.Modificationcar.centons = centons;
     },
-    submitForm(){}
+    //确认编辑
+    affirm() {
+      this.$refs.addCartype.validate(async valid => {
+        if (valid) {
+          // console.log(this.amendCartype);
+
+          let obj = await amendcarlist({
+            vehicle_name: this.Modificationcar.vehicle_name,
+            vehicle_phone: this.Modificationcar.vehicle_phone,
+            vehicle_car_number: this.Modificationcar.vehicle_car_number,
+            centons: this.Modificationcar.centons,
+            id: this.id
+          });
+          console.log(obj);
+          if (obj === "修改成功") {
+            this.Modification = false;
+            this.parkList();
+            Message({
+              type: "success",
+              message: "修改成功"
+            });
+          } else {
+            // 失败
+            Message.error("修改失败");
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    //新增弹框打开
+    addor() {
+      this.centerDialogVisible1 = true;
+      // 去除验证
+      this.$nextTick(() => {
+        this.$refs.Specialvehicle.resetFields();
+      });
+    },
+    //新增提交
+    async submitForm() {
+      //   console.log(this.Specialvehicle);
+
+      //  if(obj==="添加成功"){
+      //   this.centerDialogVisible1=false
+      //  }
+      this.$refs.Specialvehicle.validate(async valid => {
+        if (valid) {
+          //console.log( valid);
+          //发送请求
+          let obj = await addspecialcar({
+            vehicle_name: this.Specialvehicle.vehicle_name,
+            vehicle_phone: this.Specialvehicle.vehicle_phone,
+            vehicle_car_number: this.Specialvehicle.vehicle_car_number,
+            park_id: this.park_id,
+            centons: this.Specialvehicle.centons
+          });
+          //console.log(obj);
+          if (obj === "添加成功") {
+            this.centerDialogVisible1 = false;
+            // 再此获取列表
+            this.parkList();
+            Message({
+              type: "success",
+              message: "添加成功"
+            });
+          } else {
+            // 失败
+            Message.error("添加失败");
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    //禁用
+    forbidden(row) {
+      console.log(row);
+
+      let { id } = row;
+      this.$confirm("此操作将禁用, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          let obj = await startusing({
+            type: 2,
+            id
+          });
+          console.log(obj);
+          this.$message({
+            type: "success",
+            message: "禁用成功!"
+          });
+          this.parkList();
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消禁用"
+          });
+        });
+    },
+    //启用
+    open(row) {
+      console.log(row);
+      let { id } = row;
+      this.$confirm("此操作将启用, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          let obj = await startusing({
+            type: 1,
+            id
+          });
+          console.log(obj);
+          this.$message({
+            type: "success",
+            message: "启用成功!"
+          });
+          this.parkList();
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消启用"
+          });
+        });
+    },
+    //删除
+    del(row) {
+      let { id } = row;
+      console.log(id);
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          let obj = await deletecar({ id });
+          console.log(obj);
+          if (obj === "删除成功") {
+            this.parkList();
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+          }
+        })
+
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    //查询
+    async search() {
+      //console.log(this.searchForm.orderNo);
+      if (this.searchForm.orderNo) {
+        let obj = await searchList({
+          page: this.currentPage,
+          size: this.pageSize,
+          parkid: this.parkid,
+          name: this.searchForm.orderNo
+        });
+        console.log(obj);
+        this.tableData = obj.data;
+        this.totalPage = obj.total; // 总条数
+        this.pageNums = obj.pageNum; //总页数
+        this.back=true;
+      }
+      //  date=obj.data
+      //   date.foreach(v=>{
+      //     console.log(v);
+
+      //   })
+    },
+    //获取列表
+    async parkList() {
+      const obj = await specialcarlist({
+        page: this.currentPage,
+        size: this.pageSize,
+        parkid: this.parkid
+      });
+      this.tableData = obj.data;
+      this.totalPage = obj.total; // 总条数
+      this.pageNums = obj.pageNum; //总页数
+      console.log(obj);
+    },
+    //清除
+    clear(){
+       this.tableData='';
+         this.back=false;
+       this.parkList()
+    }
   }
 };
 </script>
@@ -186,7 +522,7 @@ export default {
       cursor: default;
       width: 400px;
       height: 30px !important;
-      line-height: 30px;
+      line-height: 30px !important;
       font-size: 14px;
       padding: 0 0 0 65px;
       font-family: Microsoft YaHei;
@@ -438,7 +774,7 @@ export default {
   z-index: 56789356345554555;
 }
 
-#newadd {
+.newadd {
   display: inline-block;
   display: flex;
   align-items: center;
@@ -446,7 +782,7 @@ export default {
   color: #fff;
   width: 100px;
   height: 30px;
-  line-height: 30px;
+  line-height: 5px;
   background: rgba(37, 186, 217, 1);
   border-radius: 4px;
   font-size: 14px;
@@ -479,7 +815,7 @@ export default {
   color: #fff;
   width: 52px;
   height: 30px;
-  line-height: 30px;
+  line-height: 5px;
   background: rgba(37, 186, 217, 1);
   border-radius: 4px;
   font-size: 14px;
@@ -491,15 +827,47 @@ export default {
 .el-btn22 {
   display: inline-block;
   text-align: center;
-  margin-left: 12px;
+  margin-left: 8px;
   color: #fff;
-  line-height: 30px;
+  line-height: 5px;
   font-size: 14px;
   font-family: Microsoft YaHei;
   font-weight: 400;
   color: rgba(255, 255, 255, 1);
   cursor: pointer;
-  width: 72px;
+  width: 52px;
+  height: 30px;
+  background: #fa5c5c;
+  border-radius: 4px;
+}
+.el-btn33 {
+  margin-left: 8px;
+  display: inline-block;
+  text-align: center;
+  color: #fff;
+  width: 52px;
+  height: 30px;
+  line-height: 5px;
+  background: #46c346;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  cursor: pointer;
+}
+.el-btn44 {
+  display: inline-block;
+  text-align: center;
+  margin-left: 8px;
+  color: #fff;
+  line-height: 5px;
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  cursor: pointer;
+  width: 52px;
   height: 30px;
   background: rgba(204, 204, 204, 1);
   border-radius: 4px;
@@ -563,4 +931,126 @@ export default {
   position: absolute;
   right: 42px;
 }
+.specialvehicles {
+  /deep/.el-dialog {
+    min-width: 400px;
+    height: 411px;
+    .el-dialog__header {
+      text-align: left;
+      height: 47px !important;
+      border-bottom: 1px solid #eff2f5;
+    }
+    /deep/.el-dialog__body {
+      text-align: initial;
+      padding: 24px 25px 25px 0px;
+      .el-myclass {
+        padding-left: 55px;
+        height: 65px !important;
+        /deep/ .el-form-item__label {
+          padding: 0 8px 0 0;
+          text-align: left;
+        }
+        /deep/.el-input__inner {
+          // background-color: #f00;
+          width: 248px !important;
+          height: 32px !important;
+          border: 1px solid rgba(210, 210, 210, 1) !important;
+          border-radius: 4px !important;
+          color: #333333;
+          padding: 0px 7px;
+        }
+      }
+    }
+    .footer-class {
+      // background-color: #f00;
+      cursor: pointer;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      margin-top: 204px;
+      span {
+        width: 72px;
+        height: 30px;
+        border-radius: 4px;
+        background-color: #fcb048;
+        border-color: #fcb048;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+      }
+    }
+    .el-form-item {
+      margin-bottom: 0;
+      height: 50px !important;
+    }
+    .input_two {
+      .el-form-item__content {
+        .el-input {
+          .el-input__inner {
+            height: 88px !important;
+            vertical-align: text-top !important;
+          }
+        }
+        .textarea {
+          .el-textarea__inner {
+            font-family: "Microsoft" !important;
+            font-size: 20px !important;
+            // overflow-y: scroll;
+            width: 248px;
+            height: 88px;
+          }
+          .el-textarea__inner:focus {
+            border-color: #d2d2d2;
+          }
+        }
+      }
+    }
+  }
+}
+.demo-form-inline {
+  height: 30px !important;
+  margin-bottom: 2px !important;
+  .search {
+    /deep/.el-input__inner {
+      // background-color: #f00;
+      width: 177px !important;
+      height: 30px !important;
+      border: 1px solid rgba(210, 210, 210, 1) !important;
+      border-radius: 4px 0 0 4px !important;
+      color: #333333;
+      padding: 0px 7px;
+      position: absolute;
+      left: 1300px;
+      bottom: -10px;
+    }
+  }
+  .btn {
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    width: 24px;
+    height: 30px;
+    line-height: 5px;
+    background: rgba(204, 204, 204, 1);
+    border-radius: 0px 4px 4px 0px;
+    font-size: 14px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+
+    position: absolute;
+    left: 1466px;
+    bottom: -31px;
+  }
+}
+.active {
+  color: red;
+}
+// body::-webkit-scrollbar {
+//     display: none;
+// }
 </style>

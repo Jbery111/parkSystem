@@ -1,7 +1,7 @@
 import axios from 'axios'
 // import { Message } from 'element-ui'
 import store from '@/store'
-import Vue from 'vue'
+import qs from 'qs'
 import { getToken, removeToken } from '@/utils/auth'
 import router from '../router/index'
 axios.create({
@@ -23,7 +23,6 @@ axios.interceptors.request.use(
     // config.data = QS.stringify(config.data)
     if (getToken()) {
       config.headers['token'] = store.getters.token
-
     } else {
       const obj = {}
       for (const i in config.headers) {
@@ -61,29 +60,29 @@ axios.interceptors.response.use(
     return res
   }
 )
-import qs from 'qs'
+
 // 导出两个方法
 export default {
-    get(url, params = {}) {
-        return new Promise((resolve, reject) => {
-            axios.get(url, { params })
-                .then(res => {
-                    resolve(res.data)
-                })
-                .catch(err => {
-                    reject(err)
-                })
+  get(url, params = {}) {
+    return new Promise((resolve, reject) => {
+      axios.get(url, { params })
+        .then(res => {
+          resolve(res.data)
         })
-    },
-    post(url, params = {}) {
-        return new Promise((resolve, reject) => {
-            axios.post(url, qs.stringify(params))
-                .then(res => {
-                    resolve(res.data)
-                })
-                .catch(err => {
-                    reject(err)
-                })
+        .catch(err => {
+          reject(err)
         })
-    }
+    })
+  },
+  post(url, params = {}) {
+    return new Promise((resolve, reject) => {
+      axios.post(url, qs.stringify(params))
+        .then(res => {
+          resolve(res.data)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
 }
