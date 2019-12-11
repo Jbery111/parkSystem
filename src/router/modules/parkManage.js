@@ -36,7 +36,7 @@ const parkManageRouter = {
       meta: { title: '参数设置', auth_id: 60 }
     },
     {
-      path: 'pastSet',
+      path: 'PastSet',
       hidden: true,
       name: 'PastSet',
       component: () => import('@/views/ParkManage/PastSet/index'),
@@ -69,6 +69,13 @@ const parkManageRouter = {
       name: 'specialVehicle',
       component: () => import('@/views/ParkManage/specialVehicle/Index'),
       meta: { title: '特殊车辆', auth_id: 78 }
+    },
+    {
+      path: 'Parklists',
+      hidden: true,
+      name: 'Parklists',
+      component: () => import('@/views/ParkManage/Parklists/index'),
+      meta: { title: '车位列表', auth_id: 82 }
     }
   ]
 }

@@ -161,7 +161,7 @@ export default {
       tableData: [],
       userInfoList: {}, // localStorage的userInfo
       pageNums: 1, // 总页数
-      totalPage: "", // 总条数
+      totalPage:null, // 总条数
       disabled: true,
       id: "", // 当前列id
       ids: "",
@@ -269,9 +269,9 @@ export default {
         parkid: this.parkid,
         uid: this.uid
       });
-      // console.log(obj.data);
+     console.log(obj);
       this.tableData = obj.data;
-      this.totalPage = obj.total; // 总条数
+      this.totalPage = Number(obj.total); // 总条数
       this.pageNums = obj.pageNum;
     },
     // 显示新增车位模态框

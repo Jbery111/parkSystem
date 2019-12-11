@@ -9,10 +9,9 @@
           :inline="true"
           :model="searchForm"
           class="demo-form-inline"
-          
         >
           <el-form-item>
-            <el-button class="newadd" v-if="this.addcar" type="text" @click="addor">新增特殊车辆</el-button>
+            <el-button class="newadd" type="text" @click="addor">增加车位</el-button>
           </el-form-item>
           <el-form-item>
             <el-button v-if="back" class="newadd" type="text" @click="clear">返回上一级</el-button>
@@ -29,31 +28,17 @@
           </el-form-item>
         </el-form>
         <el-table :data="tableData" style="width: 100%" empty-text="暂无数据">
-          <el-table-column prop="vehicle_car_number" label="车牌号" width="280" />
-          <el-table-column prop="vehicle_name" label="车主姓名" width="280" />
-          <el-table-column prop="vehicle_phone" label="联系电话" width="280"></el-table-column>
-          <el-table-column prop="centons" label="备注" width="380" class="remark"></el-table-column>
-          <el-table-column label="使用状态" width="280">
-            <template slot-scope="scope">
-              <span :class="{active:scope.row.state===2}">{{scope.row.state===1?"已启用":'已禁用' }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column v-if="this.openmn" label="操作">
+          <el-table-column prop="Parking" label="车位号" width="200" />
+          <el-table-column prop="cartype" label="车位类型" width="200" />
+          <el-table-column prop="longcar" label="长租车月租(元)" width="200" />
+          <el-table-column prop="parkstate" label="车位状态" width="200" />
+          <el-table-column prop="Longplate" label="长租车牌号" width="200"></el-table-column>
+          <el-table-column prop="Linkbuilding" label="关联房屋" width="200" class="remark"></el-table-column>
+          <el-table-column prop="centons" label="车位备注" width="350" class="remark"></el-table-column>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button class="el-btn11" type="text" @click="compile(scope.row)">修改</el-button>
-              <el-button
-                class="el-btn22"
-                v-if="scope.row.state===1"
-                type="text"
-                @click="forbidden(scope.row)"
-              >禁用</el-button>
-              <el-button
-                class="el-btn33"
-                v-if="scope.row.state===2"
-                type="text"
-                @click="open(scope.row)"
-              >启用</el-button>
-              <el-button class="el-btn44" type="text" @click="del(scope.row)">删除</el-button>
+              <el-button class="el-btn44" type="text" @click="handle(scope.row)">操作记录</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -71,9 +56,9 @@
         />
       </div>
     </div>
-    <!-- 新增特殊车辆 -->
+    <!-- 增加车位 -->
     <el-dialog
-      title="新增车位类型"
+      title="操作记录"
       :visible.sync="centerDialogVisible1"
       :append-to-body="true"
       center
@@ -91,24 +76,31 @@
         hide-required-asterisk
         :rules="rules"
       >
-        <el-form-item label="车牌号:" prop="vehicle_car_number">
-          <el-input
-            class="form_item"
-            v-model="Specialvehicle.vehicle_car_number"
-            @keydown.native.enter="submitForm"
-            autocomplete="off"
-          ></el-input>
+         <el-form-item label="车位类型"  prop="vehicle_car_number">
+          <el-select v-model="Specialvehicle.vehicle_car_number" placeholder=""  >
+            <el-option label="宝马车位" value="宝马车位"></el-option>
+            <el-option label="大奔车位" value="大奔车位"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="车主姓名:" prop="vehicle_name">
+        <el-form-item label="车位号:" prop="vehicle_name">
           <el-input
             v-model="Specialvehicle.vehicle_name"
             @keydown.native.enter="submitForm"
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="联系电话:" prop="vehicle_phone">
+        <el-form-item label="车位状态:">
+          <template>
+            <el-radio-group v-model="Specialvehicle.radio" >
+              <el-radio :label="3">已售</el-radio>
+              <el-radio :label="6">未售</el-radio>
+              <el-radio :label="9">已出租</el-radio>
+            </el-radio-group>
+          </template>
+        </el-form-item>
+          <el-form-item label="关联房屋:" prop="house">
           <el-input
-            v-model.number="Specialvehicle.vehicle_phone"
+            v-model="Specialvehicle.house"
             @keydown.native.enter="submitForm"
             autocomplete="off"
           ></el-input>
@@ -129,9 +121,9 @@
       </div>
     </el-dialog>
 
-    <!-- 修改特殊车辆 -->
+    <!-- 修改车位 -->
     <el-dialog
-      title="修改特殊车辆"
+      title="修改车位"
       :visible.sync="Modification"
       :append-to-body="true"
       center
@@ -145,33 +137,40 @@
         label-width="90px"
         :model="Modificationcar"
         class="el-myclass"
-        ref="addCartype"
-        :rules="rules"
+        ref="Specialvehicle"
         hide-required-asterisk
+        :rules="rules"
       >
-        <el-form-item label="车牌号:" prop="vehicle_car_number">
-          <el-input
-            class="form_item"
-            v-model="Modificationcar.vehicle_car_number"
-            @keydown.native.enter="affirm"
-            autocomplete="off"
-          ></el-input>
+         <el-form-item label="车位类型"  prop="vehicle_car_number">
+          <el-select v-model="Modificationcar.vehicle_car_number" placeholder=""  >
+            <el-option label="宝马车位" value="宝马车位"></el-option>
+            <el-option label="大奔车位" value="大奔车位"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="车主姓名:" prop="vehicle_car_number">
+        <el-form-item label="车位号:" prop="vehicle_name">
           <el-input
             v-model="Modificationcar.vehicle_name"
             @keydown.native.enter="affirm"
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="联系电话:" prop="vehicle_phone">
+        <el-form-item label="车位状态:">
+          <template>
+            <el-radio-group v-model="Modificationcar.radio" >
+              <el-radio :label="3">已售</el-radio>
+              <el-radio :label="6">未售</el-radio>
+              <el-radio :label="9">已出租</el-radio>
+            </el-radio-group>
+          </template>
+        </el-form-item>
+          <el-form-item label="关联房屋:" prop="house">
           <el-input
-            v-model.number="Modificationcar.vehicle_phone"
+            v-model="Modificationcar.house"
             @keydown.native.enter="affirm"
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="备注:" prop="centons" class="input_two">
+        <el-form-item label="备注:" class="input_two">
           <el-input
             v-model="Modificationcar.centons"
             @keydown.native.enter="affirm"
@@ -186,62 +185,51 @@
         <span @click="affirm">确认</span>
       </div>
     </el-dialog>
-
-    <!-- 启用 -->
+     <!-- 操作记录 -->
     <el-dialog
-      title="提示"
-      :visible.sync="remindercar"
+      title="操作记录"
+      :visible.sync="operationss"
       :append-to-body="true"
       center
-      class="reminder"
+      class="operationnote"
       top="35vh"
       :close-on-click-modal="false"
-      width="380px"
-    >
-      <div class="footer-one">
-        <p>是否启用该特殊车辆？</p>
-      </div>
-      <div class="footer-class">
-        <span class="one" @click="cancel">取消</span>
-        <span class="two" @click="minitab">确认</span>
-      </div>
-    </el-dialog>
-    <!-- 禁用 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="forbiddencar"
-      :append-to-body="true"
-      center
-      class="reminder"
-      top="35vh"
-      :close-on-click-modal="false"
-      width="380px"
+      width="500px"
      >
-      <div class="footer-one">
-        <p>是否禁用该特殊车辆？</p>
-      </div>
+      <el-form
+        :label-position="labelPosition"
+        label-width="120px"
+        :model="operations"
+        class="el-myclass"
+        ref="Specialvehicle"
+        hide-required-asterisk
+        disabled
+      >
+          <el-form-item label="上次操作员:" >
+          <el-input
+            v-model="operations.operator"
+            @keydown.native.enter="from"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+         <el-form-item label="上次操作时间:">
+          <el-input
+            v-model="operations.time"
+            @keydown.native.enter="from"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+         <el-form-item label="上次操作IP地址:">
+          <el-input
+            v-model="operations.ip"
+            @keydown.native.enter="from"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      
+      </el-form>
       <div class="footer-class">
-        <span class="one" @click="cancel">取消</span>
-        <span class="two" @click="minitabone">确认</span>
-      </div>
-    </el-dialog>
-    <!-- 删除 -->
-      <el-dialog
-      title="提示"
-      :visible.sync="remove"
-      :append-to-body="true"
-      center
-      class="reminder"
-      top="35vh"
-      :close-on-click-modal="false"
-      width="380px"
-     >
-      <div class="footer-one">
-        <p>是否删除该特殊车辆？</p>
-      </div>
-      <div class="footer-class">
-        <span class="one" @click="cancel">取消</span>
-        <span class="two" @click="minitabtwo">确认</span>
+        <span @click="from">确认</span>
       </div>
     </el-dialog>
   </div>
@@ -249,33 +237,22 @@
 
 <script>
 import { Message } from "element-ui";
-import {
-  addspecialcar,
-  specialcarlist,
-  amendcarlist,
-  deletecar,
-  searchList,
-  startusing
-} from "@/api/parkCar";
 // data数据
 export default {
   components: {},
   data() {
     return {
       rules: {
-        vehicle_car_number: [{ required: true, message: "车牌号不能为空" }],
-        vehicle_name: [{ required: true, message: "姓名不能为空" }],
+        vehicle_car_number: [{ required: true, message: "车位类型不能为空" }],
+        vehicle_name: [{ required: true, message: "车位号不能为空" }],
         vehicle_phone: [
           { required: true, message: "电话不能为空" },
           { type: "number", message: "电话必须为数字" }
-        ]
+        ],
+        house:[{required: true, message: "房屋不能为空" }]
       },
-      remove:false,
-      forbiddencar: false,
-      remindercar: false,
       tableData: [],
-      back: false,
-      userInfoList: {}, //localStorage的userInfo
+      back: false,//返回上一级
       pageNums: 1, //总页数
       totalPage: null, //总条数
       disabled: true,
@@ -284,30 +261,35 @@ export default {
       parkid: "",
       currentPage: 1, // 当前页
       pageSize: 10, // 当前页条数
-      centerDialogVisible1: false, //新增特殊车辆
-      Modification: false, //修改特殊车辆
-      id: "", //列表唯一id
-      state: "", //状态1启用2禁用
+      centerDialogVisible1: false, //增加车位
+      Modification: false, //修改车位
+      operationss:false,//操作记录
       //修改车辆
       Modificationcar: {
-        vehicle_car_number: "", //车牌号
-        vehicle_name: "", //姓名
-        vehicle_phone: "", //电话
-        centons: "" //备注
+        vehicle_car_number: "", //车位类型
+        vehicle_name: "", //车位号
+        centons: "", //备注
+        radio:6,//车位状态
+        house:''//关联房屋
       },
       //新增车辆
       Specialvehicle: {
-        vehicle_car_number: "", //车牌号
-        vehicle_name: "", //姓名
-        vehicle_phone: "", //电话
-        centons: "" //备注
+        vehicle_car_number: "", //车位类型
+        vehicle_name: "", //车位号
+        centons: "", //备注
+        radio:6,//车位状态
+        house:''//关联房屋
+      },
+      //操作记录
+      operations:{
+        operator:'邓长平',
+        time:'2019-12-11',
+        ip:'127.0.0.1',
       },
       //查询
       searchForm: {
         orderNo: ""
-      },
-      addcar:'',//新增特殊车辆id
-      openmn:'',//操作
+      }
     };
   },
   created() {
@@ -316,79 +298,51 @@ export default {
     this.parkid = user.data.Communityid;
     this.park_id = user.data.Communityid;
     //console.log(user.list );
-    const userlist=user.list
-    userlist.forEach(v=>{
-      //console.log(v);
-      if(v.auth_name === '停车场管理'){
-        v.zi.forEach(item=>{
-         if(item.auth_name==='特殊车辆'){
-           item.zi.forEach(y=>{
-             //console.log(y);
-           if(y.auth_name==='新增特殊车辆'){
-             this.addcar=y.auth_id
-           };
-            if(y.auth_name==='特殊车辆禁用启用'){
-             this.openmn=y.auth_id
-           };
-            
-           })
-         }
-          
-        })
-      }
-      //console.log(this.removes,this.addcar,this.modifier,this.open);
-      
-    })
-    this.parkList();
-   
+   let obj=[{
+     Parking:'A11',
+     cartype:'宝马车位',
+     longcar:'100',
+     parkstate:'已售',
+     Longplate:'川AQBZ95',
+     Linkbuilding:'1-1-305',
+     centons:'哈哈哈哈',
+   }]
+   this.tableData=obj
+  
   },
   methods: {
     // 分页设置
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.parkList();
     },
     //编辑
     compile(row) {
       this.Modification = true;
       let {
-        id,
-        vehicle_name,
-        vehicle_phone,
-        vehicle_car_number,
+        cartype,
+        Parking,
+        parkstate,
+        Linkbuilding,
         centons
       } = row;
-      this.id = id;
-      this.Modificationcar.vehicle_name = vehicle_name;
-      this.Modificationcar.vehicle_phone = Number(vehicle_phone);
-      this.Modificationcar.vehicle_car_number = vehicle_car_number;
+    
+      this.Modificationcar.vehicle_car_number = cartype;
+      this.Modificationcar.vehicle_name = Parking;
+      this.Modificationcar.house = Linkbuilding;
       this.Modificationcar.centons = centons;
+    },
+    //操作记录
+    handle(){
+      this.operationss=true;
+    },
+    from(){
+      this.operationss=false;
     },
     //确认编辑
     affirm() {
       this.$refs.addCartype.validate(async valid => {
         if (valid) {
-          // console.log(this.amendCartype);
-
-          let obj = await amendcarlist({
-            vehicle_name: this.Modificationcar.vehicle_name,
-            vehicle_phone: this.Modificationcar.vehicle_phone,
-            vehicle_car_number: this.Modificationcar.vehicle_car_number,
-            centons: this.Modificationcar.centons,
-            id: this.id
-          });
-          console.log(obj);
-          if (obj === "修改成功") {
-            this.Modification = false;
-            this.parkList();
-            Message({
-              type: "success",
-              message: "修改成功"
-            });
-          } else {
-            // 失败
-            Message.error("修改失败");
-          }
+         console.log(this.amendCartype);
         } else {
           return false;
         }
@@ -437,87 +391,6 @@ export default {
           return false;
         }
       });
-    },
-    //禁用弹框
-    forbidden(row) {
-      this.forbiddencar = true;
-      let { id } = row;
-      this.id = id;
-    },
-    //启用弹框
-    open(row) {
-      this.remindercar = true;
-      let { id } = row;
-      this.id = id;
-    },
-    //取消
-    cancel() {
-      this.remindercar = false;
-      this.forbiddencar = false;
-      this.remove=false;
-    },
-    //启用
-    async minitab() {
-      let obj = await startusing({
-        type: 1,
-        id: this.id
-      });
-      console.log(obj);
-      if (obj === "修改成功") {
-        this.remindercar = false;
-        this.parkList();
-        Message({
-          type: "success",
-          message: "启用成功"
-        });
-      } else {
-        // 失败
-        Message.error("启用失败");
-      }
-    },
-    //禁用
-    async minitabone() {
-      console.log(this.id);
-      let obj = await startusing({
-        type: 2,
-        id: this.id
-      });
-      console.log(obj);
-      if (obj === "修改成功") {
-        this.forbiddencar = false;
-        this.parkList();
-        Message({
-          type: "success",
-          message: "禁用成功"
-        });
-      } else {
-        // 失败
-        Message.error("禁用失败");
-      }
-    },
-    //删除
-    del(row) {
-      this.remove=true;
-     let { id } = row;
-      this.id = id;
-    },
-    //删除确认
-    async minitabtwo(){
-        let obj = await deletecar({
-        id: this.id
-      });
-      console.log(obj);
-      if (obj === "删除成功") {
-        this.remove = false;
-        this.parkList();
-        Message({
-          type: "success",
-          message: "删除成功"
-        });
-      } else {
-        // 失败
-        Message.error("删除失败");
-      }
     },
     //查询
     async search() {
@@ -815,7 +688,7 @@ export default {
   align-items: center;
   justify-content: center;
   color: #fff;
-  width: 100px;
+  width: 72px;
   height: 30px;
   line-height: 5px;
   background: rgba(37, 186, 217, 1);
@@ -907,7 +780,7 @@ export default {
   font-weight: 400;
   color: rgba(255, 255, 255, 1);
   cursor: pointer;
-  width: 52px;
+  width: 72px;
   height: 30px;
   background: rgba(204, 204, 204, 1);
   border-radius: 4px;
@@ -948,7 +821,7 @@ export default {
       height: 30px;
       display: flex;
       justify-content: center;
-      margin-top: 101px;
+      margin-top: 110px;
       span {
         width: 72px;
         height: 30px;
@@ -974,7 +847,7 @@ export default {
 .specialvehicles {
   /deep/.el-dialog {
     min-width: 400px;
-    height: 411px;
+    height: 468px;
     .el-dialog__header {
       text-align: left;
       height: 47px !important;
@@ -982,7 +855,7 @@ export default {
     }
     /deep/.el-dialog__body {
       text-align: initial;
-      padding: 24px 25px 25px 0px;
+      //padding: 24px 25px 25px 0px;
       .el-myclass {
         padding-left: 55px;
         height: 65px !important;
@@ -1007,7 +880,7 @@ export default {
       height: 30px;
       display: flex;
       justify-content: center;
-      margin-top: 204px;
+      margin-top: 277px;
       span {
         width: 72px;
         height: 30px;
